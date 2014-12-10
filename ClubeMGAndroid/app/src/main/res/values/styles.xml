@@ -1,8 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary" >#f44336</color>
+    <color name="colorPrimaryLight" >#ffcdd2</color>
+    <color name="colorPrimaryDark" >#d32f2f</color>
+    <color name="colorAccent" >#536dfe</color>
+    <color name="colorAccentLight" >#8c9eff</color>
+    <color name="colorAccentDark" >#3d5afe</color>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="AppTheme.Base"/>
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
     </style>
-
 </resources>
