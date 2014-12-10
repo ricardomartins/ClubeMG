@@ -16,6 +16,8 @@ import android.widget.ListView;
  */
 public class NavigationFragment
         extends Fragment {
+    public static final String TIPO_ON_CLICK_CATEGORIA = "categoria";
+
     private LinearLayout mNavigationLinearLayout;
     private ListView     mCategoriasListView;
 
@@ -35,19 +37,24 @@ public class NavigationFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mNavigationLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_navigation,
-                                                                  container, false);
+                container, false);
         mCategoriasListView = (ListView) mNavigationLinearLayout.findViewById(
                 R.id.left_navigation_drawer_categorias_list);
         mCategoriasListView.setAdapter(new ArrayAdapter<String>(getActivity(),
-                                                                R.layout.drawer_list_item,
-                                                                mCategorias));
+                R.layout.drawer_list_item,
+                mCategorias));
+
         mCategoriasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                ((MainActivity)getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, mCategorias[position]);
             }
         });
-
         return mNavigationLinearLayout;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 }

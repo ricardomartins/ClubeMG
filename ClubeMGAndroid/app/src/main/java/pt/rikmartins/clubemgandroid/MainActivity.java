@@ -6,6 +6,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Toast;
 
 public class MainActivity
         extends ActionBarActivity {
@@ -15,7 +17,6 @@ public class MainActivity
 
     final static int TIPO_DE_LAYOUT_DRAWER_LAYOUT = 100;
     final static int TIPO_DE_LAYOUT_OUTRO = 0;
-
     int mTipoDeLayout;
 
     // Quando é DrawerLayout
@@ -27,10 +28,8 @@ public class MainActivity
         setContentView(R.layout.activity_main);
 
         setMainLayout(R.id.main_layout);
-
-        mNavigationFragment = (NavigationFragment) getFragmentManager().findFragmentById(R.id.navigation_fragment);
-
         setSupportActionBar(mToolbar = (Toolbar) findViewById(R.id.toolbar));
+        mNavigationFragment = (NavigationFragment) getFragmentManager().findFragmentById(R.id.navigation_fragment);
 
         if  (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT) onCreateWithDrawerLayout(savedInstanceState);
         else assert false; // TODO: Alterar isto
@@ -67,4 +66,16 @@ public class MainActivity
     public Toolbar getToolbar() {
         return mToolbar;
     }
+
+    public void onNavigationEvent(String modo, String coisas){
+        Toast toast = Toast.makeText(this, modo + " " + coisas, Toast.LENGTH_SHORT); // TODO: A apagar
+        toast.show(); // TODO: A apagar
+
+        switch(modo){
+            case NavigationFragment.TIPO_ON_CLICK_CATEGORIA:
+                // TODO: Alterar a lista de notícias visíveis
+                break;
+        }
+    }
+
 }
