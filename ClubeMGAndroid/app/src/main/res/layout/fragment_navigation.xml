@@ -3,7 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@android:color/background_light">
+              android:background="@android:color/background_dark">
     <ListView android:id="@+id/left_navigation_drawer_categorias_list"
               android:layout_width="240dp"
               android:layout_height="match_parent"

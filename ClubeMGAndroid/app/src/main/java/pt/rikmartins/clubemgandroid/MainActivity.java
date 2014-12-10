@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 public class MainActivity
@@ -14,6 +15,7 @@ public class MainActivity
     private View               mMainLayout;
     private NavigationFragment mNavigationFragment;
     private Toolbar            mToolbar;
+    private FrameLayout mMainContainer;
 
     final static int TIPO_DE_LAYOUT_DRAWER_LAYOUT = 100;
     final static int TIPO_DE_LAYOUT_OUTRO = 0;
@@ -28,6 +30,7 @@ public class MainActivity
         setContentView(R.layout.activity_main);
 
         setMainLayout(R.id.main_layout);
+        mMainContainer = (FrameLayout) findViewById(R.id.main_container);
         setSupportActionBar(mToolbar = (Toolbar) findViewById(R.id.toolbar));
         mNavigationFragment = (NavigationFragment) getFragmentManager().findFragmentById(R.id.navigation_fragment);
 
