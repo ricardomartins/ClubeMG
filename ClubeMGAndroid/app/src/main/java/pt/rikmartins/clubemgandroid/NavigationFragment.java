@@ -41,7 +41,7 @@ public class NavigationFragment
         mCategoriasListView = (ListView) mNavigationLinearLayout.findViewById(
                 R.id.left_navigation_drawer_categorias_list);
         mCategoriasListView.setAdapter(new ArrayAdapter<String>(getActivity(),
-                R.layout.drawer_list_item,
+                R.layout.drawer_list_item, R.id.texto_categoria,
                 mCategorias));
 
         mCategoriasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
