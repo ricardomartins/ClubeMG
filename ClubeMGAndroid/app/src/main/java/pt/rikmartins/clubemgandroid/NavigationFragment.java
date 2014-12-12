@@ -1,6 +1,7 @@
 package pt.rikmartins.clubemgandroid;
 
 import android.app.Fragment;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -10,6 +11,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
+import java.util.List;
+
+import pt.rikmartins.clubemgandroid.modelos.Categoria;
+import pt.rikmartins.clubemgandroid.modelos.Etiqueta;
 
 /**
  * Created by ricardo on 08-12-2014.
@@ -28,8 +34,38 @@ public class NavigationFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCategorias = new String[]{"Montanha", "BTT"};
-        mEtiquetas = new String[]{};
+
+        List<Categoria> categorias = null;
+        try {
+            categorias = Categoria.listAll(Categoria.class);
+        } catch(SQLiteException e){
+            // TODO: Lidar com a inexistência de Categorias
+        }
+        if (categorias != null) {
+            mCategorias = new String[categorias.size()];
+
+            int i = 0;
+            for (Categoria categoria : categorias){
+                mCategorias[i] = categoria.designacao;
+                i++;
+            }
+        } else mCategorias = new String[]{"Montanha", "BTT"};
+
+        List<Etiqueta> etiquetas = null;
+        try {
+            etiquetas = Categoria.listAll(Etiqueta.class);
+        } catch(SQLiteException e){
+            // TODO: Lidar com a inexistência de Etiquetas
+        }
+        if (etiquetas != null) {
+            mEtiquetas = new String[etiquetas.size()];
+
+            int i = 0;
+            for (Etiqueta etiqueta : etiquetas){
+                mEtiquetas[i] = etiqueta.designacao;
+                i++;
+            }
+        } else mCategorias = new String[]{"Montanha", "BTT"};
     }
 
     @Nullable

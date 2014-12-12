@@ -1,9 +1,14 @@
 package pt.rikmartins.clubemgandroid.modelos;
 
-import io.realm.RealmObject;
+
+import com.orm.SugarRecord;
 
 /**
  * Created by ricardo on 03-12-2014.
  */
-public class Etiqueta extends RealmObject {
+public class Etiqueta extends SugarRecord<Etiqueta> {
+    public String designacao;
+
+    public Etiqueta(){
+    }
 }

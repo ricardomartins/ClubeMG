@@ -1,9 +1,13 @@
 package pt.rikmartins.clubemgandroid.modelos;
 
-import io.realm.RealmObject;
+import com.orm.SugarRecord;
 
 /**
  * Created by ricardo on 03-12-2014.
  */
-public class Categoria extends RealmObject {
+public class Categoria extends SugarRecord<Categoria> {
+    public String designacao;
+
+    public Categoria(){
+    }
 }

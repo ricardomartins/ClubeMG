@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -40,7 +41,7 @@ public class MainActivity
 
     private void onCreateWithDrawerLayout(Bundle savedInstanceState){
         mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
-
+        
         mNavigationDrawerToggle = new ActionBarDrawerToggle(this, (DrawerLayout) mMainLayout, mToolbar,
                                                             R.string.navigation_drawer_open,
                                                             R.string.navigation_drawer_close) {
