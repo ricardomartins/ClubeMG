@@ -6,10 +6,9 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name="com.orm.SugarApp" >
+        android:theme="@style/AppTheme" >
         <activity
-            android:name="pt.rikmartins.clubemgandroid.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,10 +16,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <meta-data android:name="DATABASE" android:value="sugar_noticias.db" />
-        <meta-data android:name="VERSION" android:value="1" />
-        <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="pt.rikmartins.clumemg" />
+
+        <meta-data
+            android:name="DATABASE"
+            android:value="sugar_noticias.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="1" />
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true" />
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="pt.rikmartins.clumemg" />
+
+        <service
+            android:name=".NoticiasClubeMGService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
+        <provider
+            android:name=".provider.NoticiaProvider"
+            android:authorities="pt.rikmartins.clubemg.clubemgandroid"
+            android:enabled="true"
+            android:exported="false" >
+        </provider>
     </application>
 
 </manifest>

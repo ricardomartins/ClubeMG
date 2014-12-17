@@ -1,18 +1,22 @@
 package pt.rikmartins.clubemgandroid;
 
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
+import android.content.Context;
+import android.content.Loader;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import pt.rikmartins.clubemg.utilitarios.noticias.SitioNoticiasClubeMG;
+
 public class MainActivity
-        extends ActionBarActivity {
+        extends ActionBarActivity implements LoaderManager.LoaderCallbacks<SitioNoticiasClubeMG> {
     private View               mMainLayout;
     private NavigationFragment mNavigationFragment;
     private Toolbar            mToolbar;
@@ -82,4 +86,40 @@ public class MainActivity
         }
     }
 
+    @Override
+    public Loader<SitioNoticiasClubeMG> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<SitioNoticiasClubeMG> loader, SitioNoticiasClubeMG data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<SitioNoticiasClubeMG> loader) {
+
+    }
+
+    public class AlgoLoader extends AsyncTaskLoader<SitioNoticiasClubeMG> {
+        private SitioNoticiasClubeMG sitioNoticiasClubeMG = null;
+
+        public AlgoLoader(Context context) {
+            super(context);
+        }
+
+        @Override
+        public SitioNoticiasClubeMG loadInBackground() {
+            sitioNoticiasClubeMG = new SitioNoticiasClubeMG();
+            sitioNoticiasClubeMG.actualizarNoticias();
+            return sitioNoticiasClubeMG;
+        }
+
+        @Override
+        protected void onStartLoading() {
+            if (sitioNoticiasClubeMG != null) {
+                deliverResult(sitioNoticiasClubeMG);
+            }
+        }
+    }
 }
