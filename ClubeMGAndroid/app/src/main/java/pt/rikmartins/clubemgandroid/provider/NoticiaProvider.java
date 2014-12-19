@@ -26,11 +26,11 @@ public class NoticiaProvider
     /**
      * URI ID for route: /noticia/{ID}
      */
-    public static final int ROUTE_NOTICIA_ID           = 11;
+    public static final int ROUTE_NOTICIA_ID = 11;
     /**
      * URI ID for route: /noticia
      */
-    public static final int ROUTE_NOTICIA              = 10;
+    public static final int ROUTE_NOTICIA = 10;
     /**
      * URI ID for route: /noticia/categoria/{ID}
      */
@@ -38,24 +38,24 @@ public class NoticiaProvider
     /**
      * URI ID for route: /categoria
      */
-    public static final int ROUTE_CATEGORIA            = 20;
+    public static final int ROUTE_CATEGORIA = 20;
     /**
      * URI ID for route: /categoria/{ID}
      */
-    public static final int ROUTE_CATEGORIA_ID         = 21;
+    public static final int ROUTE_CATEGORIA_ID = 21;
     /**
      * URI ID for route: /etiqueta
      */
-    public static final int ROUTE_ETIQUETA             = 30;
+    public static final int ROUTE_ETIQUETA = 30;
     /**
      * URI ID for route: /etiqueta/{ID}
      */
-    public static final int ROUTE_ETIQUETA_ID          = 31;
+    public static final int ROUTE_ETIQUETA_ID = 31;
 
     /**
      * Content authority for this provider.
      */
-    private static final String     AUTHORITY   = NoticiaContract.CONTENT_AUTHORITY;
+    private static final String AUTHORITY = NoticiaContract.CONTENT_AUTHORITY;
     /**
      * UriMatcher, used to decode incoming URIs.
      */
@@ -73,10 +73,52 @@ public class NoticiaProvider
         sUriMatcher.addURI(AUTHORITY, "etiqueta/*", ROUTE_ETIQUETA_ID);
     }
 
+    private static final String[] NOTICIA_DEFAULT_PROJECTION = new String[]{
+            NoticiaContract.Noticia._ID,
+            NoticiaContract.Noticia.COLUMN_NAME_ID_NOTICIA,
+            NoticiaContract.Noticia.COLUMN_NAME_TITULO,
+            NoticiaContract.Noticia.COLUMN_NAME_SUBTITULO,
+            NoticiaContract.Noticia.COLUMN_NAME_TEXTO,
+            NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_NOTICIA,
+            NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM,
+            NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE,
+            NoticiaContract.Noticia.COLUMN_NAME_IMAGEM,
+            NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA,
+            NoticiaContract.Noticia.COLUMN_NAME_DESTACADA,
+            NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS
+    };
+    private static final String NOTICIA_TABLE_JOIN = NoticiaDatabase.Noticia.TABLE_NAME + " LEFT JOIN " +
+            NoticiaDatabase.EtiquetaDaNoticia.TABLE_NAME + " ON " + NoticiaDatabase.Noticia.TABLE_NAME + "." +
+            NoticiaDatabase.Noticia._ID + "=" + NoticiaDatabase.EtiquetaDaNoticia.TABLE_NAME + "." +
+            NoticiaDatabase.EtiquetaDaNoticia.COLUMN_NAME_NOTICIA + " LEFT JOIN " + NoticiaDatabase.Etiqueta.TABLE_NAME + " ON " + NoticiaDatabase.EtiquetaDaNoticia.TABLE_NAME + "." +
+            NoticiaDatabase.EtiquetaDaNoticia.COLUMN_NAME_ETIQUETA + "=" + NoticiaDatabase.Etiqueta.TABLE_NAME + "." + NoticiaDatabase.Etiqueta._ID + " LEFT JOIN " + NoticiaDatabase.Categoria.TABLE_NAME + " ON " + NoticiaDatabase.Noticia.TABLE_NAME + "." +
+            NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA + "=" + NoticiaDatabase.Categoria.TABLE_NAME + "." +
+            NoticiaDatabase.Etiqueta._ID;
+    private static final String NOTICIA_COLUMN_ETIQUETAS = "GROUP_CONCAT(" +
+            NoticiaDatabase.Etiqueta.TABLE_NAME + "." + NoticiaDatabase.Etiqueta.COLUMN_NAME_DESIGNACAO + ")";
+    private static final String NOTICIA_COLUMN_CATEGORIA = NoticiaDatabase.Categoria.TABLE_NAME + "." +
+            NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO;
+    private static final String NOTICIA_GROUP_BY = NoticiaDatabase.Noticia.TABLE_NAME + "." + NoticiaDatabase.Noticia._ID;
+    private static final String[] CATEGORIA_DEFAULT_PROJECTION = new String[]{
+            NoticiaContract.Categoria._ID,
+            NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO
+    };
+    private static final String[] ETIQUETA_DEFAULT_PROJECTION = new String[]{
+            NoticiaContract.Etiqueta._ID,
+            NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO
+    };
     NoticiaDatabase mDatabaseHelper;
 
     public static String[] getCopyOfNoticiaDefaultProjection() {
         return Arrays.copyOf(NOTICIA_DEFAULT_PROJECTION, NOTICIA_DEFAULT_PROJECTION.length);
+    }
+
+    public static String[] getCopyOfCategoriaDefaultProjection() {
+        return Arrays.copyOf(CATEGORIA_DEFAULT_PROJECTION, CATEGORIA_DEFAULT_PROJECTION.length);
+    }
+
+    public static String[] getCopyOfEtiquetaDefaultProjection() {
+        return Arrays.copyOf(ETIQUETA_DEFAULT_PROJECTION, ETIQUETA_DEFAULT_PROJECTION.length);
     }
 
     @Override
@@ -92,21 +134,21 @@ public class NoticiaProvider
     public String getType(Uri uri) {
         final int match = sUriMatcher.match(uri);
         switch (match) {
-        case ROUTE_NOTICIA:
-        case ROUTE_NOTICIA_CATEGORIA_ID:
-            return NoticiaContract.Noticia.CONTENT_TYPE;
-        case ROUTE_NOTICIA_ID:
-            return NoticiaContract.Noticia.CONTENT_ITEM_TYPE;
-        case ROUTE_CATEGORIA:
-            return NoticiaContract.Categoria.CONTENT_TYPE;
-        case ROUTE_CATEGORIA_ID:
-            return NoticiaContract.Categoria.CONTENT_ITEM_TYPE;
-        case ROUTE_ETIQUETA:
-            return NoticiaContract.Etiqueta.CONTENT_TYPE;
-        case ROUTE_ETIQUETA_ID:
-            return NoticiaContract.Etiqueta.CONTENT_ITEM_TYPE;
-        default:
-            throw new UnsupportedOperationException("Unknown uri: " + uri);
+            case ROUTE_NOTICIA:
+            case ROUTE_NOTICIA_CATEGORIA_ID:
+                return NoticiaContract.Noticia.CONTENT_TYPE;
+            case ROUTE_NOTICIA_ID:
+                return NoticiaContract.Noticia.CONTENT_ITEM_TYPE;
+            case ROUTE_CATEGORIA:
+                return NoticiaContract.Categoria.CONTENT_TYPE;
+            case ROUTE_CATEGORIA_ID:
+                return NoticiaContract.Categoria.CONTENT_ITEM_TYPE;
+            case ROUTE_ETIQUETA:
+                return NoticiaContract.Etiqueta.CONTENT_TYPE;
+            case ROUTE_ETIQUETA_ID:
+                return NoticiaContract.Etiqueta.CONTENT_ITEM_TYPE;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
     }
 
@@ -118,26 +160,31 @@ public class NoticiaProvider
      */
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
-        int uriMatch = sUriMatcher.match(uri);
+        SQLiteDatabase db = null;
         Cursor c;
+        try {
+            db = mDatabaseHelper.getReadableDatabase();
+            int uriMatch = sUriMatcher.match(uri);
 
-        switch (uriMatch) {
-        case ROUTE_NOTICIA_ID:
-        case ROUTE_NOTICIA:
-        case ROUTE_NOTICIA_CATEGORIA_ID:
-            c = queryNoticiaQuery(db, uri, uriMatch, projection, selection, selectionArgs, sortOrder);
-            break;
-        case ROUTE_CATEGORIA_ID:
-        case ROUTE_CATEGORIA:
-            c = queryCategoriaQuery(db, uri, uriMatch, projection, selection, selectionArgs, sortOrder);
-            break;
-        case ROUTE_ETIQUETA_ID:
-        case ROUTE_ETIQUETA:
-            c = queryEtiquetaQuery(db, uri, uriMatch, projection, selection, selectionArgs, sortOrder);
-            break;
-        default:
-            throw new UnsupportedOperationException("Unknown uri: " + uri);
+            switch (uriMatch) {
+                case ROUTE_NOTICIA_ID:
+                case ROUTE_NOTICIA:
+                case ROUTE_NOTICIA_CATEGORIA_ID:
+                    c = queryNoticiaQuery(db, uri, uriMatch, projection, selection, selectionArgs, sortOrder);
+                    break;
+                case ROUTE_CATEGORIA_ID:
+                case ROUTE_CATEGORIA:
+                    c = queryCategoriaQuery(db, uri, uriMatch, projection, selection, selectionArgs, sortOrder);
+                    break;
+                case ROUTE_ETIQUETA_ID:
+                case ROUTE_ETIQUETA:
+                    c = queryEtiquetaQuery(db, uri, uriMatch, projection, selection, selectionArgs, sortOrder);
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Unknown uri: " + uri);
+            }
+        } finally {
+            if (db != null) db.close();
         }
 
         Context ctx = getContext();
@@ -145,37 +192,6 @@ public class NoticiaProvider
         c.setNotificationUri(ctx.getContentResolver(), uri);
         return c;
     }
-
-    private static final String[] NOTICIA_DEFAULT_PROJECTION = new String[] {
-            NoticiaContract.Noticia._ID,
-            NoticiaContract.Noticia.COLUMN_NAME_ID_NOTICIA,
-            NoticiaContract.Noticia.COLUMN_NAME_TITULO,
-            NoticiaContract.Noticia.COLUMN_NAME_SUBTITULO,
-            NoticiaContract.Noticia.COLUMN_NAME_TEXTO,
-            NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_NOTICIA,
-            NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM,
-            NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE,
-            NoticiaContract.Noticia.COLUMN_NAME_IMAGEM,
-            NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA,
-            NoticiaContract.Noticia.COLUMN_NAME_DESTACADA,
-            NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS
-    };
-
-    private static final String NOTICIA_TABLE_JOIN = NoticiaDatabase.Noticia.TABLE_NAME + " LEFT JOIN " +
-            NoticiaDatabase.EtiquetaDaNoticia.TABLE_NAME + " ON " + NoticiaDatabase.Noticia.TABLE_NAME + "." +
-            NoticiaDatabase.Noticia._ID + "=" + NoticiaDatabase.EtiquetaDaNoticia.TABLE_NAME + "." +
-            NoticiaDatabase.EtiquetaDaNoticia.COLUMN_NAME_NOTICIA + " LEFT JOIN " + NoticiaDatabase.Etiqueta.TABLE_NAME + " ON " + NoticiaDatabase.EtiquetaDaNoticia.TABLE_NAME + "." +
-            NoticiaDatabase.EtiquetaDaNoticia.COLUMN_NAME_ETIQUETA + "=" + NoticiaDatabase.Etiqueta.TABLE_NAME + "." + NoticiaDatabase.Etiqueta._ID + " LEFT JOIN " + NoticiaDatabase.Categoria.TABLE_NAME + " ON " + NoticiaDatabase.Noticia.TABLE_NAME + "." +
-            NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA + "=" + NoticiaDatabase.Categoria.TABLE_NAME + "." +
-            NoticiaDatabase.Etiqueta._ID;
-
-    private static final String NOTICIA_COLUMN_ETIQUETAS = "GROUP_CONCAT(" +
-            NoticiaDatabase.Etiqueta.TABLE_NAME + "." + NoticiaDatabase.Etiqueta.COLUMN_NAME_DESIGNACAO + ")";
-
-    private static final String NOTICIA_COLUMN_CATEGORIA = NoticiaDatabase.Categoria.TABLE_NAME + "." +
-            NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO;
-
-    private static final String NOTICIA_GROUP_BY = NoticiaDatabase.Noticia.TABLE_NAME + "." + NoticiaDatabase.Noticia._ID;
 
     public Cursor queryNoticiaQuery(SQLiteDatabase db, Uri uri, int uriMatch, String[] projection, String selection,
                                     String[] selectionArgs, String sortOrder) {
@@ -194,34 +210,25 @@ public class NoticiaProvider
         builder.map(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA, NOTICIA_COLUMN_CATEGORIA);
 
         switch (uriMatch) {
-        case ROUTE_NOTICIA_ID:
-            // Devolver uma notícia, pelo ID.
-            builder.where(NoticiaContract.Noticia._ID + "=?", uri.getLastPathSegment());
-            break;
-        case ROUTE_NOTICIA:
-            // Devolver todas as notícias.
-            // Nada a fazer
-            break;
-        case ROUTE_NOTICIA_CATEGORIA_ID:
-            // Devolver todas as notícia duma categoria.
-            builder.where(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA + "=?", uri.getLastPathSegment());
-            break;
-        default:
-            throw new UnsupportedOperationException("Unknown uri: " + uri);
+            case ROUTE_NOTICIA_ID:
+                // Devolver uma notícia, pelo ID.
+                builder.where(NoticiaContract.Noticia._ID + "=?", uri.getLastPathSegment());
+                break;
+            case ROUTE_NOTICIA:
+                // Devolver todas as notícias.
+                // Nada a fazer
+                break;
+            case ROUTE_NOTICIA_CATEGORIA_ID:
+                // Devolver todas as notícia duma categoria.
+                builder.where(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA + "=?", uri.getLastPathSegment());
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
         builder.where(selection, selectionArgs);
 
         return builder.query(db, projection, NOTICIA_GROUP_BY, null, sortOrder, null);
-    }
-
-    private static final String[] CATEGORIA_DEFAULT_PROJECTION = new String[] {
-            NoticiaContract.Categoria._ID,
-            NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO
-    };
-
-    public static String[] getCopyOfCategoriaDefaultProjection() {
-        return Arrays.copyOf(CATEGORIA_DEFAULT_PROJECTION, CATEGORIA_DEFAULT_PROJECTION.length);
     }
 
     public Cursor queryCategoriaQuery(SQLiteDatabase db, Uri uri, int uriMatch, String[] projection, String selection,
@@ -231,30 +238,21 @@ public class NoticiaProvider
         SelectionBuilder builder = new SelectionBuilder().table(NoticiaContract.Categoria.TABLE_NAME);
 
         switch (uriMatch) {
-        case ROUTE_CATEGORIA_ID:
-            // Devolver uma categoria, pelo ID.
-            builder.where(NoticiaContract.Categoria._ID + "=?", uri.getLastPathSegment());
-            break;
-        case ROUTE_CATEGORIA:
-            // Devolver todas as categorias.
-            // Nada a fazer
-            break;
-        default:
-            throw new UnsupportedOperationException("Unknown uri: " + uri);
+            case ROUTE_CATEGORIA_ID:
+                // Devolver uma categoria, pelo ID.
+                builder.where(NoticiaContract.Categoria._ID + "=?", uri.getLastPathSegment());
+                break;
+            case ROUTE_CATEGORIA:
+                // Devolver todas as categorias.
+                // Nada a fazer
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
         builder.where(selection, selectionArgs);
 
         return builder.query(db, projection, sortOrder);
-    }
-
-    private static final String[] ETIQUETA_DEFAULT_PROJECTION = new String[] {
-            NoticiaContract.Etiqueta._ID,
-            NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO
-    };
-
-    public static String[] getCopyOfEtiquetaDefaultProjection() {
-        return Arrays.copyOf(ETIQUETA_DEFAULT_PROJECTION, ETIQUETA_DEFAULT_PROJECTION.length);
     }
 
     public Cursor queryEtiquetaQuery(SQLiteDatabase db, Uri uri, int uriMatch, String[] projection, String selection,
@@ -264,16 +262,16 @@ public class NoticiaProvider
         SelectionBuilder builder = new SelectionBuilder().table(NoticiaContract.Etiqueta.TABLE_NAME);
 
         switch (uriMatch) {
-        case ROUTE_ETIQUETA_ID:
-            // Devolver uma etiqueta, pelo ID.
-            builder.where(NoticiaContract.Etiqueta._ID + "=?", uri.getLastPathSegment());
-            break;
-        case ROUTE_ETIQUETA:
-            // Devolver todas as etiquetas.
-            // Nada a fazer
-            break;
-        default:
-            throw new UnsupportedOperationException("Unknown uri: " + uri);
+            case ROUTE_ETIQUETA_ID:
+                // Devolver uma etiqueta, pelo ID.
+                builder.where(NoticiaContract.Etiqueta._ID + "=?", uri.getLastPathSegment());
+                break;
+            case ROUTE_ETIQUETA:
+                // Devolver todas as etiquetas.
+                // Nada a fazer
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
         builder.where(selection, selectionArgs);
@@ -281,28 +279,18 @@ public class NoticiaProvider
         return builder.query(db, projection, sortOrder);
     }
 
-    private long inserirCategoria(SQLiteDatabase db, String categoriaStr){
-        SelectionBuilder builder = new SelectionBuilder().table(NoticiaDatabase.Categoria.TABLE_NAME).where(
-                NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO + " = ?", categoriaStr);
-        Cursor categoriaDaBD = null;
-        long idCategoria;
-        try {
-            categoriaDaBD = builder.query(db, new String[]{NoticiaDatabase.Categoria._ID}, null);
-            if (categoriaDaBD.getCount() > 0) {
-                categoriaDaBD.moveToFirst();
-                idCategoria = categoriaDaBD.getLong(categoriaDaBD.getColumnIndex(NoticiaDatabase.Categoria._ID));
-            } else {
-                ContentValues novaCategoria = new ContentValues(1);
-                novaCategoria.put(NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO, categoriaStr);
-                idCategoria = db.insertOrThrow(NoticiaDatabase.Categoria.TABLE_NAME, null, novaCategoria);
-            }
-        } finally {
-            if (categoriaDaBD != null) categoriaDaBD.close();
-        }
-        return idCategoria;
+    private long inserirCategoria(SQLiteDatabase db, String categoriaStr) {
+        ContentValues values = new ContentValues(1);
+        values.put(NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO, categoriaStr);
+        return inserirCategoria(db, values);
     }
 
-    private long inserirNoticia(SQLiteDatabase db, ContentValues values, long idCategoria){
+    private long inserirCategoria(SQLiteDatabase db, ContentValues values) {
+        return inserirMonoValor(db, values, NoticiaDatabase.Categoria.TABLE_NAME,
+                NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO, NoticiaDatabase.Categoria._ID);
+    }
+
+    private long inserirNoticia(SQLiteDatabase db, ContentValues values, long idCategoria) {
         ContentValues novaNoticia = new ContentValues(values);
         novaNoticia.remove(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS);
         novaNoticia.put(NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA, idCategoria);
@@ -310,7 +298,7 @@ public class NoticiaProvider
         return db.insertOrThrow(NoticiaDatabase.Noticia.TABLE_NAME, null, values);
     }
 
-    private ArrayList<Long> inserirEtiquetas(SQLiteDatabase db, String etiquetasNoticia){
+    private ArrayList<Long> inserirEtiquetas(SQLiteDatabase db, String etiquetasNoticia) {
         String[] etiquetasNoticiaSeparadas = etiquetasNoticia.split(",");
 
         StringBuilder etiquetasWhereStringBuilder = new StringBuilder(NoticiaDatabase.Etiqueta.COLUMN_NAME_DESIGNACAO + " IN (");
@@ -324,7 +312,7 @@ public class NoticiaProvider
                 etiquetasWhereStringBuilder.toString(), etiquetasNoticiaSeparadas);
 
         Cursor etiquetasDaBD = builder.query(db, new String[]{NoticiaDatabase.Etiqueta._ID, NoticiaDatabase.Etiqueta.COLUMN_NAME_DESIGNACAO},
-                                             null);
+                null);
         ArrayList<Long> idsEtiquetas = new ArrayList<>();
         if (etiquetasDaBD.getCount() < etiquetasNoticiaSeparadas.length) {
             // Algumas etiquetas não constam da base de dados
@@ -364,15 +352,47 @@ public class NoticiaProvider
         return idsEtiquetas;
     }
 
-    private ArrayList<Long> inserirEtiquetasDasNoticias(SQLiteDatabase db, long idNoticia, ArrayList<Long> idsEtiquetas){
+    private long inserirEtiqueta(SQLiteDatabase db, String etiquetaStr) {
+        ContentValues values = new ContentValues(1);
+        values.put(NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO, etiquetaStr);
+        return inserirEtiqueta(db, values);
+    }
+
+    private long inserirEtiqueta(SQLiteDatabase db, ContentValues values) {
+        return inserirMonoValor(db, values, NoticiaDatabase.Etiqueta.TABLE_NAME,
+                NoticiaDatabase.Etiqueta.COLUMN_NAME_DESIGNACAO, NoticiaDatabase.Etiqueta._ID);
+    }
+
+    // Função genérica da inserirEtiqueta e da inserirCategoria
+    private long inserirMonoValor(SQLiteDatabase db, ContentValues values, String tabela,
+                                  String nomeColunaAInserir, String nomeColunaId) {
+        SelectionBuilder builder = new SelectionBuilder().table(tabela).where(
+                nomeColunaAInserir + " = ?", values.getAsString(nomeColunaAInserir));
+        Cursor colunaDaBD = null;
+        long id;
+        try {
+            colunaDaBD = builder.query(db, new String[]{nomeColunaId}, null);
+            if (colunaDaBD.getCount() > 0) {
+                colunaDaBD.moveToFirst();
+                id = colunaDaBD.getLong(colunaDaBD.getColumnIndex(nomeColunaId));
+            } else {
+                id = db.insertOrThrow(tabela, null, values);
+            }
+        } finally {
+            if (colunaDaBD != null) colunaDaBD.close();
+        }
+        return id;
+    }
+
+    private ArrayList<Long> inserirEtiquetasDasNoticias(SQLiteDatabase db, long idNoticia, ArrayList<Long> idsEtiquetas) {
         ArrayList<Long> idsEtiquetasDasNoticias = new ArrayList<>(idsEtiquetas.size());
 
         ContentValues novaEtiquetaDaNoticia = new ContentValues(2);
         novaEtiquetaDaNoticia.put(NoticiaDatabase.EtiquetaDaNoticia.COLUMN_NAME_NOTICIA, idNoticia);
-        for (long idEtiqueta :idsEtiquetas) {
+        for (long idEtiqueta : idsEtiquetas) {
             novaEtiquetaDaNoticia.put(NoticiaDatabase.EtiquetaDaNoticia.COLUMN_NAME_ETIQUETA, idEtiqueta);
             idsEtiquetasDasNoticias.add(db.insertOrThrow(NoticiaDatabase.EtiquetaDaNoticia.TABLE_NAME, null,
-                                                         novaEtiquetaDaNoticia));
+                    novaEtiquetaDaNoticia));
         }
         return idsEtiquetasDasNoticias;
     }
@@ -389,26 +409,31 @@ public class NoticiaProvider
             assert db != null;
             final int match = sUriMatcher.match(uri);
             switch (match) {
-            case ROUTE_NOTICIA:
-                final long idCategoria = inserirCategoria(db, values.getAsString(NoticiaContract.Noticia
-                                                                                    .COLUMN_NAME_CATEGORIA));
-                final long idNoticia = inserirNoticia(db, values, idCategoria);
-                final ArrayList<Long> idsEtiquetas = inserirEtiquetas(db, values.getAsString(NoticiaContract.Noticia
-                                                                                                .COLUMN_NAME_ETIQUETAS));
-                final ArrayList<Long> idsEtiquetasDasNoticias = inserirEtiquetasDasNoticias(db, idNoticia,
-                                                                                            idsEtiquetas);
+                case ROUTE_NOTICIA:
+                    final long idCategoriaDaNoticia = inserirCategoria(db, values.getAsString(NoticiaContract.Noticia
+                            .COLUMN_NAME_CATEGORIA));
+                    final ArrayList<Long> idsEtiquetas = inserirEtiquetas(db, values.getAsString(
+                            NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS));
+                    final long idNoticia = inserirNoticia(db, values, idCategoriaDaNoticia);
+                    final ArrayList<Long> idsEtiquetasDasNoticias = inserirEtiquetasDasNoticias(db, idNoticia, idsEtiquetas);
 
-                result = Uri.parse(NoticiaContract.Noticia.CONTENT_URI + "/" + idNoticia);
-                break;
-            case ROUTE_NOTICIA_ID:
-            case ROUTE_NOTICIA_CATEGORIA_ID:
-            case ROUTE_CATEGORIA:
-            case ROUTE_CATEGORIA_ID:
-            case ROUTE_ETIQUETA:
-            case ROUTE_ETIQUETA_ID:
-                throw new UnsupportedOperationException("Insert not supported on URI: " + uri);
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                    result = Uri.parse(NoticiaContract.Noticia.CONTENT_URI + "/" + idNoticia);
+                    break;
+                case ROUTE_CATEGORIA:
+                    final long idCategoria = inserirCategoria(db, values);
+                    result = Uri.parse(NoticiaContract.Categoria.CONTENT_URI + "/" + idCategoria);
+                    break;
+                case ROUTE_ETIQUETA:
+                    final long idEtiqueta = inserirEtiqueta(db, values);
+                    result = Uri.parse(NoticiaContract.Etiqueta.CONTENT_URI + "/" + idEtiqueta);
+                    break;
+                case ROUTE_NOTICIA_ID:
+                case ROUTE_NOTICIA_CATEGORIA_ID:
+                case ROUTE_CATEGORIA_ID:
+                case ROUTE_ETIQUETA_ID:
+                    throw new UnsupportedOperationException("Insert not supported on URI: " + uri);
+                default:
+                    throw new UnsupportedOperationException("Unknown uri: " + uri);
             }
         } finally {
             if (db != null) db.close();
@@ -425,34 +450,46 @@ public class NoticiaProvider
      */
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-//        SelectionBuilder builder = new SelectionBuilder();
-//        final SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
-//        final int match = sUriMatcher.match(uri);
-//        int count;
-//        switch (match) {
-//        case ROUTE_NOTICIA:
-//            count = builder.table(NoticiaContract.Noticia.TABLE_NAME).where(selection, selectionArgs).delete(db);
-//            break;
-//        case ROUTE_NOTICIA_ID:
-//            String id = uri.getLastPathSegment();
-//            count = builder.table(NoticiaContract.Noticia.TABLE_NAME).where(NoticiaContract.Noticia._ID + "=?", id)
-//                           .where(selection, selectionArgs).delete(db);
-//            break;
-//        case ROUTE_NOTICIA_CATEGORIA_ID:
-//        case ROUTE_CATEGORIA_ID:
-//        case ROUTE_CATEGORIA:
-//        case ROUTE_ETIQUETA_ID:
-//        case ROUTE_ETIQUETA:
-//            throw new UnsupportedOperationException("Delete not supported on URI: " + uri);
-//        default:
-//            throw new UnsupportedOperationException("Unknown uri: " + uri);
-//        }
-//        // Send broadcast to registered ContentObservers, to refresh UI.
-//        Context ctx = getContext();
-//        assert ctx != null;
-//        ctx.getContentResolver().notifyChange(uri, null, false);
-//        return count;
-        throw new UnsupportedOperationException("Delete not supported");
+        SQLiteDatabase db = null;
+        int count;
+        try {
+            SelectionBuilder builder = new SelectionBuilder().where(selection, selectionArgs);
+            db = mDatabaseHelper.getWritableDatabase();
+            assert db != null;
+            final int match = sUriMatcher.match(uri);
+            switch (match) {
+                case ROUTE_NOTICIA_ID:
+                    String idNoticia = uri.getLastPathSegment();
+                    builder.where(NoticiaDatabase.Noticia._ID + "=?", idNoticia);
+                case ROUTE_NOTICIA:
+                    builder.table(NoticiaDatabase.Noticia.TABLE_NAME);
+                    break;
+                case ROUTE_CATEGORIA_ID:
+                    String idCategoria = uri.getLastPathSegment();
+                    builder.where(NoticiaDatabase.Categoria._ID + "=?", idCategoria);
+                case ROUTE_CATEGORIA:
+                    builder.table(NoticiaDatabase.Categoria.TABLE_NAME);
+                    break;
+                case ROUTE_ETIQUETA_ID:
+                    String idEtiqueta = uri.getLastPathSegment();
+                    builder.where(NoticiaDatabase.Etiqueta._ID + "=?", idEtiqueta);
+                case ROUTE_ETIQUETA:
+                    builder.table(NoticiaDatabase.Etiqueta.TABLE_NAME);
+                    break;
+                case ROUTE_NOTICIA_CATEGORIA_ID:
+                    throw new UnsupportedOperationException("Delete not supported on URI: " + uri);
+                default:
+                    throw new UnsupportedOperationException("Unknown uri: " + uri);
+            }
+            count = builder.delete(db);
+        } finally {
+            if (db != null) db.close();
+        }
+        // Send broadcast to registered ContentObservers, to refresh UI.
+        Context ctx = getContext();
+        assert ctx != null;
+        ctx.getContentResolver().notifyChange(uri, null, false);
+        return count;
     }
 
     /**
@@ -460,31 +497,49 @@ public class NoticiaProvider
      */
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        if (selection != null || selectionArgs != null)
-            throw new UnsupportedOperationException("Selection not supported on Update");
         SQLiteDatabase db = null;
         int count;
         try {
             db = mDatabaseHelper.getWritableDatabase();
             assert db != null;
             final int match = sUriMatcher.match(uri);
-            SelectionBuilder builder = new SelectionBuilder();
+            SelectionBuilder builder = new SelectionBuilder().where(selection, selectionArgs);
+            ContentValues valoresFinais = new ContentValues(values);
             switch (match) {
-            case ROUTE_NOTICIA_ID:
-                String id = uri.getLastPathSegment();
-                count = builder.table(NoticiaContract.Noticia.TABLE_NAME).where(NoticiaContract.Noticia._ID + "=?", id)
-                                   .update(db, values);
-                break;
-            case ROUTE_NOTICIA:
-            case ROUTE_NOTICIA_CATEGORIA_ID:
-            case ROUTE_CATEGORIA_ID:
-            case ROUTE_CATEGORIA:
-            case ROUTE_ETIQUETA_ID:
-            case ROUTE_ETIQUETA:
-                throw new UnsupportedOperationException("Delete not supported on URI: " + uri);
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                case ROUTE_NOTICIA_ID:
+                    String idNoticia = uri.getLastPathSegment();
+                    builder.where(NoticiaDatabase.Noticia._ID + "=?", idNoticia);
+                case ROUTE_NOTICIA:
+                    builder.table(NoticiaDatabase.Noticia.TABLE_NAME);
+
+                    if (valoresFinais.containsKey(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA)) {
+                        long idCategoria = inserirCategoria(db, valoresFinais.getAsString(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA));
+                        valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA, idCategoria);
+                    }
+                    if (values.containsKey(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS)) {
+                        // TODO: Implementar actualização das etiquetas de uma notícia
+                        throw new UnsupportedOperationException("Alterar etiquetas de uma notícia");
+                    }
+                    break;
+                case ROUTE_CATEGORIA_ID:
+                    String idCategoria = uri.getLastPathSegment();
+                    builder.where(NoticiaDatabase.Categoria._ID + "=?", idCategoria);
+                case ROUTE_CATEGORIA:
+                    builder.table(NoticiaDatabase.Categoria.TABLE_NAME);
+                    break;
+                case ROUTE_ETIQUETA_ID:
+                    String idEtiqueta = uri.getLastPathSegment();
+                    builder.where(NoticiaDatabase.Etiqueta._ID + "=?", idEtiqueta);
+                case ROUTE_ETIQUETA:
+                    builder.table(NoticiaDatabase.Etiqueta.TABLE_NAME);
+                    break;
+                case ROUTE_NOTICIA_CATEGORIA_ID:
+                    throw new UnsupportedOperationException("Delete not supported on URI: " + uri);
+                default:
+                    throw new UnsupportedOperationException("Unknown uri: " + uri);
             }
+            count = builder.update(db, valoresFinais);
+
         } finally {
             if (db != null) db.close();
         }
@@ -505,21 +560,21 @@ public class NoticiaProvider
         /**
          * Schema version.
          */
-        public static final int    DATABASE_VERSION = 1;
+        public static final int DATABASE_VERSION = 1;
         /**
          * Filename for SQLite file.
          */
-        public static final String DATABASE_NAME    = "noticias.db";
+        public static final String DATABASE_NAME = "noticias.db";
 
-        private static final String TYPE_TEXT    = " TEXT";
+        private static final String TYPE_TEXT = " TEXT";
         private static final String TYPE_INTEGER = " INTEGER";
-        private static final String TYPE_BLOB    = " BLOB";
-        private static final String COMMA_SEP    = ",";
+        private static final String TYPE_BLOB = " BLOB";
+        private static final String COMMA_SEP = ",";
 
         /**
          * SQL statement to create "noticia" table.
          */
-        private static final String SQL_CREATE_NOTICIA             = "CREATE TABLE " + Noticia.TABLE_NAME + " (" +
+        private static final String SQL_CREATE_NOTICIA = "CREATE TABLE " + Noticia.TABLE_NAME + " (" +
                 Noticia._ID + " INTEGER PRIMARY KEY," +
                 Noticia.COLUMN_NAME_ID_NOTICIA + TYPE_INTEGER + " UNIQUE" + COMMA_SEP +
                 Noticia.COLUMN_NAME_TITULO + TYPE_TEXT + COMMA_SEP +
@@ -534,13 +589,13 @@ public class NoticiaProvider
         /**
          * SQL statement to create "categoria" table.
          */
-        private static final String SQL_CREATE_CATEGORIA           = "CREATE TABLE " + Categoria.TABLE_NAME + " (" +
+        private static final String SQL_CREATE_CATEGORIA = "CREATE TABLE " + Categoria.TABLE_NAME + " (" +
                 Categoria._ID + " INTEGER PRIMARY KEY," +
                 Categoria.COLUMN_NAME_DESIGNACAO + TYPE_TEXT + " UNIQUE ON CONFLICT IGNORE)";
         /**
          * SQL statement to create "etiqueta" table.
          */
-        private static final String SQL_CREATE_ETIQUETA            = "CREATE TABLE " + Etiqueta.TABLE_NAME + " " +
+        private static final String SQL_CREATE_ETIQUETA = "CREATE TABLE " + Etiqueta.TABLE_NAME + " " +
                 "(" +
                 Etiqueta._ID + " INTEGER PRIMARY KEY," +
                 Etiqueta.COLUMN_NAME_DESIGNACAO + TYPE_TEXT + " UNIQUE ON CONFLICT IGNORE)";
@@ -556,19 +611,29 @@ public class NoticiaProvider
         /**
          * SQL statement to drop "noticia" table.
          */
-        private static final String SQL_DELETE_NOTICIA             = "DROP TABLE IF EXISTS " + Noticia.TABLE_NAME;
+        private static final String SQL_DELETE_NOTICIA = "DROP TABLE IF EXISTS " + Noticia.TABLE_NAME;
         /**
          * SQL statement to drop "categoria" table.
          */
-        private static final String SQL_DELETE_CATEGORIA           = "DROP TABLE IF EXISTS " + Categoria.TABLE_NAME;
+        private static final String SQL_DELETE_CATEGORIA = "DROP TABLE IF EXISTS " + Categoria.TABLE_NAME;
         /**
          * SQL statement to drop "etiqueta" table.
          */
-        private static final String SQL_DELETE_ETIQUETA            = "DROP TABLE IF EXISTS " + Etiqueta.TABLE_NAME;
+        private static final String SQL_DELETE_ETIQUETA = "DROP TABLE IF EXISTS " + Etiqueta.TABLE_NAME;
         /**
          * SQL statement to drop "etiqueta" table.
          */
         private static final String SQL_DELETE_ETIQUETA_DA_NOTICIA = "DROP TABLE IF EXISTS " + EtiquetaDaNoticia.TABLE_NAME;
+
+        private static final String TRIGGER_SQL_DELETE_ETIQUETAS_DAS_NOTICIAS = "DELETE FROM " + EtiquetaDaNoticia.TABLE_NAME + " " +
+                "WHERE " + EtiquetaDaNoticia.COLUMN_NAME_NOTICIA + " = OLD." + BaseColumns._ID;
+
+        private static final String SQL_CREATE_TRIGGER_APAGAR_NOTICIA = "CREATE TRIGGER IF NOT EXISTS apagar_" + Noticia.TABLE_NAME_SINGULAR + " AFTER DELETE ON " + Noticia.TABLE_NAME + " FOR EACH ROW BEGIN " +
+                TRIGGER_SQL_DELETE_ETIQUETAS_DAS_NOTICIAS + "; END";
+
+        private static final String SQL_CREATE_TRIGGER_APAGAR_ETIQUETA = "CREATE TRIGGER IF NOT EXISTS apagar_" +
+                Etiqueta.TABLE_NAME_SINGULAR + " AFTER DELETE ON " + Etiqueta.TABLE_NAME + " FOR EACH ROW BEGIN " +
+                TRIGGER_SQL_DELETE_ETIQUETAS_DAS_NOTICIAS + "; END";
 
         public NoticiaDatabase(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -580,6 +645,8 @@ public class NoticiaProvider
             db.execSQL(SQL_CREATE_CATEGORIA);
             db.execSQL(SQL_CREATE_ETIQUETA);
             db.execSQL(SQL_CREATE_ETIQUETA_DA_NOTICIA);
+            db.execSQL(SQL_CREATE_TRIGGER_APAGAR_NOTICIA);
+            db.execSQL(SQL_CREATE_TRIGGER_APAGAR_ETIQUETA);
         }
 
         @Override
@@ -596,36 +663,36 @@ public class NoticiaProvider
         public static class Noticia
                 implements BaseColumns {
             public static final String TABLE_NAME_SINGULAR = "noticia";
-            public static final String TABLE_NAME_PLURAL   = "noticias";
+            public static final String TABLE_NAME_PLURAL = "noticias";
 
             /**
              * Nome da tabela onde são guardados os registos para os recursos do tipo "noticia".
              */
-            public static final String TABLE_NAME                         = Noticia.TABLE_NAME_SINGULAR;
+            public static final String TABLE_NAME = Noticia.TABLE_NAME_SINGULAR;
             /**
              * Identificação da notícia. (Nota: Não confundir com a chave primária da base de dados, que é _ID)
              */
-            public static final String COLUMN_NAME_ID_NOTICIA             = "id_noticia";
+            public static final String COLUMN_NAME_ID_NOTICIA = "id_noticia";
             /**
              * Título da notícia
              */
-            public static final String COLUMN_NAME_TITULO                 = "titulo";
+            public static final String COLUMN_NAME_TITULO = "titulo";
             /**
              * Subtítulo da notícia
              */
-            public static final String COLUMN_NAME_SUBTITULO              = "subtitulo";
+            public static final String COLUMN_NAME_SUBTITULO = "subtitulo";
             /**
              * Texto da notícia
              */
-            public static final String COLUMN_NAME_TEXTO                  = "texto";
+            public static final String COLUMN_NAME_TEXTO = "texto";
             /**
              * Endereço da notícia completa
              */
-            public static final String COLUMN_NAME_ENDERECO_NOTICIA       = "end_noticia";
+            public static final String COLUMN_NAME_ENDERECO_NOTICIA = "end_noticia";
             /**
              * Endereço da imagem da notícia
              */
-            public static final String COLUMN_NAME_ENDERECO_IMAGEM        = "end_img";
+            public static final String COLUMN_NAME_ENDERECO_IMAGEM = "end_img";
             /**
              * Endereço da imagem da notícia
              */
@@ -633,26 +700,26 @@ public class NoticiaProvider
             /**
              * Imagem a guardada
              */
-            public static final String COLUMN_NAME_IMAGEM                 = "imagem";
+            public static final String COLUMN_NAME_IMAGEM = "imagem";
             /**
              * Categoria a que a notícia pertence
              */
-            public static final String COLUMN_NAME_CATEGORIA              = "categoria";
+            public static final String COLUMN_NAME_CATEGORIA = "categoria";
             /**
              * Indicação de que a notícia está destacada no sítio de origem
              */
-            public static final String COLUMN_NAME_DESTACADA              = "destacada";
+            public static final String COLUMN_NAME_DESTACADA = "destacada";
         }
 
         public static class Categoria
                 implements BaseColumns {
             public static final String TABLE_NAME_SINGULAR = "categoria";
-            public static final String TABLE_NAME_PLURAL   = "categorias";
+            public static final String TABLE_NAME_PLURAL = "categorias";
 
             /**
              * Nome da tabela onde são guardados os registos para os recursos do tipo "categoria".
              */
-            public static final String TABLE_NAME             = Categoria.TABLE_NAME_SINGULAR;
+            public static final String TABLE_NAME = Categoria.TABLE_NAME_SINGULAR;
             /**
              * Designação da categoria
              */
@@ -662,12 +729,12 @@ public class NoticiaProvider
         public static class Etiqueta
                 implements BaseColumns {
             public static final String TABLE_NAME_SINGULAR = "etiqueta";
-            public static final String TABLE_NAME_PLURAL   = "etiquetas";
+            public static final String TABLE_NAME_PLURAL = "etiquetas";
 
             /**
              * Nome da tabela onde são guardados os registos para os recursos do tipo "etiqueta".
              */
-            public static final String TABLE_NAME             = Etiqueta.TABLE_NAME_SINGULAR;
+            public static final String TABLE_NAME = Etiqueta.TABLE_NAME_SINGULAR;
             /**
              * Designação da etiqueta
              */
@@ -677,12 +744,12 @@ public class NoticiaProvider
         public static class EtiquetaDaNoticia
                 implements BaseColumns {
             public static final String TABLE_NAME_SINGULAR = "etiqueta_da_noticia";
-            public static final String TABLE_NAME_PLURAL   = "etiquetas_das_noticias";
+            public static final String TABLE_NAME_PLURAL = "etiquetas_das_noticias";
 
             /**
              * Nome da tabela onde são guardados os registos para os recursos do tipo "etiqueta_noticia".
              */
-            public static final String TABLE_NAME           = "etiqueta_da_noticia";
+            public static final String TABLE_NAME = "etiqueta_da_noticia";
             /**
              * Etiqueta que liga
              */
@@ -690,7 +757,7 @@ public class NoticiaProvider
             /**
              * Noticia que liga
              */
-            public static final String COLUMN_NAME_NOTICIA  = "noticia";
+            public static final String COLUMN_NAME_NOTICIA = "noticia";
         }
     }
 }
