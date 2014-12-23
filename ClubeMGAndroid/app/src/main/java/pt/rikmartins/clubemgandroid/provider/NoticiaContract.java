@@ -9,15 +9,13 @@ import android.net.Uri;
 public class NoticiaContract {
     public static final String CONTENT_AUTHORITY = "pt.rikmartins.clubemg.clubemgandroid";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-    private static final String PATH_NOTICIA = Noticia.TABLE_NAME_SINGULAR; // TODO: Mudar isto de sítio
-    private static final String PATH_CATEGORIA = Categoria.TABLE_NAME_SINGULAR; // TODO: Mudar isto de sítio
-    private static final String PATH_ETIQUETA = Etiqueta.TABLE_NAME_SINGULAR; // TODO: Mudar isto de sítio
 
     private NoticiaContract() {
     }
 
     public static class Noticia
             extends NoticiaProvider.NoticiaDatabase.Noticia {
+        private static final String PATH_NOTICIA = TABLE_NAME_SINGULAR;
         /**
          * URI completo para recursos do tipo "noticia".
          */
@@ -42,6 +40,7 @@ public class NoticiaContract {
 
     public static class Categoria
             extends NoticiaProvider.NoticiaDatabase.Categoria {
+        private static final String PATH_CATEGORIA = TABLE_NAME_SINGULAR;
         /**
          * URI completo para recursos do tipo "categoria".
          */
@@ -60,6 +59,7 @@ public class NoticiaContract {
 
     public static class Etiqueta
             extends NoticiaProvider.NoticiaDatabase.Etiqueta {
+        private static final String PATH_ETIQUETA = TABLE_NAME_SINGULAR;
         /**
          * URI completo para recursos do tipo "etiqueta".
          */
