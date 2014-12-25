@@ -1,5 +1,6 @@
 package pt.rikmartins.clubemgandroid;
 
+import android.accounts.Account;
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
@@ -33,6 +34,8 @@ public class MainActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SyncUtils.CreateSyncAccount(this);
 
         setMainLayout(R.id.main_layout);
         mMainContainer = (FrameLayout) findViewById(R.id.main_container);
@@ -101,25 +104,25 @@ public class MainActivity
 
     }
 
-    public class AlgoLoader extends AsyncTaskLoader<SitioNoticiasClubeMG> {
-        private SitioNoticiasClubeMG sitioNoticiasClubeMG = null;
-
-        public AlgoLoader(Context context) {
-            super(context);
-        }
-
-        @Override
-        public SitioNoticiasClubeMG loadInBackground() {
-            sitioNoticiasClubeMG = new SitioNoticiasClubeMG();
-            sitioNoticiasClubeMG.actualizarNoticias();
-            return sitioNoticiasClubeMG;
-        }
-
-        @Override
-        protected void onStartLoading() {
-            if (sitioNoticiasClubeMG != null) {
-                deliverResult(sitioNoticiasClubeMG);
-            }
-        }
-    }
+//    public class AlgoLoader extends AsyncTaskLoader<SitioNoticiasClubeMG> {
+//        private SitioNoticiasClubeMG sitioNoticiasClubeMG = null;
+//
+//        public AlgoLoader(Context context) {
+//            super(context);
+//        }
+//
+//        @Override
+//        public SitioNoticiasClubeMG loadInBackground() {
+//            sitioNoticiasClubeMG = new SitioNoticiasClubeMG();
+//            sitioNoticiasClubeMG.actualizarNoticias();
+//            return sitioNoticiasClubeMG;
+//        }
+//
+//        @Override
+//        protected void onStartLoading() {
+//            if (sitioNoticiasClubeMG != null) {
+//                deliverResult(sitioNoticiasClubeMG);
+//            }
+//        }
+//    }
 }

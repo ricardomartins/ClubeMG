@@ -8,7 +8,7 @@
     android:paddingEnd="16dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/texto_categoria"
+              android:id="@+id/designacao_categoria"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:gravity="center_vertical"

@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import com.example.android.common.db.SelectionBuilder;
 
@@ -17,6 +18,8 @@ import java.util.Arrays;
 
 public class NoticiaProvider
         extends ContentProvider {
+    private static final String TAG = NoticiaProvider.class.getName();
+
     // The constants below represent individual URI routes, as IDs. Every URI pattern recognized by
     // this ContentProvider is defined using sUriMatcher.addURI(), and associated with one of these
     // IDs.
@@ -94,6 +97,7 @@ public class NoticiaProvider
             NoticiaDatabase.EtiquetaDaNoticia.COLUMN_NAME_ETIQUETA + "=" + NoticiaDatabase.Etiqueta.TABLE_NAME + "." + NoticiaDatabase.Etiqueta._ID + " LEFT JOIN " + NoticiaDatabase.Categoria.TABLE_NAME + " ON " + NoticiaDatabase.Noticia.TABLE_NAME + "." +
             NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA + "=" + NoticiaDatabase.Categoria.TABLE_NAME + "." +
             NoticiaDatabase.Etiqueta._ID;
+    private static final String NOTICIA_COLUMN_ID = NoticiaDatabase.Noticia.TABLE_NAME + "." + NoticiaDatabase.Noticia._ID;
     private static final String NOTICIA_COLUMN_ETIQUETAS = "GROUP_CONCAT(" +
             NoticiaDatabase.Etiqueta.TABLE_NAME + "." + NoticiaDatabase.Etiqueta.COLUMN_NAME_DESIGNACAO + ")";
     private static final String NOTICIA_COLUMN_CATEGORIA = NoticiaDatabase.Categoria.TABLE_NAME + "." +
@@ -160,31 +164,26 @@ public class NoticiaProvider
      */
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        SQLiteDatabase db = null;
         Cursor c;
-        try {
-            db = mDatabaseHelper.getReadableDatabase();
-            int uriMatch = sUriMatcher.match(uri);
+        SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
+        int uriMatch = sUriMatcher.match(uri);
 
-            switch (uriMatch) {
-                case ROUTE_NOTICIA_ID:
-                case ROUTE_NOTICIA:
-                case ROUTE_NOTICIA_CATEGORIA_ID:
-                    c = queryNoticiaQuery(db, uri, uriMatch, projection, selection, selectionArgs, sortOrder);
-                    break;
-                case ROUTE_CATEGORIA_ID:
-                case ROUTE_CATEGORIA:
-                    c = queryCategoriaQuery(db, uri, uriMatch, projection, selection, selectionArgs, sortOrder);
-                    break;
-                case ROUTE_ETIQUETA_ID:
-                case ROUTE_ETIQUETA:
-                    c = queryEtiquetaQuery(db, uri, uriMatch, projection, selection, selectionArgs, sortOrder);
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Unknown uri: " + uri);
-            }
-        } finally {
-            if (db != null) db.close();
+        switch (uriMatch) {
+            case ROUTE_NOTICIA_ID:
+            case ROUTE_NOTICIA:
+            case ROUTE_NOTICIA_CATEGORIA_ID:
+                c = queryNoticiaQuery(db, uri, uriMatch, projection, selection, selectionArgs, sortOrder);
+                break;
+            case ROUTE_CATEGORIA_ID:
+            case ROUTE_CATEGORIA:
+                c = queryCategoriaQuery(db, uri, uriMatch, projection, selection, selectionArgs, sortOrder);
+                break;
+            case ROUTE_ETIQUETA_ID:
+            case ROUTE_ETIQUETA:
+                c = queryEtiquetaQuery(db, uri, uriMatch, projection, selection, selectionArgs, sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
         Context ctx = getContext();
@@ -204,6 +203,8 @@ public class NoticiaProvider
 
         SelectionBuilder builder = new SelectionBuilder().table(NOTICIA_TABLE_JOIN);
 
+        // Desambiguar a coluna _ID
+        builder.map(NoticiaContract.Noticia._ID, NOTICIA_COLUMN_ID);
         // Obter as etiquetas duma notícia como uma lista separada por vírgulas
         builder.map(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS, NOTICIA_COLUMN_ETIQUETAS);
         // Obter a categoria da tabela categorias
@@ -228,6 +229,7 @@ public class NoticiaProvider
 
         builder.where(selection, selectionArgs);
 
+        Log.i(TAG, builder.getSelection());
         return builder.query(db, projection, NOTICIA_GROUP_BY, null, sortOrder, null);
     }
 
@@ -295,7 +297,7 @@ public class NoticiaProvider
         novaNoticia.remove(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS);
         novaNoticia.put(NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA, idCategoria);
 
-        return db.insertOrThrow(NoticiaDatabase.Noticia.TABLE_NAME, null, values);
+        return db.insertOrThrow(NoticiaDatabase.Noticia.TABLE_NAME, null, novaNoticia);
     }
 
     private ArrayList<Long> inserirEtiquetas(SQLiteDatabase db, String etiquetasNoticia) {
@@ -557,6 +559,7 @@ public class NoticiaProvider
      */
     static class NoticiaDatabase
             extends SQLiteOpenHelper {
+        private static final String TAG = NoticiaProvider.class.getName() + "." + NoticiaDatabase.class.getName();
         /**
          * Schema version.
          */
@@ -641,11 +644,17 @@ public class NoticiaProvider
 
         @Override
         public void onCreate(SQLiteDatabase db) {
+            Log.i(TAG, SQL_CREATE_NOTICIA);
             db.execSQL(SQL_CREATE_NOTICIA);
+            Log.i(TAG, SQL_CREATE_CATEGORIA);
             db.execSQL(SQL_CREATE_CATEGORIA);
+            Log.i(TAG, SQL_CREATE_ETIQUETA);
             db.execSQL(SQL_CREATE_ETIQUETA);
+            Log.i(TAG, SQL_CREATE_ETIQUETA_DA_NOTICIA);
             db.execSQL(SQL_CREATE_ETIQUETA_DA_NOTICIA);
+            Log.i(TAG, SQL_CREATE_TRIGGER_APAGAR_NOTICIA);
             db.execSQL(SQL_CREATE_TRIGGER_APAGAR_NOTICIA);
+            Log.i(TAG, SQL_CREATE_TRIGGER_APAGAR_ETIQUETA);
             db.execSQL(SQL_CREATE_TRIGGER_APAGAR_ETIQUETA);
         }
 

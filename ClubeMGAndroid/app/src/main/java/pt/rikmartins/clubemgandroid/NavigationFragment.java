@@ -1,27 +1,31 @@
 package pt.rikmartins.clubemgandroid;
 
+import android.app.Activity;
 import android.app.Fragment;
-import android.database.sqlite.SQLiteException;
+import android.content.ContentResolver;
+import android.content.CursorLoader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
-import java.util.List;
-
-import pt.rikmartins.clubemgandroid.modelos.Categoria;
-import pt.rikmartins.clubemgandroid.modelos.Etiqueta;
+import pt.rikmartins.clubemgandroid.provider.NoticiaContract;
+import pt.rikmartins.clubemgandroid.provider.NoticiaProvider;
 
 /**
  * Created by ricardo on 08-12-2014.
  */
 public class NavigationFragment
         extends Fragment {
+    private static final String TAG = NavigationFragment.class.getName();
+
     public static final String TIPO_ON_CLICK_CATEGORIA = "categoria";
 
     private LinearLayout mNavigationLinearLayout;
@@ -31,59 +35,35 @@ public class NavigationFragment
     private String[]     mEtiquetas;
     private CharSequence mNavigationTitle;
 
+    private Cursor mCursorCategorias;
+    private Cursor mCursorEtiquetas;
+
+    private static final String[] coiso_from = new String[]{
+            NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO
+    };
+    private static final int[] coiso_to = new int[]{
+            R.id.designacao_categoria
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-
-        List<Categoria> categorias = null;
-        try {
-            categorias = Categoria.listAll(Categoria.class);
-        } catch(SQLiteException e){
-            // TODO: Lidar com a inexistência de Categorias
-        }
-        if (categorias != null) {
-            mCategorias = new String[categorias.size()];
-
-            int i = 0;
-            for (Categoria categoria : categorias){
-                mCategorias[i] = categoria.designacao;
-                i++;
-            }
-        } else mCategorias = new String[]{"Montanha", "BTT"};
-
-        List<Etiqueta> etiquetas = null;
-        try {
-            etiquetas = Categoria.listAll(Etiqueta.class);
-        } catch(SQLiteException e){
-            // TODO: Lidar com a inexistência de Etiquetas
-        }
-        if (etiquetas != null) {
-            mEtiquetas = new String[etiquetas.size()];
-
-            int i = 0;
-            for (Etiqueta etiqueta : etiquetas){
-                mEtiquetas[i] = etiqueta.designacao;
-                i++;
-            }
-        } else mCategorias = new String[]{"Montanha", "BTT"};
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.v(TAG, "Creating view");
         mNavigationLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_navigation,
                 container, false);
         mCategoriasListView = (ListView) mNavigationLinearLayout.findViewById(
                 R.id.left_navigation_drawer_categorias_list);
-        mCategoriasListView.setAdapter(new ArrayAdapter<String>(getActivity(),
-                R.layout.drawer_list_item, R.id.texto_categoria,
-                mCategorias));
-
         mCategoriasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((MainActivity)getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, mCategorias[position]);
+                ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, mCategorias[position]);
             }
         });
         return mNavigationLinearLayout;
@@ -91,6 +71,18 @@ public class NavigationFragment
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        Log.v(TAG, "Activity created");
         super.onActivityCreated(savedInstanceState);
+
+        mCursorCategorias = new CursorLoader(getActivity(), NoticiaContract.Categoria.CONTENT_URI, NoticiaProvider.getCopyOfCategoriaDefaultProjection(), null, null, null).loadInBackground();
+        mCursorEtiquetas = new CursorLoader(getActivity(), NoticiaContract.Etiqueta.CONTENT_URI, NoticiaProvider.getCopyOfEtiquetaDefaultProjection(), null, null, null). loadInBackground();
+
+        mCategoriasListView.setAdapter(new SimpleCursorAdapter(getActivity(), R.layout.drawer_list_item, mCursorCategorias, coiso_from, coiso_to, 0));
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        Log.v(TAG, "Fragment attached to Activity");
+        super.onAttach(activity);
     }
 }
