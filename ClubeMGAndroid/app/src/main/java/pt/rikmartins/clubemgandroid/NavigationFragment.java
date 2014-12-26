@@ -2,7 +2,6 @@ package pt.rikmartins.clubemgandroid;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import pt.rikmartins.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.clubemgandroid.provider.NoticiaProvider;
@@ -63,7 +63,7 @@ public class NavigationFragment
         mCategoriasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, mCategorias[position]);
+                ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, (String)((TextView)((LinearLayout)view).findViewById(R.id.designacao_categoria)).getText() + String.valueOf(position) + String.valueOf(id));
             }
         });
         return mNavigationLinearLayout;
@@ -74,8 +74,8 @@ public class NavigationFragment
         Log.v(TAG, "Activity created");
         super.onActivityCreated(savedInstanceState);
 
-        mCursorCategorias = new CursorLoader(getActivity(), NoticiaContract.Categoria.CONTENT_URI, NoticiaProvider.getCopyOfCategoriaDefaultProjection(), null, null, null).loadInBackground();
-        mCursorEtiquetas = new CursorLoader(getActivity(), NoticiaContract.Etiqueta.CONTENT_URI, NoticiaProvider.getCopyOfEtiquetaDefaultProjection(), null, null, null). loadInBackground();
+        mCursorCategorias = new CursorLoader(getActivity(), NoticiaContract.Categoria.CONTENT_URI, NoticiaProvider.getCopyOfCategoriaDefaultProjection(), null, null, NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO).loadInBackground();
+        mCursorEtiquetas = new CursorLoader(getActivity(), NoticiaContract.Etiqueta.CONTENT_URI, NoticiaProvider.getCopyOfEtiquetaDefaultProjection(), null, null, NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO). loadInBackground();
 
         mCategoriasListView.setAdapter(new SimpleCursorAdapter(getActivity(), R.layout.drawer_list_item, mCursorCategorias, coiso_from, coiso_to, 0));
     }

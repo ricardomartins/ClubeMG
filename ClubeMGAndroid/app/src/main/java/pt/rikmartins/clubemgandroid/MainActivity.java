@@ -1,10 +1,6 @@
 package pt.rikmartins.clubemgandroid;
 
-import android.accounts.Account;
-import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
-import android.content.Context;
-import android.content.Loader;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -14,10 +10,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import pt.rikmartins.clubemg.utilitarios.noticias.SitioNoticiasClubeMG;
-
 public class MainActivity
-        extends ActionBarActivity implements LoaderManager.LoaderCallbacks<SitioNoticiasClubeMG> {
+        extends ActionBarActivity {
     private View               mMainLayout;
     private NavigationFragment mNavigationFragment;
     private Toolbar            mToolbar;
@@ -44,6 +38,9 @@ public class MainActivity
 
         if  (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT) onCreateWithDrawerLayout(savedInstanceState);
         else assert false; // TODO: Alterar isto
+
+        ListaNoticiasFragment listaNoticiasFragment = ListaNoticiasFragment.newInstance();
+        getFragmentManager().beginTransaction().add(R.id.main_container, listaNoticiasFragment).commit();
     }
 
     private void onCreateWithDrawerLayout(Bundle savedInstanceState){
@@ -87,21 +84,6 @@ public class MainActivity
                 // TODO: Alterar a lista de notícias visíveis
                 break;
         }
-    }
-
-    @Override
-    public Loader<SitioNoticiasClubeMG> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<SitioNoticiasClubeMG> loader, SitioNoticiasClubeMG data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<SitioNoticiasClubeMG> loader) {
-
     }
 
 //    public class AlgoLoader extends AsyncTaskLoader<SitioNoticiasClubeMG> {
