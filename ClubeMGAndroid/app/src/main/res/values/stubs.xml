@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="noticia_titulo_stb">Título</string>
+    <string name="noticia_subtitulo_stb">Subtítulo</string>
+    <string name="noticia_texto_stb">Texto</string>
+</resources>

@@ -7,6 +7,13 @@
     <color name="colorAccentLight" >#8c9eff</color>
     <color name="colorAccentDark" >#3d5afe</color>
 
+    <color name="colorTextLight">#deffffff</color>
+    <color name="colorTextDark">#de000000</color>
+    <color name="colorTextSecondaryLight">#8affffff</color>
+    <color name="colorTextSecondaryDark">#8a000000</color>
+    <color name="colorTextHintLight">#42ffffff</color>
+    <color name="colorTextHintDark">#42000000</color>
+
     <style name="AppTheme" parent="AppTheme.Base"/>
 
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
@@ -16,4 +23,18 @@
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
     </style>
+
+    <style name="TituloNoticia" parent="AppTheme">
+        <item name="android:textColor">@color/colorTextLight</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="SubtituloNoticia" parent="AppTheme">
+        <item name="android:textColor">@color/colorTextSecondaryLight</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="TextoNoticia" parent="AppTheme">
+        <item name="android:textColor">@color/colorTextSecondaryLight</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>
