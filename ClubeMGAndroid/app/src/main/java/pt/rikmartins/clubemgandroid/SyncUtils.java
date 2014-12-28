@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import pt.rikmartins.clubemgandroid.accounts.GenericAccountService;
 import pt.rikmartins.clubemgandroid.provider.NoticiaContract;
@@ -16,6 +17,7 @@ import pt.rikmartins.clubemgandroid.provider.NoticiaContract;
  * Static helper methods for working with the sync framework.
  */
 public class SyncUtils {
+    private static final String TAG = SyncUtils.class.getSimpleName();
     private static final long SYNC_FREQUENCY = 60 * 60;  // 1 hour (in seconds)
     private static final String CONTENT_AUTHORITY = NoticiaContract.CONTENT_AUTHORITY;
     private static final String PREF_SETUP_COMPLETE = "setup_complete";
@@ -29,6 +31,7 @@ public class SyncUtils {
      */
     @TargetApi(Build.VERSION_CODES.FROYO)
     public static void CreateSyncAccount(Context context) {
+        Log.i(TAG, "CreateSyncAccount");
         boolean newAccount = false;
         boolean setupComplete = PreferenceManager
                 .getDefaultSharedPreferences(context).getBoolean(PREF_SETUP_COMPLETE, false);

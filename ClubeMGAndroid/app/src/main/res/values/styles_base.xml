@@ -23,18 +23,4 @@
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
     </style>
-
-    <style name="TituloNoticia" parent="AppTheme">
-        <item name="android:textColor">@color/colorTextLight</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-    <style name="SubtituloNoticia" parent="AppTheme">
-        <item name="android:textColor">@color/colorTextSecondaryLight</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-    <style name="TextoNoticia" parent="AppTheme">
-        <item name="android:textColor">@color/colorTextSecondaryLight</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
 </resources>

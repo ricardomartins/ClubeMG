@@ -404,41 +404,36 @@ public class NoticiaProvider
      */
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        SQLiteDatabase db = null;
         Uri result;
-        try {
-            db = mDatabaseHelper.getWritableDatabase();
-            assert db != null;
-            final int match = sUriMatcher.match(uri);
-            switch (match) {
-                case ROUTE_NOTICIA:
-                    final long idCategoriaDaNoticia = inserirCategoria(db, values.getAsString(NoticiaContract.Noticia
-                            .COLUMN_NAME_CATEGORIA));
-                    final ArrayList<Long> idsEtiquetas = inserirEtiquetas(db, values.getAsString(
-                            NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS));
-                    final long idNoticia = inserirNoticia(db, values, idCategoriaDaNoticia);
-                    final ArrayList<Long> idsEtiquetasDasNoticias = inserirEtiquetasDasNoticias(db, idNoticia, idsEtiquetas);
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        assert db != null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case ROUTE_NOTICIA:
+                final long idCategoriaDaNoticia = inserirCategoria(db, values.getAsString(NoticiaContract.Noticia
+                        .COLUMN_NAME_CATEGORIA));
+                final ArrayList<Long> idsEtiquetas = inserirEtiquetas(db, values.getAsString(
+                        NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS));
+                final long idNoticia = inserirNoticia(db, values, idCategoriaDaNoticia);
+                final ArrayList<Long> idsEtiquetasDasNoticias = inserirEtiquetasDasNoticias(db, idNoticia, idsEtiquetas);
 
-                    result = Uri.parse(NoticiaContract.Noticia.CONTENT_URI + "/" + idNoticia);
-                    break;
-                case ROUTE_CATEGORIA:
-                    final long idCategoria = inserirCategoria(db, values);
-                    result = Uri.parse(NoticiaContract.Categoria.CONTENT_URI + "/" + idCategoria);
-                    break;
-                case ROUTE_ETIQUETA:
-                    final long idEtiqueta = inserirEtiqueta(db, values);
-                    result = Uri.parse(NoticiaContract.Etiqueta.CONTENT_URI + "/" + idEtiqueta);
-                    break;
-                case ROUTE_NOTICIA_ID:
-                case ROUTE_NOTICIA_CATEGORIA_ID:
-                case ROUTE_CATEGORIA_ID:
-                case ROUTE_ETIQUETA_ID:
-                    throw new UnsupportedOperationException("Insert not supported on URI: " + uri);
-                default:
-                    throw new UnsupportedOperationException("Unknown uri: " + uri);
-            }
-        } finally {
-            if (db != null) db.close();
+                result = Uri.parse(NoticiaContract.Noticia.CONTENT_URI + "/" + idNoticia);
+                break;
+            case ROUTE_CATEGORIA:
+                final long idCategoria = inserirCategoria(db, values);
+                result = Uri.parse(NoticiaContract.Categoria.CONTENT_URI + "/" + idCategoria);
+                break;
+            case ROUTE_ETIQUETA:
+                final long idEtiqueta = inserirEtiqueta(db, values);
+                result = Uri.parse(NoticiaContract.Etiqueta.CONTENT_URI + "/" + idEtiqueta);
+                break;
+            case ROUTE_NOTICIA_ID:
+            case ROUTE_NOTICIA_CATEGORIA_ID:
+            case ROUTE_CATEGORIA_ID:
+            case ROUTE_ETIQUETA_ID:
+                throw new UnsupportedOperationException("Insert not supported on URI: " + uri);
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         // Send broadcast to registered ContentObservers, to refresh UI.
         Context ctx = getContext();
@@ -452,41 +447,36 @@ public class NoticiaProvider
      */
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        SQLiteDatabase db = null;
         int count;
-        try {
-            SelectionBuilder builder = new SelectionBuilder().where(selection, selectionArgs);
-            db = mDatabaseHelper.getWritableDatabase();
-            assert db != null;
-            final int match = sUriMatcher.match(uri);
-            switch (match) {
-                case ROUTE_NOTICIA_ID:
-                    String idNoticia = uri.getLastPathSegment();
-                    builder.where(NoticiaDatabase.Noticia._ID + "=?", idNoticia);
-                case ROUTE_NOTICIA:
-                    builder.table(NoticiaDatabase.Noticia.TABLE_NAME);
-                    break;
-                case ROUTE_CATEGORIA_ID:
-                    String idCategoria = uri.getLastPathSegment();
-                    builder.where(NoticiaDatabase.Categoria._ID + "=?", idCategoria);
-                case ROUTE_CATEGORIA:
-                    builder.table(NoticiaDatabase.Categoria.TABLE_NAME);
-                    break;
-                case ROUTE_ETIQUETA_ID:
-                    String idEtiqueta = uri.getLastPathSegment();
-                    builder.where(NoticiaDatabase.Etiqueta._ID + "=?", idEtiqueta);
-                case ROUTE_ETIQUETA:
-                    builder.table(NoticiaDatabase.Etiqueta.TABLE_NAME);
-                    break;
-                case ROUTE_NOTICIA_CATEGORIA_ID:
-                    throw new UnsupportedOperationException("Delete not supported on URI: " + uri);
-                default:
-                    throw new UnsupportedOperationException("Unknown uri: " + uri);
-            }
-            count = builder.delete(db);
-        } finally {
-            if (db != null) db.close();
+        SelectionBuilder builder = new SelectionBuilder().where(selection, selectionArgs);
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        assert db != null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case ROUTE_NOTICIA_ID:
+                String idNoticia = uri.getLastPathSegment();
+                builder.where(NoticiaDatabase.Noticia._ID + "=?", idNoticia);
+            case ROUTE_NOTICIA:
+                builder.table(NoticiaDatabase.Noticia.TABLE_NAME);
+                break;
+            case ROUTE_CATEGORIA_ID:
+                String idCategoria = uri.getLastPathSegment();
+                builder.where(NoticiaDatabase.Categoria._ID + "=?", idCategoria);
+            case ROUTE_CATEGORIA:
+                builder.table(NoticiaDatabase.Categoria.TABLE_NAME);
+                break;
+            case ROUTE_ETIQUETA_ID:
+                String idEtiqueta = uri.getLastPathSegment();
+                builder.where(NoticiaDatabase.Etiqueta._ID + "=?", idEtiqueta);
+            case ROUTE_ETIQUETA:
+                builder.table(NoticiaDatabase.Etiqueta.TABLE_NAME);
+                break;
+            case ROUTE_NOTICIA_CATEGORIA_ID:
+                throw new UnsupportedOperationException("Delete not supported on URI: " + uri);
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+        count = builder.delete(db);
         // Send broadcast to registered ContentObservers, to refresh UI.
         Context ctx = getContext();
         assert ctx != null;
@@ -499,52 +489,47 @@ public class NoticiaProvider
      */
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        SQLiteDatabase db = null;
         int count;
-        try {
-            db = mDatabaseHelper.getWritableDatabase();
-            assert db != null;
-            final int match = sUriMatcher.match(uri);
-            SelectionBuilder builder = new SelectionBuilder().where(selection, selectionArgs);
-            ContentValues valoresFinais = new ContentValues(values);
-            switch (match) {
-                case ROUTE_NOTICIA_ID:
-                    String idNoticia = uri.getLastPathSegment();
-                    builder.where(NoticiaDatabase.Noticia._ID + "=?", idNoticia);
-                case ROUTE_NOTICIA:
-                    builder.table(NoticiaDatabase.Noticia.TABLE_NAME);
+        SQLiteDatabase db = mDatabaseHelper.getWritableDatabase();
+        assert db != null;
+        final int match = sUriMatcher.match(uri);
+        SelectionBuilder builder = new SelectionBuilder().where(selection, selectionArgs);
+        ContentValues valoresFinais = new ContentValues(values);
+        switch (match) {
+            case ROUTE_NOTICIA_ID:
+                String idNoticia = uri.getLastPathSegment();
+                builder.where(NoticiaDatabase.Noticia._ID + "=?", idNoticia);
+            case ROUTE_NOTICIA:
+                builder.table(NoticiaDatabase.Noticia.TABLE_NAME);
 
-                    if (valoresFinais.containsKey(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA)) {
-                        long idCategoria = inserirCategoria(db, valoresFinais.getAsString(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA));
-                        valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA, idCategoria);
-                    }
-                    if (values.containsKey(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS)) {
-                        // TODO: Implementar actualização das etiquetas de uma notícia
-                        throw new UnsupportedOperationException("Alterar etiquetas de uma notícia");
-                    }
-                    break;
-                case ROUTE_CATEGORIA_ID:
-                    String idCategoria = uri.getLastPathSegment();
-                    builder.where(NoticiaDatabase.Categoria._ID + "=?", idCategoria);
-                case ROUTE_CATEGORIA:
-                    builder.table(NoticiaDatabase.Categoria.TABLE_NAME);
-                    break;
-                case ROUTE_ETIQUETA_ID:
-                    String idEtiqueta = uri.getLastPathSegment();
-                    builder.where(NoticiaDatabase.Etiqueta._ID + "=?", idEtiqueta);
-                case ROUTE_ETIQUETA:
-                    builder.table(NoticiaDatabase.Etiqueta.TABLE_NAME);
-                    break;
-                case ROUTE_NOTICIA_CATEGORIA_ID:
-                    throw new UnsupportedOperationException("Delete not supported on URI: " + uri);
-                default:
-                    throw new UnsupportedOperationException("Unknown uri: " + uri);
-            }
-            count = builder.update(db, valoresFinais);
-
-        } finally {
-            if (db != null) db.close();
+                if (valoresFinais.containsKey(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA)) {
+                    long idCategoria = inserirCategoria(db, valoresFinais.getAsString(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA));
+                    valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA, idCategoria);
+                }
+                if (values.containsKey(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS)) {
+                    // TODO: Implementar actualização das etiquetas de uma notícia
+                    throw new UnsupportedOperationException("Alterar etiquetas de uma notícia");
+                }
+                break;
+            case ROUTE_CATEGORIA_ID:
+                String idCategoria = uri.getLastPathSegment();
+                builder.where(NoticiaDatabase.Categoria._ID + "=?", idCategoria);
+            case ROUTE_CATEGORIA:
+                builder.table(NoticiaDatabase.Categoria.TABLE_NAME);
+                break;
+            case ROUTE_ETIQUETA_ID:
+                String idEtiqueta = uri.getLastPathSegment();
+                builder.where(NoticiaDatabase.Etiqueta._ID + "=?", idEtiqueta);
+            case ROUTE_ETIQUETA:
+                builder.table(NoticiaDatabase.Etiqueta.TABLE_NAME);
+                break;
+            case ROUTE_NOTICIA_CATEGORIA_ID:
+                throw new UnsupportedOperationException("Delete not supported on URI: " + uri);
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+    count = builder.update(db, valoresFinais);
+
         Context ctx = getContext();
         assert ctx != null;
         ctx.getContentResolver().notifyChange(uri, null, false);
