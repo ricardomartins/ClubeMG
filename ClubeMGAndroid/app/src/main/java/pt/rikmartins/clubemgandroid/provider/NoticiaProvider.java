@@ -7,12 +7,16 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
 import com.example.android.common.db.SelectionBuilder;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -484,6 +488,14 @@ public class NoticiaProvider
         return count;
     }
 
+    private static final int LARGURA_IMAGEM_NORMAL = 480;
+    private static final int ALTURA_IMAGEM_NORMAL = 320;
+    private static final float RACIO_IMAGEM_NORMAL = ((float) LARGURA_IMAGEM_NORMAL) / ALTURA_IMAGEM_NORMAL;
+
+    private static final int LARGURA_IMAGEM_DESTACADA = 480;
+    private static final int ALTURA_IMAGEM_DESTACADA = 640;
+    private static final float RACIO_IMAGEM_DESTACADA = ((float) LARGURA_IMAGEM_DESTACADA) / ALTURA_IMAGEM_DESTACADA;
+
     /**
      * Update an entry in the database by URI.
      */
@@ -505,6 +517,37 @@ public class NoticiaProvider
                 if (valoresFinais.containsKey(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA)) {
                     long idCategoria = inserirCategoria(db, valoresFinais.getAsString(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA));
                     valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA, idCategoria);
+                }
+                if (valoresFinais.containsKey(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM)) {
+                    byte[] imagemDeEntrada = valoresFinais.getAsByteArray(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM);
+                    Bitmap btmOriginal = BitmapFactory.decodeByteArray(imagemDeEntrada, 0, imagemDeEntrada.length);
+                    int larguraOriginal = btmOriginal.getWidth();
+                    int alturaOriginal = btmOriginal.getHeight();
+                    float racioOriginal = ((float) larguraOriginal) / alturaOriginal;
+
+                    int larguraNova = larguraOriginal;
+                    int xNovo = 0;
+                    int alturaNova = alturaOriginal;
+                    int yNovo = 0;
+                    if (racioOriginal > RACIO_IMAGEM_NORMAL) {
+                        // Muito Larga
+                        larguraNova = (int) (alturaOriginal * RACIO_IMAGEM_NORMAL);
+                        xNovo = (larguraOriginal - larguraNova) / 2;
+                    } else if (racioOriginal < RACIO_IMAGEM_NORMAL) {
+                        // Muito Alta
+                        alturaNova = (int) (larguraOriginal / RACIO_IMAGEM_NORMAL);
+                        yNovo = (alturaOriginal - alturaNova) / 2;
+                    }
+
+                    float escalonamento = ((float) LARGURA_IMAGEM_NORMAL) / larguraNova;
+                    Matrix matrix = new Matrix();
+                    matrix.postScale(escalonamento, escalonamento);
+
+                    Bitmap btmRedimensionado = Bitmap.createBitmap(btmOriginal, xNovo, yNovo, larguraNova, alturaNova, matrix, true);
+                    ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+                    btmRedimensionado.compress(Bitmap.CompressFormat.JPEG, 5, byteArrayBitmapStream);
+                    byte[] imagemRedimensionada = byteArrayBitmapStream.toByteArray();
+                    valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_IMAGEM, imagemRedimensionada);
                 }
                 if (values.containsKey(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS)) {
                     // TODO: Implementar actualização das etiquetas de uma notícia
