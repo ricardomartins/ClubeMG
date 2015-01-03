@@ -221,7 +221,7 @@ public class ListaNoticiasFragment
                     return new AsyncTaskLoader<BitmapNoticia>(getActivity()) {
                         @Override
                         public BitmapNoticia loadInBackground() {
-
+                            Log.v(TAG, "loadInBackground do AsyncTaskLoader<BitmapNoticia>");
                             URLConnection con;
                             try {
                                 URL url = new URL(urlImagem);
@@ -245,6 +245,7 @@ public class ListaNoticiasFragment
 
         @Override
         public void onLoadFinished(Loader<BitmapNoticia> loader, BitmapNoticia data) {
+            Log.v(TAG, "onLoadFinished do ObtensorImagens");
             ContentValues valores = new ContentValues(1);
             valores.put(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM, data.imagemDaNoticia);
             int resultado = getActivity().getContentResolver().update(data.uriDaNoticia, valores, null, null);
