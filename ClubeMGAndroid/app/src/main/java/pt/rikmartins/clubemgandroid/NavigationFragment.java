@@ -6,7 +6,6 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -18,8 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-
-import java.net.URI;
 
 import pt.rikmartins.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.clubemgandroid.provider.NoticiaProvider;
@@ -70,13 +67,6 @@ public class NavigationFragment
                 container, false);
         mCategoriasListView = (ListView) mNavigationLinearLayout.findViewById(
                 R.id.left_navigation_drawer_categorias_list);
-        mCategoriasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, (String)((TextView)((LinearLayout)view).findViewById(R.id.designacao_categoria)).getText() + String.valueOf(position) + String.valueOf(id));
-            }
-        });
-
         getLoaderManager().initLoader(URL_LOADER_CATEGORIAS, null, this);
 
         return mNavigationLinearLayout;
@@ -91,7 +81,27 @@ public class NavigationFragment
         mCursorEtiquetas = new CursorLoader(getActivity(), NoticiaContract.Etiqueta.CONTENT_URI, NoticiaProvider.getCopyOfEtiquetaDefaultProjection(), null, null, NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO). loadInBackground();
 
         mCategoriasCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.drawer_list_item, null, coiso_from, coiso_to, 0);
+        mCategoriasCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (view instanceof TextView) {
+                    String categoriaOriginal = cursor.getString(columnIndex);
+                    String categoriaCapitalizada = categoriaOriginal.substring(0, 1).toUpperCase() + categoriaOriginal.substring(1);
+
+                    ((TextView) view).setText(categoriaCapitalizada);
+                }
+                return true;
+            }
+        });
         mCategoriasListView.setAdapter(mCategoriasCursorAdapter);
+
+        mCategoriasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, (String)((TextView)((LinearLayout)view).findViewById(R.id.designacao_categoria)).getText() + String.valueOf(position) + String.valueOf(id));
+            }
+        });
+
     }
 
     @Override
