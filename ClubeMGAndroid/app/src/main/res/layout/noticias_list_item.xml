@@ -19,8 +19,7 @@
         android:paddingRight="16dp"
         android:paddingBottom="20dp"
         android:paddingTop="16dp"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/gradiente">
+        android:layout_alignParentBottom="true" >
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/titulo_noticia"
             android:layout_width="wrap_content"

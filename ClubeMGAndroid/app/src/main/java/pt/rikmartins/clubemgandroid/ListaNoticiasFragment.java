@@ -34,6 +34,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.Random;
 
 import pt.rikmartins.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.clubemgandroid.provider.NoticiaProvider;
@@ -70,6 +71,9 @@ public class ListaNoticiasFragment
         return newInstance(null);
     }
 
+    private static int[] coresNoticias = null;
+    private static int tamanhoCoresNoticias = 0;
+
     public static ListaNoticiasFragment newInstance(@Nullable String categoria) {
         ListaNoticiasFragment myFragment = new ListaNoticiasFragment();
 
@@ -88,6 +92,17 @@ public class ListaNoticiasFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) mCategoria = getArguments().getString(ARG_NOME_CATEGORIA, null);
         else mCategoria = null;
+        if (coresNoticias == null) {
+            coresNoticias = getActivity().getResources().getIntArray(R.array.cores_noticias);
+            tamanhoCoresNoticias = coresNoticias.length;
+            Random random = new Random(tamanhoCoresNoticias * 2 + 1);
+            for (int i = 0; i < tamanhoCoresNoticias; i++) {
+                int n = random.nextInt(tamanhoCoresNoticias);
+                int tmp = coresNoticias[i];
+                coresNoticias[i] = coresNoticias[n];
+                coresNoticias[n] = tmp;
+            }
+        }
     }
 
     @Nullable
@@ -119,6 +134,7 @@ public class ListaNoticiasFragment
                         ByteArrayInputStream streamImagem = new ByteArrayInputStream(bytesImagem);
                         Bitmap aImagem = BitmapFactory.decodeStream(streamImagem);
                         ((ImageView) view).setImageBitmap(aImagem);
+                        ((ImageView) view).setColorFilter(coresNoticias[cursor.getInt(cursor.getColumnIndex(NoticiaContract.Noticia._ID)) % tamanhoCoresNoticias]);
                     }
                     return true;
                 }

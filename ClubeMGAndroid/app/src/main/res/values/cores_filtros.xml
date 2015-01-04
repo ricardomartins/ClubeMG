@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Todos os 900 que têm o texto a branco em: http://www.google.com/design/spec/style/color.html#color-color-palette -->
+    <array name="cores_noticias">
+        <item>#a0b71c1c</item>
+        <item>#a0880e4f</item>
+        <item>#a04a148c</item>
+        <item>#a0311b92</item>
+        <item>#a01a237e</item>
+        <item>#a00d47a1</item>
+        <item>#a001579b</item>
+        <item>#a0006064</item>
+        <item>#a0004d40</item>
+        <item>#a01b5e20</item>
+        <item>#a033691e</item>
+        <item>#a0827717</item>
+        <item>#a0e65100</item>
+        <item>#a0bf360c</item>
+        <item>#a03e2723</item>
+        <item>#a0212121</item>
+        <item>#a0263238</item>
+    </array>
+</resources>
