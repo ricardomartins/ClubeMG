@@ -217,7 +217,7 @@ public class NoticiaProvider
         switch (uriMatch) {
             case ROUTE_NOTICIA_ID:
                 // Devolver uma notícia, pelo ID.
-                builder.where(NoticiaContract.Noticia._ID + "=?", uri.getLastPathSegment());
+                builder.where(NoticiaContract.Noticia.TABLE_NAME + "." + NoticiaContract.Noticia._ID + "=?", uri.getLastPathSegment());
                 break;
             case ROUTE_NOTICIA:
                 // Devolver todas as notícias.
@@ -519,35 +519,7 @@ public class NoticiaProvider
                     valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA, idCategoria);
                 }
                 if (valoresFinais.containsKey(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM)) {
-                    byte[] imagemDeEntrada = valoresFinais.getAsByteArray(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM);
-                    Bitmap btmOriginal = BitmapFactory.decodeByteArray(imagemDeEntrada, 0, imagemDeEntrada.length);
-                    int larguraOriginal = btmOriginal.getWidth();
-                    int alturaOriginal = btmOriginal.getHeight();
-                    float racioOriginal = ((float) larguraOriginal) / alturaOriginal;
-
-                    int larguraNova = larguraOriginal;
-                    int xNovo = 0;
-                    int alturaNova = alturaOriginal;
-                    int yNovo = 0;
-                    if (racioOriginal > RACIO_IMAGEM_NORMAL) {
-                        // Muito Larga
-                        larguraNova = (int) (alturaOriginal * RACIO_IMAGEM_NORMAL);
-                        xNovo = (larguraOriginal - larguraNova) / 2;
-                    } else if (racioOriginal < RACIO_IMAGEM_NORMAL) {
-                        // Muito Alta
-                        alturaNova = (int) (larguraOriginal / RACIO_IMAGEM_NORMAL);
-                        yNovo = (alturaOriginal - alturaNova) / 2;
-                    }
-
-                    float escalonamento = ((float) LARGURA_IMAGEM_NORMAL) / larguraNova;
-                    Matrix matrix = new Matrix();
-                    matrix.postScale(escalonamento, escalonamento);
-
-                    Bitmap btmRedimensionado = Bitmap.createBitmap(btmOriginal, xNovo, yNovo, larguraNova, alturaNova, matrix, true);
-                    ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-                    btmRedimensionado.compress(Bitmap.CompressFormat.JPEG, 5, byteArrayBitmapStream);
-                    byte[] imagemRedimensionada = byteArrayBitmapStream.toByteArray();
-                    valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_IMAGEM, imagemRedimensionada);
+                    valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_IMAGEM, redimensionarImagem(valoresFinais.getAsByteArray(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM)));
                 }
                 if (values.containsKey(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS)) {
                     // TODO: Implementar actualização das etiquetas de uma notícia
@@ -577,6 +549,36 @@ public class NoticiaProvider
         assert ctx != null;
         ctx.getContentResolver().notifyChange(uri, null, false);
         return count;
+    }
+
+    private byte[] redimensionarImagem(byte[] imagemDeEntrada) {
+        Bitmap btmOriginal = BitmapFactory.decodeByteArray(imagemDeEntrada, 0, imagemDeEntrada.length);
+        int larguraOriginal = btmOriginal.getWidth();
+        int alturaOriginal = btmOriginal.getHeight();
+        float racioOriginal = ((float) larguraOriginal) / alturaOriginal;
+
+        int larguraNova = larguraOriginal;
+        int xNovo = 0;
+        int alturaNova = alturaOriginal;
+        int yNovo = 0;
+        if (racioOriginal > RACIO_IMAGEM_NORMAL) {
+            // Muito Larga
+            larguraNova = (int) (alturaOriginal * RACIO_IMAGEM_NORMAL);
+            xNovo = (larguraOriginal - larguraNova) / 2;
+        } else if (racioOriginal < RACIO_IMAGEM_NORMAL) {
+            // Muito Alta
+            alturaNova = (int) (larguraOriginal / RACIO_IMAGEM_NORMAL);
+            yNovo = (alturaOriginal - alturaNova) / 2;
+        }
+
+        float escalonamento = ((float) LARGURA_IMAGEM_NORMAL) / larguraNova;
+        Matrix matrix = new Matrix();
+        matrix.postScale(escalonamento, escalonamento);
+
+        Bitmap btmRedimensionado = Bitmap.createBitmap(btmOriginal, xNovo, yNovo, larguraNova, alturaNova, matrix, true);
+        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+        btmRedimensionado.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayBitmapStream);
+        return byteArrayBitmapStream.toByteArray();
     }
 
     /**
