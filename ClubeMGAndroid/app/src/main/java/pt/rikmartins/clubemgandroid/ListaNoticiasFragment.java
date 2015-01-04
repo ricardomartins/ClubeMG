@@ -122,12 +122,11 @@ public class ListaNoticiasFragment
                     byte[] bytesImagem = cursor.getBlob(columnIndex);
                     if (bytesImagem == null){
                         obterImagem(cursor.getString(cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE)), cursor.getInt(cursor.getColumnIndex(NoticiaContract.Noticia._ID)), (ImageView) view);
-                        return false;
+                    } else {
+                        ByteArrayInputStream streamImagem = new ByteArrayInputStream(bytesImagem);
+                        Bitmap aImagem = BitmapFactory.decodeStream(streamImagem);
+                        ((ImageView) view).setImageBitmap(aImagem);
                     }
-
-                    ByteArrayInputStream streamImagem = new ByteArrayInputStream(bytesImagem);
-                    Bitmap aImagem = BitmapFactory.decodeStream(streamImagem);
-                    ((ImageView) view).setImageBitmap(aImagem);
                     return true;
                 }
                 return false;
