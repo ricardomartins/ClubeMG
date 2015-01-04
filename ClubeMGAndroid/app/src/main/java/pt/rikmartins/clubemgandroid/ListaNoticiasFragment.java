@@ -6,10 +6,13 @@ import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.util.ByteArrayBuffer;
 
@@ -98,13 +102,6 @@ public class ListaNoticiasFragment
         Log.v(TAG, "Creating view");
         mNoticiasListView = (ListView) inflater.inflate(R.layout.fragment_lista_noticias,
                 container, false);
-        mNoticiasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, (String) ((TextView) ((LinearLayout) view).findViewById(R.id.designacao_categoria)).getText() + String.valueOf(position) + String.valueOf(id));
-            }
-        });
-
         getLoaderManager().initLoader(ID_LOADER_NOTICIAS, null, this);
 
         return mNoticiasListView;
@@ -137,6 +134,16 @@ public class ListaNoticiasFragment
             }
         });
         mNoticiasListView.setAdapter(mNoticiasCursorAdapter);
+        mNoticiasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursorNoticias = mNoticiasCursorAdapter.getCursor();
+                String enderecoNoticia = cursorNoticias.getString(cursorNoticias.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_NOTICIA));
+
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(enderecoNoticia));
+                getActivity().startActivity(i);
+            }
+        });
     }
 
     private void obterImagem(String urlImagem, int id, ImageView view) {
