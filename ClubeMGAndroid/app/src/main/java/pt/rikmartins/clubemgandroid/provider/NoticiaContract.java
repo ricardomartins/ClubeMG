@@ -22,6 +22,11 @@ public class NoticiaContract {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_NOTICIA)
                 .build();
         /**
+         * URI completo para recursos do tipo "noticia".
+         */
+        public static final Uri CONTENT_URI_CATEGORIA = CONTENT_URI.buildUpon().appendPath(Categoria.PATH_CATEGORIA)
+                .build();
+        /**
          * Etiquetas da notícia
          */
         public static final String COLUMN_NAME_ETIQUETAS = "etiquetas";

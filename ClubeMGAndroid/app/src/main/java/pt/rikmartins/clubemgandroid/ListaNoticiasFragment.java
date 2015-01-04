@@ -11,11 +11,10 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,11 +22,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.http.util.ByteArrayBuffer;
 
@@ -53,14 +49,9 @@ public class ListaNoticiasFragment
 
     private ListView mNoticiasListView;
 
-    private Cursor mNoticiasCursor;
-
     private NoticiasSimpleCursorAdapter mNoticiasCursorAdapter;
 
     private static final int ID_LOADER_NOTICIAS = 0;
-    private static final int ID_LOADER_IMAGEM_NOTICIA = 1;
-    private static final String LOADER_ARG_URL_IMAGEM = NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE;
-    private static final String LOADER_ARG_ID_NOTICIA = NoticiaContract.Noticia._ID;
 
     private static final String[] mNoticiasCursorAdapterFrom = new String[]{
             NoticiaContract.Noticia.COLUMN_NAME_TITULO,
@@ -72,6 +63,8 @@ public class ListaNoticiasFragment
             R.id.texto_noticia,
             R.id.imagem_noticia
     };
+
+    private String mCategoria = null;
 
     public static ListaNoticiasFragment newInstance() {
         return newInstance(null);
@@ -93,6 +86,8 @@ public class ListaNoticiasFragment
     public void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) mCategoria = getArguments().getString(ARG_NOME_CATEGORIA, null);
+        else mCategoria = null;
     }
 
     @Nullable
@@ -112,8 +107,6 @@ public class ListaNoticiasFragment
         Log.v(TAG, "Activity created");
         super.onActivityCreated(savedInstanceState);
 
-        mNoticiasCursor = new CursorLoader(getActivity(), NoticiaContract.Noticia.CONTENT_URI, NoticiaProvider.getCopyOfNoticiaDefaultProjection(), null, null, null).loadInBackground();
-
         mNoticiasCursorAdapter = new NoticiasSimpleCursorAdapter(getActivity(), R.layout.noticias_list_item, null, mNoticiasCursorAdapterFrom, mNoticiasCursorAdapterTo, 0);
         mNoticiasCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
@@ -121,7 +114,7 @@ public class ListaNoticiasFragment
                 if (view instanceof ImageView) {
                     byte[] bytesImagem = cursor.getBlob(columnIndex);
                     if (bytesImagem == null){
-                        obterImagem(cursor.getString(cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE)), cursor.getInt(cursor.getColumnIndex(NoticiaContract.Noticia._ID)), (ImageView) view);
+                        obterImagem(cursor.getString(cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE)), cursor.getInt(cursor.getColumnIndex(NoticiaContract.Noticia._ID)));
                     } else {
                         ByteArrayInputStream streamImagem = new ByteArrayInputStream(bytesImagem);
                         Bitmap aImagem = BitmapFactory.decodeStream(streamImagem);
@@ -145,20 +138,18 @@ public class ListaNoticiasFragment
         });
     }
 
-    private void obterImagem(String urlImagem, int id, ImageView view) {
-        new ObtensorImagens(getActivity(), view).execute(urlImagem, String.valueOf(id));
+    private void obterImagem(String urlImagem, int id) {
+        new ObtensorImagens(getActivity()).execute(urlImagem, String.valueOf(id));
     }
 
     private static class ObtensorImagens extends AsyncTask<String, Void, byte[]> {
         private final Context mContext;
-        private final ImageView mView;
 
         private static final String TAG = ObtensorImagens.class.getSimpleName();
 
-        private ObtensorImagens(Context context, ImageView view) {
+        private ObtensorImagens(Context context) {
             super();
             mContext = context;
-            mView = view;
         }
 
         private byte[] downloadImageAsByteArray(URL urlImagem){
@@ -209,7 +200,7 @@ public class ListaNoticiasFragment
         }
 
         @Override
-        public void bindView(View view, Context context, Cursor cursor) {
+        public void bindView(@NonNull View view, Context context, @NonNull Cursor cursor) {
             super.bindView(view, context, cursor);
         }
     }
@@ -225,14 +216,13 @@ public class ListaNoticiasFragment
         switch (id) {
             case ID_LOADER_NOTICIAS:
                 // Returns a new CursorLoader
-                return new CursorLoader(
-                        getActivity(),   // Parent activity context
-                        NoticiaContract.Noticia.CONTENT_URI,        // Table to query
-                        NoticiaProvider.getCopyOfNoticiaDefaultProjection(),     // Projection to return
-                        null,            // No selection clause
-                        null,            // No selection arguments
-                        null             // Default sort order
-                );
+                Uri uriNoticias;
+                if (mCategoria == null) uriNoticias = NoticiaContract.Noticia.CONTENT_URI;
+                else
+                    uriNoticias = NoticiaContract.Noticia.CONTENT_URI_CATEGORIA.buildUpon().appendPath(mCategoria).build();
+
+                return new CursorLoader(getActivity(), uriNoticias,
+                        NoticiaProvider.getCopyOfNoticiaDefaultProjection(), null, null, null);
             default:
                 // An invalid id was passed in
                 return null;
@@ -241,7 +231,7 @@ public class ListaNoticiasFragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mNoticiasCursorAdapter.changeCursor((Cursor) data);
+        mNoticiasCursorAdapter.changeCursor(data);
     }
 
     @Override

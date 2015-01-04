@@ -1,6 +1,5 @@
 package pt.rikmartins.clubemgandroid;
 
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -75,36 +74,13 @@ public class MainActivity
         return mToolbar;
     }
 
-    public void onNavigationEvent(String modo, String coisas){
-        Toast toast = Toast.makeText(this, modo + " " + coisas, Toast.LENGTH_SHORT); // TODO: A apagar
-        toast.show(); // TODO: A apagar
-
+    public void onNavigationEvent(String modo, String dados){
         switch(modo){
             case NavigationFragment.TIPO_ON_CLICK_CATEGORIA:
-                // TODO: Alterar a lista de notícias visíveis
+                getFragmentManager().beginTransaction().replace(R.id.main_container, ListaNoticiasFragment.newInstance(dados)).addToBackStack(null).commit();
+                if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT)
+                    ((DrawerLayout) mMainLayout).closeDrawers();
                 break;
         }
     }
-
-//    public class AlgoLoader extends AsyncTaskLoader<SitioNoticiasClubeMG> {
-//        private SitioNoticiasClubeMG sitioNoticiasClubeMG = null;
-//
-//        public AlgoLoader(Context context) {
-//            super(context);
-//        }
-//
-//        @Override
-//        public SitioNoticiasClubeMG loadInBackground() {
-//            sitioNoticiasClubeMG = new SitioNoticiasClubeMG();
-//            sitioNoticiasClubeMG.actualizarNoticias();
-//            return sitioNoticiasClubeMG;
-//        }
-//
-//        @Override
-//        protected void onStartLoading() {
-//            if (sitioNoticiasClubeMG != null) {
-//                deliverResult(sitioNoticiasClubeMG);
-//            }
-//        }
-//    }
 }

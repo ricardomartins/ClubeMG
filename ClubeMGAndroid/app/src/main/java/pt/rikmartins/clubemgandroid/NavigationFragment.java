@@ -26,19 +26,12 @@ import pt.rikmartins.clubemgandroid.provider.NoticiaProvider;
  */
 public class NavigationFragment
         extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = NavigationFragment.class.getName();
+    private static final String TAG = NavigationFragment.class.getSimpleName();
 
     public static final String TIPO_ON_CLICK_CATEGORIA = "categoria";
 
     private LinearLayout mNavigationLinearLayout;
     private ListView     mCategoriasListView;
-
-    private String[]     mCategorias;
-    private String[]     mEtiquetas;
-    private CharSequence mNavigationTitle;
-
-    private Cursor mCursorCategorias;
-    private Cursor mCursorEtiquetas;
 
     private SimpleCursorAdapter mCategoriasCursorAdapter;
 
@@ -77,9 +70,6 @@ public class NavigationFragment
         Log.v(TAG, "Activity created");
         super.onActivityCreated(savedInstanceState);
 
-        mCursorCategorias = new CursorLoader(getActivity(), NoticiaContract.Categoria.CONTENT_URI, NoticiaProvider.getCopyOfCategoriaDefaultProjection(), null, null, NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO).loadInBackground();
-        mCursorEtiquetas = new CursorLoader(getActivity(), NoticiaContract.Etiqueta.CONTENT_URI, NoticiaProvider.getCopyOfEtiquetaDefaultProjection(), null, null, NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO). loadInBackground();
-
         mCategoriasCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.drawer_list_item, null, coiso_from, coiso_to, 0);
         mCategoriasCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
@@ -98,7 +88,7 @@ public class NavigationFragment
         mCategoriasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, (String)((TextView)((LinearLayout)view).findViewById(R.id.designacao_categoria)).getText() + String.valueOf(position) + String.valueOf(id));
+                ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, String.valueOf(id));
             }
         });
 

@@ -70,14 +70,14 @@ public class NoticiaProvider
 
     static {
         sUriMatcher.addURI(AUTHORITY, "noticia", ROUTE_NOTICIA);
-        sUriMatcher.addURI(AUTHORITY, "noticia/*", ROUTE_NOTICIA_ID);
+        sUriMatcher.addURI(AUTHORITY, "noticia/#", ROUTE_NOTICIA_ID);
         sUriMatcher.addURI(AUTHORITY, "noticia/categoria/*", ROUTE_NOTICIA_CATEGORIA_ID);
 
         sUriMatcher.addURI(AUTHORITY, "categoria", ROUTE_CATEGORIA);
-        sUriMatcher.addURI(AUTHORITY, "categoria/*", ROUTE_CATEGORIA_ID);
+        sUriMatcher.addURI(AUTHORITY, "categoria/#", ROUTE_CATEGORIA_ID);
 
         sUriMatcher.addURI(AUTHORITY, "etiqueta", ROUTE_ETIQUETA);
-        sUriMatcher.addURI(AUTHORITY, "etiqueta/*", ROUTE_ETIQUETA_ID);
+        sUriMatcher.addURI(AUTHORITY, "etiqueta/#", ROUTE_ETIQUETA_ID);
     }
 
     private static final String[] NOTICIA_DEFAULT_PROJECTION = new String[]{
@@ -168,6 +168,7 @@ public class NoticiaProvider
      */
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        Log.v(TAG, "Query: " + uri.toString());
         Cursor c;
         SQLiteDatabase db = mDatabaseHelper.getReadableDatabase();
         int uriMatch = sUriMatcher.match(uri);
@@ -577,7 +578,7 @@ public class NoticiaProvider
 
         Bitmap btmRedimensionado = Bitmap.createBitmap(btmOriginal, xNovo, yNovo, larguraNova, alturaNova, matrix, true);
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-        btmRedimensionado.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayBitmapStream);
+        btmRedimensionado.compress(Bitmap.CompressFormat.JPEG, 35, byteArrayBitmapStream);
         return byteArrayBitmapStream.toByteArray();
     }
 
