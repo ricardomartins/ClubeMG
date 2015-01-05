@@ -5,6 +5,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -81,8 +82,17 @@ public class MainActivity
             case NavigationFragment.TIPO_ON_CLICK_CATEGORIA:
                 getFragmentManager().beginTransaction().replace(R.id.main_container, ListaNoticiasFragment.newInstance(dados)).addToBackStack(null).commit();
                 if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT)
-                    ((DrawerLayout) mMainLayout).closeDrawers();
+                    ((DrawerLayout) mMainLayout).closeDrawer(Gravity.START);
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT && ((DrawerLayout) mMainLayout).isDrawerOpen(Gravity.START)) {
+                ((DrawerLayout) mMainLayout).closeDrawer(Gravity.START);
+                return;
+            }
+        super.onBackPressed();
     }
 }
