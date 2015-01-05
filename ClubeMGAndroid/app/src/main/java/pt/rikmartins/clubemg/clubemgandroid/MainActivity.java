@@ -90,9 +90,13 @@ public class MainActivity
     @Override
     public void onBackPressed() {
         if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT && ((DrawerLayout) mMainLayout).isDrawerOpen(Gravity.START)) {
-                ((DrawerLayout) mMainLayout).closeDrawer(Gravity.START);
-                return;
-            }
+            ((DrawerLayout) mMainLayout).closeDrawer(Gravity.START);
+            return;
+        }
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+            return;
+        }
         super.onBackPressed();
     }
 }
