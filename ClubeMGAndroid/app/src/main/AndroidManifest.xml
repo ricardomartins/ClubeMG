@@ -40,7 +40,7 @@
             android:value="pt.rikmartins.clumemg" />
 
         <service
-            android:name=".SyncService"
+            android:name=".sync.SyncService"
             android:exported="true"
             android:process=":sync">
             <intent-filter>

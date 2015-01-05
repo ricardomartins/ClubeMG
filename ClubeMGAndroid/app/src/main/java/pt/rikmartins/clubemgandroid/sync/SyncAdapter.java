@@ -1,4 +1,4 @@
-package pt.rikmartins.clubemgandroid;
+package pt.rikmartins.clubemgandroid.sync;
 
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;

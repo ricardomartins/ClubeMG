@@ -7,7 +7,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.Toast;
+
+import pt.rikmartins.clubemgandroid.sync.SyncUtils;
 
 public class MainActivity
         extends ActionBarActivity {

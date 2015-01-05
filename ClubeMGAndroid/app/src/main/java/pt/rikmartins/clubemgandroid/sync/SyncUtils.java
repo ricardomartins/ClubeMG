@@ -1,4 +1,4 @@
-package pt.rikmartins.clubemgandroid;
+package pt.rikmartins.clubemgandroid.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -18,7 +18,7 @@ import pt.rikmartins.clubemgandroid.provider.NoticiaContract;
  */
 public class SyncUtils {
     private static final String TAG = SyncUtils.class.getSimpleName();
-    private static final long SYNC_FREQUENCY = 60 * 60;  // 1 hour (in seconds)
+    private static final long SYNC_FREQUENCY = 60 * 60 * 24;  // 1 dia (em segundos)
     private static final String CONTENT_AUTHORITY = NoticiaContract.CONTENT_AUTHORITY;
     private static final String PREF_SETUP_COMPLETE = "setup_complete";
     // Value below must match the account type specified in res/xml/syncadapter.xml
