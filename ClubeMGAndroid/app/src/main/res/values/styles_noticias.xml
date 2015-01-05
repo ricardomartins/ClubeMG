@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="TituloNoticia" parent="AppTheme">
-        <item name="android:textColor">@color/colorTextLight</item>
+        <item name="android:textColor">@color/colorTextDark</item>
         <item name="android:textSize">16sp</item>
     </style>
     <style name="SubtituloNoticia" parent="AppTheme">
-        <item name="android:textColor">@color/colorTextSecondaryLight</item>
+        <item name="android:textColor">@color/colorTextSecondaryDark</item>
         <item name="android:textSize">14sp</item>
     </style>
     <style name="TextoNoticia" parent="AppTheme">
-        <item name="android:textColor">@color/colorTextSecondaryLight</item>
+        <item name="android:textColor">@color/colorTextSecondaryDark</item>
         <item name="android:textSize">14sp</item>
     </style>
     <style name="ListaNoticias" parent="AppTheme">

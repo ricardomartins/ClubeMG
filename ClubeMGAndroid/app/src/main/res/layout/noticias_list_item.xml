@@ -6,7 +6,6 @@
         android:id="@+id/imagem_noticia"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/teste_300x200"
         android:adjustViewBounds="true"
         android:cropToPadding="false"
         android:focusable="false"
@@ -27,13 +26,6 @@
             android:gravity="center_vertical"
             android:text="@string/noticia_titulo_stb"
             style="@style/TituloNoticia" />
-        <!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"-->
-            <!--android:id="@+id/subtitulo_noticia"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:text="@string/noticia_subtitulo_stb"-->
-            <!--style="@style/SubtituloNoticia" />-->
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/texto_noticia"
             android:layout_width="wrap_content"
@@ -41,6 +33,5 @@
             android:gravity="center_vertical"
             android:text="@string/noticia_texto_stb"
             style="@style/TextoNoticia" />
-
     </LinearLayout>
 </RelativeLayout>

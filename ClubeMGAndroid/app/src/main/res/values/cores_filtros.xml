@@ -2,22 +2,24 @@
 <resources>
     <!-- Todos os 900 que têm o texto a branco em: http://www.google.com/design/spec/style/color.html#color-color-palette -->
     <array name="cores_noticias">
-        <item>#a0b71c1c</item>
-        <item>#a0880e4f</item>
-        <item>#a04a148c</item>
-        <item>#a0311b92</item>
-        <item>#a01a237e</item>
-        <item>#a00d47a1</item>
-        <item>#a001579b</item>
-        <item>#a0006064</item>
-        <item>#a0004d40</item>
-        <item>#a01b5e20</item>
-        <item>#a033691e</item>
-        <item>#a0827717</item>
-        <item>#a0e65100</item>
-        <item>#a0bf360c</item>
-        <item>#a03e2723</item>
-        <item>#a0212121</item>
-        <item>#a0263238</item>
+        <item>#a0ef9a9a</item>
+        <item>#a0f48fb1</item>
+        <item>#a0f3e5f5</item>
+        <item>#a0ede7f6</item>
+        <item>#a0e8eaf6</item>
+        <item>#a090caf9</item>
+        <item>#a081d4fa</item>
+        <item>#a080deea</item>
+        <item>#a080cbc4</item>
+        <item>#a0a5d6a7</item>
+        <item>#a08bc34a</item>
+        <item>#a0c0ca33</item>
+        <item>#a0fbc02d</item>
+        <item>#a0ffa000</item>
+        <item>#a0ff9800</item>
+        <item>#a0ffab91</item>
+        <item>#a0efebe9</item>
+        <item>#a0e0e0e0</item>
+        <item>#a0cfd8dc</item>
     </array>
 </resources>
