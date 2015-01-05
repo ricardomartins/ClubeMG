@@ -1,5 +1,6 @@
 package pt.rikmartins.clubemg.clubemgandroid;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -45,7 +46,8 @@ public class MainActivity
 
     private void onCreateWithDrawerLayout(Bundle savedInstanceState){
         mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
-        
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.colorTextLight));
+
         mNavigationDrawerToggle = new ActionBarDrawerToggle(this, (DrawerLayout) mMainLayout, mToolbar,
                                                             R.string.navigation_drawer_open,
                                                             R.string.navigation_drawer_close) {
@@ -68,7 +70,7 @@ public class MainActivity
     }
 
     private void setMainLayout(int id){
-        setMainLayout(findViewById(R.id.main_layout));
+        setMainLayout(findViewById(id));
     }
 
     public Toolbar getToolbar() {
