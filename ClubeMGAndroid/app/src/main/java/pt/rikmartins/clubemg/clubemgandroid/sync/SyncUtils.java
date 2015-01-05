@@ -1,4 +1,4 @@
-package pt.rikmartins.clubemgandroid.sync;
+package pt.rikmartins.clubemg.clubemgandroid.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import pt.rikmartins.clubemgandroid.accounts.GenericAccountService;
-import pt.rikmartins.clubemgandroid.provider.NoticiaContract;
+import pt.rikmartins.clubemg.clubemgandroid.accounts.GenericAccountService;
+import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 
 /**
  * Static helper methods for working with the sync framework.
@@ -22,7 +22,7 @@ public class SyncUtils {
     private static final String CONTENT_AUTHORITY = NoticiaContract.CONTENT_AUTHORITY;
     private static final String PREF_SETUP_COMPLETE = "setup_complete";
     // Value below must match the account type specified in res/xml/syncadapter.xml
-    public static final String ACCOUNT_TYPE = "pt.rikmartins.clubemgandroid.account";
+    public static final String ACCOUNT_TYPE = "pt.rikmartins.clubemg.clubemgandroid.account";
 
     /**
      * Create an entry for this application in the system account list, if it isn't already there.

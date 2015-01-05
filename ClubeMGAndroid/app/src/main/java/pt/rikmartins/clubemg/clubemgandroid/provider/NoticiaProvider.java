@@ -1,4 +1,4 @@
-package pt.rikmartins.clubemgandroid.provider;
+package pt.rikmartins.clubemg.clubemgandroid.provider;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

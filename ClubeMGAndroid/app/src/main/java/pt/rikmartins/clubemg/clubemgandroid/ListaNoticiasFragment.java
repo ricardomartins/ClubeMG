@@ -1,4 +1,4 @@
-package pt.rikmartins.clubemgandroid;
+package pt.rikmartins.clubemg.clubemgandroid;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -36,8 +36,8 @@ import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Random;
 
-import pt.rikmartins.clubemgandroid.provider.NoticiaContract;
-import pt.rikmartins.clubemgandroid.provider.NoticiaProvider;
+import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
+import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
 
 /**
  * Created by ricardo on 06-12-2014.

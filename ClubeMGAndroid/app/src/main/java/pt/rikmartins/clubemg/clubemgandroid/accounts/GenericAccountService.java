@@ -1,4 +1,4 @@
-package pt.rikmartins.clubemgandroid.accounts;
+package pt.rikmartins.clubemg.clubemgandroid.accounts;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;

@@ -6,7 +6,7 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "pt.rikmartins.clubemgandroid.MainActivity"/>
+        className = "pt.rikmartins.clubemg.clubemgandroid.MainActivity"/>
       <point      
         x = "480"      
         y = "160"/>

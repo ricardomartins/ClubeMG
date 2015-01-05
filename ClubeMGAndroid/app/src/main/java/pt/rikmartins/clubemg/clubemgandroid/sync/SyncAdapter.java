@@ -1,4 +1,4 @@
-package pt.rikmartins.clubemgandroid.sync;
+package pt.rikmartins.clubemg.clubemgandroid.sync;
 
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
@@ -15,12 +15,9 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import pt.rikmartins.clubemg.utilitarios.noticias.SitioNoticiasClubeMG;
-import pt.rikmartins.clubemgandroid.provider.NoticiaContract;
-import pt.rikmartins.clubemgandroid.provider.NoticiaProvider;
+import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.utilitarios.noticias.SitioNoticias;
 
 /**

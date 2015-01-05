@@ -1,4 +1,4 @@
-package pt.rikmartins.clubemgandroid;
+package pt.rikmartins.clubemg.clubemgandroid;
 
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import pt.rikmartins.clubemgandroid.sync.SyncUtils;
+import pt.rikmartins.clubemg.clubemgandroid.sync.SyncUtils;
 
 public class MainActivity
         extends ActionBarActivity {

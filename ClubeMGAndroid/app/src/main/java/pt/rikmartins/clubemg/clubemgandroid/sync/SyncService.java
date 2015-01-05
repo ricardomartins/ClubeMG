@@ -1,4 +1,4 @@
-package pt.rikmartins.clubemgandroid.sync;
+package pt.rikmartins.clubemg.clubemgandroid.sync;
 
 import android.app.Service;
 import android.content.Intent;

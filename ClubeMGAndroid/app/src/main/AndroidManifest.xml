@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="pt.rikmartins.clubemgandroid">
+    package="pt.rikmartins.clubemg.clubemgandroid">
 
     <!-- Required for fetching feed data. -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -51,7 +51,7 @@
                 android:resource="@xml/syncadapter" />
         </service>
 
-        <service android:name="pt.rikmartins.clubemgandroid.accounts.GenericAccountService">
+        <service android:name="pt.rikmartins.clubemg.clubemgandroid.accounts.GenericAccountService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>

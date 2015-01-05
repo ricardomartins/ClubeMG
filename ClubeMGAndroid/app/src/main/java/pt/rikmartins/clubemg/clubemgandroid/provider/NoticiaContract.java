@@ -1,4 +1,4 @@
-package pt.rikmartins.clubemgandroid.provider;
+package pt.rikmartins.clubemg.clubemgandroid.provider;
 
 import android.content.ContentResolver;
 import android.net.Uri;
