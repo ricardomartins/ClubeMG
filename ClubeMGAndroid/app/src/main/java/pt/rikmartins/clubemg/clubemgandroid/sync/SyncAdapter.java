@@ -1,21 +1,27 @@
 package pt.rikmartins.clubemg.clubemgandroid.sync;
 
 import android.accounts.Account;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+import pt.rikmartins.clubemg.clubemgandroid.MainActivity;
+import pt.rikmartins.clubemg.clubemgandroid.R;
 import pt.rikmartins.clubemg.utilitarios.noticias.SitioNoticiasClubeMG;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.utilitarios.noticias.SitioNoticias;
@@ -48,7 +54,7 @@ public class SyncAdapter
         Log.i(TAG, "Beginning network synchronization");
         try {
             SitioNoticiasClubeMG sitioNoticiasClubeMG = obterSitioNoticias();
-            actualizarNoticiasLocais(sitioNoticiasClubeMG, syncResult);
+            ArrayList<SitioNoticias.Noticia> noticiasInseridas = actualizarNoticiasLocais(sitioNoticiasClubeMG, syncResult);
         } catch (IOException e) {
             Log.e(TAG, "Error reading from network: " + e.toString());
             syncResult.stats.numIoExceptions++;
@@ -65,7 +71,7 @@ public class SyncAdapter
         Log.i(TAG, "Network synchronization complete");
     }
 
-    private void actualizarNoticiasLocais(final SitioNoticiasClubeMG sitioNoticiasClubeMG, final SyncResult syncResult) throws RemoteException, OperationApplicationException {
+    private ArrayList<SitioNoticias.Noticia> actualizarNoticiasLocais(final SitioNoticiasClubeMG sitioNoticiasClubeMG, final SyncResult syncResult) throws RemoteException, OperationApplicationException {
         Cursor cursorNoticias = mContentResolver.query(NoticiaContract.Noticia.CONTENT_URI, null, null, null, null);
         Cursor cursorCategorias = mContentResolver.query(NoticiaContract.Categoria.CONTENT_URI, null, null, null, null);
         Cursor cursorEtiquetas = mContentResolver.query(NoticiaContract.Etiqueta.CONTENT_URI, null, null, null, null);
@@ -143,6 +149,7 @@ public class SyncAdapter
         syncResult.stats.numInserts = syncResult.stats.numEntries = noticiasAInserir.size() + categoriasAInserir.size() + etiquetasAInserir.size();
 
         mContentResolver.applyBatch(NoticiaContract.CONTENT_AUTHORITY, lote);
+        return noticiasAInserir;
     }
 
     private SitioNoticiasClubeMG obterSitioNoticias() throws IOException {
@@ -152,5 +159,30 @@ public class SyncAdapter
         Log.i(TAG, "Parsing complete.");
 
         return sitioNoticiasClubeMG;
+    }
+
+    public static class Notificacao {
+        public static void notificar(Context context, CharSequence titulo, CharSequence texto, CharSequence previsao, int iconPequeno){
+            Log.i(TAG, "A preparar notificação");
+
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(context)
+                            .setDefaults(NotificationCompat.DEFAULT_ALL)
+                            .setShowWhen(false)
+                            .setOnlyAlertOnce(true)
+                            .setSmallIcon(iconPequeno)
+                            .setContentTitle(titulo)
+                            .setContentText(texto)
+                            .setPriority(NotificationCompat.PRIORITY_MIN)
+                            .setTicker(previsao)
+                            .setContentIntent(
+                                    PendingIntent.getActivity(context, 0,
+                                            new Intent(context, MainActivity.class),
+                                            PendingIntent.FLAG_UPDATE_CURRENT))
+                            .setAutoCancel(true);
+
+            Log.i(TAG, "A notificar");
+            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, mBuilder.build());
+        }
     }
 }
