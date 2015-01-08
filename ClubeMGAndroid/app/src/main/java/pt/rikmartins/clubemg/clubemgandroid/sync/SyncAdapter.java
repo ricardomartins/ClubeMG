@@ -52,9 +52,10 @@ public class SyncAdapter
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider,
                               SyncResult syncResult) {
         Log.i(TAG, "Beginning network synchronization");
+        ArrayList<SitioNoticias.Noticia> noticiasInseridas = null;
         try {
             SitioNoticiasClubeMG sitioNoticiasClubeMG = obterSitioNoticias();
-            ArrayList<SitioNoticias.Noticia> noticiasInseridas = actualizarNoticiasLocais(sitioNoticiasClubeMG, syncResult);
+            noticiasInseridas = actualizarNoticiasLocais(sitioNoticiasClubeMG, syncResult);
         } catch (IOException e) {
             Log.e(TAG, "Error reading from network: " + e.toString());
             syncResult.stats.numIoExceptions++;
@@ -69,6 +70,10 @@ public class SyncAdapter
             return;
         }
         Log.i(TAG, "Network synchronization complete");
+        if (noticiasInseridas.size() > 0) {
+            SitioNoticias.Noticia noticia = noticiasInseridas.get(0);
+            SyncAdapter.Notificacao.notificar(getContext(), noticia.getTitulo(), noticia.getTexto(), "Uma nova notícia", R.drawable.ic_notification);
+        }
     }
 
     private ArrayList<SitioNoticias.Noticia> actualizarNoticiasLocais(final SitioNoticiasClubeMG sitioNoticiasClubeMG, final SyncResult syncResult) throws RemoteException, OperationApplicationException {

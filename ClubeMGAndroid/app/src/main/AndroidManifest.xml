@@ -11,6 +11,8 @@
     <!-- Required because we're manually creating a new account. -->
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"

@@ -49,7 +49,6 @@ public class MainActivity
 
         ListaNoticiasFragment listaNoticiasFragment = ListaNoticiasFragment.newInstance();
         getFragmentManager().beginTransaction().add(R.id.main_container, listaNoticiasFragment).commit();
-
     }
 
     private void onCreateWithDrawerLayout(Bundle savedInstanceState){
