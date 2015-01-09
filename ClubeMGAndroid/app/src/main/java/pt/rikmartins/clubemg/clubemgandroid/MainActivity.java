@@ -91,6 +91,11 @@ public class MainActivity
                 if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT)
                     ((DrawerLayout) mMainLayout).closeDrawer(Gravity.START);
                 break;
+            case NavigationFragment.TIPO_ON_CLICK_NOTICIAS:
+                getFragmentManager().beginTransaction().replace(R.id.main_container, ListaNoticiasFragment.newInstance()).addToBackStack(null).commit();
+                if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT)
+                    ((DrawerLayout) mMainLayout).closeDrawer(Gravity.START);
+                break;
         }
     }
 
