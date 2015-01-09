@@ -1,19 +1,14 @@
 package pt.rikmartins.clubemg.clubemgandroid;
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import pt.rikmartins.clubemg.clubemgandroid.sync.SyncAdapter;
 import pt.rikmartins.clubemg.clubemgandroid.sync.SyncUtils;
 
 public class MainActivity
@@ -87,28 +82,27 @@ public class MainActivity
     public void onNavigationEvent(String modo, String dados){
         switch(modo){
             case NavigationFragment.TIPO_ON_CLICK_CATEGORIA:
-                getFragmentManager().beginTransaction().replace(R.id.main_container, ListaNoticiasFragment.newInstance(dados)).addToBackStack(null).commit();
-                if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT)
-                    ((DrawerLayout) mMainLayout).closeDrawer(Gravity.START);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.main_container, ListaNoticiasFragment.newInstance(dados))
+                        .commit();
                 break;
             case NavigationFragment.TIPO_ON_CLICK_NOTICIAS:
-                getFragmentManager().beginTransaction().replace(R.id.main_container, ListaNoticiasFragment.newInstance()).addToBackStack(null).commit();
-                if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT)
-                    ((DrawerLayout) mMainLayout).closeDrawer(Gravity.START);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.main_container, ListaNoticiasFragment.newInstance())
+                        .commit();
                 break;
         }
+        if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT)
+            ((DrawerLayout) mMainLayout).closeDrawer(Gravity.START);
     }
 
     @Override
     public void onBackPressed() {
-        if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT && ((DrawerLayout) mMainLayout).isDrawerOpen(Gravity.START)) {
+        if ((mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT) && ((DrawerLayout) mMainLayout).isDrawerOpen(Gravity.START))
             ((DrawerLayout) mMainLayout).closeDrawer(Gravity.START);
-            return;
-        }
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
-            return;
-        }
-        super.onBackPressed();
+//        // Comentado por presentemente não haver registo de back stack
+//        else if (getFragmentManager().getBackStackEntryCount() > 0)
+//            getFragmentManager().popBackStack();
+        else super.onBackPressed();
     }
 }
