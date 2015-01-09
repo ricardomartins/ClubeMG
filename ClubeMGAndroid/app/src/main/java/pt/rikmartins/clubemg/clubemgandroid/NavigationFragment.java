@@ -13,10 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+
+import com.commonsware.cwac.merge.MergeAdapter;
 
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
@@ -28,22 +31,23 @@ public class NavigationFragment
         extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = NavigationFragment.class.getSimpleName();
 
+    public static final String TIPO_ON_CLICK_NOTICIAS = "noticias";
     public static final String TIPO_ON_CLICK_CATEGORIA = "categoria";
 
     private LinearLayout mNavigationLinearLayout;
     private ListView     mCategoriasListView;
 
-    private SimpleCursorAdapter mCategoriasCursorAdapter;
+    private MergeAdapter mNavigationMergeAdapter;
 
     private static final int URL_LOADER_CATEGORIAS = 10;
-    private static final int URL_LOADER_ETIQUETAS = 20;
 
     private static final String[] coiso_from = new String[]{
             NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO
     };
     private static final int[] coiso_to = new int[]{
-            R.id.designacao_categoria
+            R.id.item_navegacao
     };
+    private SimpleCursorAdapter mCategoriasCursorAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,11 @@ public class NavigationFragment
         Log.v(TAG, "Activity created");
         super.onActivityCreated(savedInstanceState);
 
+        mNavigationMergeAdapter = new MergeAdapter();
+
+        ArrayAdapter<String> noticiaAdapter = new ArrayAdapter<String>(getActivity(), R.layout.drawer_list_item, R.id.item_navegacao, new String[]{"Notícias"});
+        mNavigationMergeAdapter.addAdapter(noticiaAdapter);
+
         mCategoriasCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.drawer_list_item, null, coiso_from, coiso_to, 0);
         mCategoriasCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
@@ -83,15 +92,17 @@ public class NavigationFragment
                 return true;
             }
         });
-        mCategoriasListView.setAdapter(mCategoriasCursorAdapter);
+        mNavigationMergeAdapter.addAdapter(mCategoriasCursorAdapter);
+
+        mCategoriasListView.setAdapter(mNavigationMergeAdapter);
 
         mCategoriasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, String.valueOf(id));
+                if (position == 0) ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_NOTICIAS, null);
+                else ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, String.valueOf(id));
             }
         });
-
     }
 
     @Override
@@ -109,16 +120,6 @@ public class NavigationFragment
                         getActivity(),   // Parent activity context
                         NoticiaContract.Categoria.CONTENT_URI,        // Table to query
                         NoticiaProvider.getCopyOfCategoriaDefaultProjection(),     // Projection to return
-                        null,            // No selection clause
-                        null,            // No selection arguments
-                        null             // Default sort order
-                );
-            case URL_LOADER_ETIQUETAS:
-                // Returns a new CursorLoader
-                return new CursorLoader(
-                        getActivity(),   // Parent activity context
-                        NoticiaContract.Etiqueta.CONTENT_URI,        // Table to query
-                        NoticiaProvider.getCopyOfEtiquetaDefaultProjection(),     // Projection to return
                         null,            // No selection clause
                         null,            // No selection arguments
                         null             // Default sort order
