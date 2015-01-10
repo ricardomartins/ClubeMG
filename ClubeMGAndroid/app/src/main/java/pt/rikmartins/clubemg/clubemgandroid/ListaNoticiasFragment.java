@@ -3,7 +3,6 @@ package pt.rikmartins.clubemg.clubemgandroid;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,15 +23,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import org.apache.http.util.ByteArrayBuffer;
-
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Arrays;
 import java.util.Random;
 
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
@@ -155,58 +145,7 @@ public class ListaNoticiasFragment
     }
 
     private void obterImagem(String urlImagem, int id) {
-        new ObtensorImagens(getActivity()).execute(urlImagem, String.valueOf(id));
-    }
-
-    private static class ObtensorImagens extends AsyncTask<String, Void, byte[]> {
-        private final Context mContext;
-
-        private static final String TAG = ObtensorImagens.class.getSimpleName();
-
-        private ObtensorImagens(Context context) {
-            super();
-            mContext = context;
-        }
-
-        private byte[] downloadImageAsByteArray(URL urlImagem){
-
-            Log.v(TAG, "downloadImageAsByteArray: " + urlImagem);
-            URLConnection con;
-            try {
-                con = urlImagem.openConnection();
-                BufferedInputStream bis = new BufferedInputStream(con.getInputStream());
-                ByteArrayBuffer baf = new ByteArrayBuffer(50);
-                int current;
-                while ((current = bis.read()) != -1) baf.append((byte) current);
-
-                return baf.toByteArray();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        private int saveImageToDatabase(byte[] ba, Uri uriDaNoticia) {
-            Log.v(TAG, "saveImageToDatabase: " + uriDaNoticia);
-            ContentValues valores = new ContentValues(1);
-            valores.put(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM, ba);
-            return mContext.getContentResolver().update(uriDaNoticia, valores, null, null);
-        }
-
-        @Override
-        protected byte[] doInBackground(String... params) {
-            Log.v(TAG, "doInBackground: " + Arrays.toString(params));
-            try {
-                byte[] ba = downloadImageAsByteArray(new URL(params[0]));
-                int resUpdate = saveImageToDatabase(ba, NoticiaContract.Noticia.CONTENT_URI.buildUpon().appendPath(params[1]).build());
-                return ba;
-            } catch (MalformedURLException e) {
-                return null;
-            } catch (NumberFormatException e) {
-                return null;
-            }
-        }
-
+        ObtensorImagens.obterImagem(getActivity(), urlImagem, String.valueOf(id));
     }
 
     class NoticiasSimpleCursorAdapter extends SimpleCursorAdapter {
