@@ -231,16 +231,15 @@ public class ListaNoticiasFragment
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
             case ID_LOADER_NOTICIAS:
-                // Returns a new CursorLoader
                 Uri uriNoticias;
                 if (mCategoria == null) uriNoticias = NoticiaContract.Noticia.CONTENT_URI;
                 else
                     uriNoticias = NoticiaContract.Noticia.CONTENT_URI_CATEGORIA.buildUpon().appendPath(mCategoria).build();
 
                 return new CursorLoader(getActivity(), uriNoticias,
-                        NoticiaProvider.getCopyOfNoticiaDefaultProjection(), null, null, null);
+                        NoticiaProvider.getCopyOfNoticiaDefaultProjection(), null, null, NoticiaContract.Noticia.COLUMN_NAME_ID_NOTICIA + " DESC");
             default:
-                // An invalid id was passed in
+                // id inválido
                 return null;
         }
     }

@@ -520,7 +520,8 @@ public class NoticiaProvider
                     valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA, idCategoria);
                 }
                 if (valoresFinais.containsKey(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM)) {
-                    valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_IMAGEM, redimensionarImagem(valoresFinais.getAsByteArray(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM)));
+                    byte[] imagem = redimensionarImagem(valoresFinais.getAsByteArray(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM));
+                    valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_IMAGEM, imagem);
                 }
                 if (values.containsKey(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS)) {
                     // TODO: Implementar actualização das etiquetas de uma notícia
@@ -554,8 +555,11 @@ public class NoticiaProvider
 
     private byte[] redimensionarImagem(byte[] imagemDeEntrada) {
         Bitmap btmOriginal = BitmapFactory.decodeByteArray(imagemDeEntrada, 0, imagemDeEntrada.length);
+
         int larguraOriginal = btmOriginal.getWidth();
         int alturaOriginal = btmOriginal.getHeight();
+        if (larguraOriginal < 64 || alturaOriginal < 64) return null;
+
         float racioOriginal = ((float) larguraOriginal) / alturaOriginal;
 
         int larguraNova = larguraOriginal;
