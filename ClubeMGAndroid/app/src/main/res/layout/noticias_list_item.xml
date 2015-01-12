@@ -10,6 +10,7 @@
         android:cropToPadding="false"
         android:focusable="false"
         android:scaleType="centerCrop" />
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -17,8 +18,12 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingBottom="20dp"
-        android:paddingTop="16dp"
-        android:layout_alignParentBottom="true" >
+        android:paddingTop="@dimen/tamanho_margem_superior_texto"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="false"
+        android:background="@drawable/gradiente_noticia"
+        android:id="@+id/linearLayout" >
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/titulo_noticia"
             android:layout_width="wrap_content"
