@@ -33,6 +33,7 @@ public class NavigationFragment
 
     public static final String TIPO_ON_CLICK_NOTICIAS = "noticias";
     public static final String TIPO_ON_CLICK_CATEGORIA = "categoria";
+    public static final String TIPO_ON_CLICK_DEFINICOES = "definicoes";
 
     private LinearLayout mNavigationLinearLayout;
     private ListView     mCategoriasListView;
@@ -76,8 +77,8 @@ public class NavigationFragment
 
         mNavigationMergeAdapter = new MergeAdapter();
 
-        ArrayAdapter<String> noticiaAdapter = new ArrayAdapter<String>(getActivity(), R.layout.drawer_list_item, R.id.item_navegacao, new String[]{"Notícias"});
-        mNavigationMergeAdapter.addAdapter(noticiaAdapter);
+        ArrayAdapter<String> semFiltroAdapter = new ArrayAdapter<>(getActivity(), R.layout.drawer_list_item, R.id.item_navegacao, new String[]{"Notícias"});
+        mNavigationMergeAdapter.addAdapter(semFiltroAdapter);
 
         mCategoriasCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.drawer_list_item, null, coiso_from, coiso_to, 0);
         mCategoriasCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
@@ -94,12 +95,16 @@ public class NavigationFragment
         });
         mNavigationMergeAdapter.addAdapter(mCategoriasCursorAdapter);
 
+        ArrayAdapter<String> definicoesAdapter = new ArrayAdapter<>(getActivity(), R.layout.drawer_list_item, R.id.item_navegacao, new String[]{"Definições"});
+        mNavigationMergeAdapter.addAdapter(definicoesAdapter);
+
         mCategoriasListView.setAdapter(mNavigationMergeAdapter);
 
         mCategoriasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_NOTICIAS, null);
+                else if (position == (((ListView)parent).getCount() - 1)) ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_DEFINICOES, null);
                 else ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, String.valueOf(id));
             }
         });

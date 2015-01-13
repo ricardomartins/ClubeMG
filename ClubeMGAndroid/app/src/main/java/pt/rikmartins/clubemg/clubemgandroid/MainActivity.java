@@ -1,5 +1,6 @@
 package pt.rikmartins.clubemg.clubemgandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -90,6 +91,10 @@ public class MainActivity
                 getFragmentManager().beginTransaction()
                         .replace(R.id.main_container, ListaNoticiasFragment.newInstance())
                         .commit();
+                break;
+            case NavigationFragment.TIPO_ON_CLICK_DEFINICOES:
+                Intent intent = new Intent(this, DefinicoesActivity.class);
+                startActivity(intent);
                 break;
         }
         if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT)
