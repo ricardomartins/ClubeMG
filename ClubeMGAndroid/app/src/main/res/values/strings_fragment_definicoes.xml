@@ -4,8 +4,6 @@
     <!-- Dados e sincronização -->
     <string name="pref_header_dados_sinc">Dados e sincronização</string>
 
-
-
     <string name="pref_titulo_freq_sinc">Frequência de sincronização</string>
     <string name="pref_key_freq_sinc">frequencia_sinc</string>
     <string-array name="pref_freq_sinc_titulos">
@@ -22,12 +20,15 @@
     </string-array>
 
     <!-- Notificações -->
-    <string name="pref_header_notificacoes">Notificações</string>
+    <string name="pref_header_notificacoes" >Notificações</string>
 
     <string name="pref_titulo_notificacoes_novas_noticias">Notificações de novas notícias</string>
+    <string name="pref_key_notificacoes_novas_noticias">notificacoes_novas_noticias</string>
 
     <string name="pref_titulo_som_notificacao">Som de notificação</string>
+    <string name="pref_key_notificacoes_som">notificacoes_som</string>
     <string name="pref_som_notificacao_silencioso">Silencioso</string>
 
     <string name="pref_titulo_vibrar">Vibrar</string>
+    <string name="pref_key_notificacoes_vibrar">notificacoes_vibrar</string>
 </resources>

@@ -26,7 +26,7 @@
         <!-- A 'parent' preference, which enables/disables child preferences (below)
              when checked/unchecked. -->
         <CheckBoxPreference
-            android:key="notifications_new_message"
+            android:key="@string/pref_key_notificacoes_novas_noticias"
             android:title="@string/pref_titulo_notificacoes_novas_noticias"
             android:defaultValue="true" />
 
@@ -34,16 +34,16 @@
         <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
         <!-- NOTE: RingtonePreference's summary should be set to its value by the activity code. -->
         <RingtonePreference
-            android:dependency="notifications_new_message"
-            android:key="notifications_new_message_ringtone"
+            android:dependency="@string/pref_key_notificacoes_novas_noticias"
+            android:key="@string/pref_key_notificacoes_som"
             android:title="@string/pref_titulo_som_notificacao"
             android:ringtoneType="notification"
             android:defaultValue="content://settings/system/notification_sound" />
 
         <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
         <CheckBoxPreference
-            android:dependency="notifications_new_message"
-            android:key="notifications_new_message_vibrate"
+            android:dependency="@string/pref_key_notificacoes_novas_noticias"
+            android:key="@string/pref_key_notificacoes_vibrar"
             android:title="@string/pref_titulo_vibrar"
             android:defaultValue="true" />
 
