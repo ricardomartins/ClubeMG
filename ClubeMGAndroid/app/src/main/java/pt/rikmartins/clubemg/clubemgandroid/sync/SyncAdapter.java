@@ -11,9 +11,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SyncResult;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -70,7 +73,10 @@ public class SyncAdapter
             return;
         }
         Log.i(TAG, "Network synchronization complete");
-        if (noticiasInseridas.size() > 0) {
+        final Resources resources = getContext().getResources();
+        final boolean notificar = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(resources.getString(R.string.pref_key_notificacoes_novas_noticias), false);
+
+        if (notificar && noticiasInseridas.size() > 0) {
             SitioNoticias.Noticia noticia = noticiasInseridas.get(0);
             SyncAdapter.Notificacao.notificar(getContext(), noticia.getTitulo(), noticia.getTexto(), "Uma nova notícia", R.drawable.ic_notification);
         }
@@ -169,8 +175,12 @@ public class SyncAdapter
     public static class Notificacao {
         public static void notificar(Context context, CharSequence titulo, CharSequence texto, CharSequence previsao, int iconPequeno){
             Log.i(TAG, "A preparar notificação");
+            final Resources resources = context.getResources();
 
-            NotificationCompat.Builder mBuilder =
+            final String toque = PreferenceManager.getDefaultSharedPreferences(context).getString(resources.getString(R.string.pref_key_notificacoes_som), null);
+            final boolean vibrar = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(resources.getString(R.string.pref_key_notificacoes_vibrar), false);
+
+            NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(context)
                             .setDefaults(NotificationCompat.DEFAULT_ALL)
                             .setShowWhen(false)
@@ -185,9 +195,13 @@ public class SyncAdapter
                                             new Intent(context, MainActivity.class),
                                             PendingIntent.FLAG_UPDATE_CURRENT))
                             .setAutoCancel(true);
+            if (toque != null) notificationBuilder.setSound(Uri.parse(toque));
+            if(vibrar) notificationBuilder.setVibrate(new long[] {0, 150, 100, 150, 100, 150, 100, 150});
+            else notificationBuilder.setVibrate(new long[] {0});
+
 
             Log.i(TAG, "A notificar");
-            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, mBuilder.build());
+            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(0, notificationBuilder.build());
         }
     }
 }
