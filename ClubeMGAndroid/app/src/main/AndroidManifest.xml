@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.READ_SYNC_STATS" />
     <!-- Required to enable our SyncAdapter after it's created. -->
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <!-- Required to enable our SyncAdapter after it's created. -->
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <!-- Required because we're manually creating a new account. -->
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -69,8 +71,8 @@
             android:exported="false" />
 
         <activity
-            android:name=".DefinicoesActivity"
-            android:label="@string/title_activity_definicoes"
+            android:name=".DefinicoesFragment"
+            android:label="@string/titulo_activity_definicoes"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

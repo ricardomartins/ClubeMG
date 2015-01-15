@@ -5,10 +5,13 @@ import android.accounts.AccountManager;
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.PeriodicSync;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import java.util.List;
 
 import pt.rikmartins.clubemg.clubemgandroid.accounts.GenericAccountService;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
@@ -18,7 +21,7 @@ import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
  */
 public class SyncUtils {
     private static final String TAG = SyncUtils.class.getSimpleName();
-    private static final long SYNC_FREQUENCY = 60 * 60 * 24;  // 1 dia (em segundos)
+    private static final String DEFAULT_SYNC_FREQUENCY = "86400";  // 1 dia (em segundos)
     private static final String CONTENT_AUTHORITY = NoticiaContract.CONTENT_AUTHORITY;
     private static final String PREF_SETUP_COMPLETE = "setup_complete";
     // Value below must match the account type specified in res/xml/syncadapter.xml
@@ -43,12 +46,9 @@ public class SyncUtils {
         if (accountManager.addAccountExplicitly(account, null, null)) {
             // Inform the system that this account supports sync
             ContentResolver.setIsSyncable(account, CONTENT_AUTHORITY, 1);
-            // Inform the system that this account is eligible for auto sync when the network is up
-            ContentResolver.setSyncAutomatically(account, CONTENT_AUTHORITY, true);
-            // Recommend a schedule for automatic synchronization. The system may modify this based
-            // on other scheduled syncs and network utilization.
-            ContentResolver.addPeriodicSync(
-                    account, CONTENT_AUTHORITY, new Bundle(),SYNC_FREQUENCY);
+
+            UpdateSyncPeriod(context, account, CONTENT_AUTHORITY);
+
             newAccount = true;
         }
 
@@ -60,6 +60,38 @@ public class SyncUtils {
             PreferenceManager.getDefaultSharedPreferences(context).edit()
                     .putBoolean(PREF_SETUP_COMPLETE, true).commit();
         }
+    }
+
+    public static boolean UpdateSyncPeriod(Context context){
+        return UpdateSyncPeriod(context, GenericAccountService.GetAccount(ACCOUNT_TYPE), CONTENT_AUTHORITY);
+    }
+
+    private static boolean UpdateSyncPeriod(Context context, Account account, String authority){
+        List<PeriodicSync> periodicSyncs = ContentResolver.getPeriodicSyncs(account, authority);
+
+        long old_sync_frequency = periodicSyncs.isEmpty() ? -1 : periodicSyncs.get(0).period;
+        long new_sync_frequency = Long.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString("sync_frequency", DEFAULT_SYNC_FREQUENCY));
+
+        return UpdateSyncPeriod(account, authority, old_sync_frequency, new_sync_frequency);
+    }
+
+    private static boolean UpdateSyncPeriod(Account account, String authority, long old_sync_frequency, long new_sync_frequency){
+        if (new_sync_frequency != old_sync_frequency) {
+            if (new_sync_frequency != -1) {
+                // Inform the system that this account is eligible for auto sync when the network is up
+                ContentResolver.setSyncAutomatically(account, authority, true);
+                // Recommend a schedule for automatic synchronization. The system may modify this based
+                // on other scheduled syncs and network utilization.
+                ContentResolver.addPeriodicSync(
+                        account, authority, new Bundle(), new_sync_frequency);
+            } else {
+                // Inform the system that this account is not eligible for auto sync when the network is up
+                ContentResolver.setSyncAutomatically(account, authority, false);
+                ContentResolver.removePeriodicSync(account, authority, new Bundle());
+            }
+            return true;
+        }
+        return false;
     }
 
     /**

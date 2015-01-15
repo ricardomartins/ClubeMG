@@ -2,6 +2,7 @@ package pt.rikmartins.clubemg.clubemgandroid;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -32,6 +33,8 @@ public class MainActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferencias, false);
 
         SyncUtils.CreateSyncAccount(this);
 
@@ -93,8 +96,9 @@ public class MainActivity
                         .commit();
                 break;
             case NavigationFragment.TIPO_ON_CLICK_DEFINICOES:
-                Intent intent = new Intent(this, DefinicoesActivity.class);
-                startActivity(intent);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.main_container, new DefinicoesFragment()).addToBackStack(null)
+                        .commit();
                 break;
         }
         if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT)
@@ -105,9 +109,8 @@ public class MainActivity
     public void onBackPressed() {
         if ((mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT) && ((DrawerLayout) mMainLayout).isDrawerOpen(Gravity.START))
             ((DrawerLayout) mMainLayout).closeDrawer(Gravity.START);
-//        // Comentado por presentemente não haver registo de back stack
-//        else if (getFragmentManager().getBackStackEntryCount() > 0)
-//            getFragmentManager().popBackStack();
+        else if (getFragmentManager().getBackStackEntryCount() > 0)
+            getFragmentManager().popBackStack();
         else super.onBackPressed();
     }
 }
