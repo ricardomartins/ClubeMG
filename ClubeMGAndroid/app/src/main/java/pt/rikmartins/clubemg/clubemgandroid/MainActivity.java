@@ -1,6 +1,5 @@
 package pt.rikmartins.clubemg.clubemgandroid;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
@@ -97,8 +96,7 @@ public class MainActivity
                 break;
             case NavigationFragment.TIPO_ON_CLICK_DEFINICOES:
                 getFragmentManager().beginTransaction()
-                        .replace(R.id.main_container, new DefinicoesFragment()).addToBackStack(null)
-                        .commit();
+                        .replace(R.id.main_container, new DefinicoesFragment()).commit();
                 break;
         }
         if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT)
