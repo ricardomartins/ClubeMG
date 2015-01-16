@@ -16,6 +16,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,10 +27,10 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import java.io.ByteArrayInputStream;
-import java.util.Random;
 
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
+import pt.rikmartins.clubemg.clubemgandroid.sync.SyncUtils;
 
 /**
  * Created by ricardo on 06-12-2014.
@@ -82,17 +85,8 @@ public class ListaNoticiasFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) mCategoria = getArguments().getString(ARG_NOME_CATEGORIA, null);
         else mCategoria = null;
-//        if (coresNoticias == null) {
-//            coresNoticias = getActivity().getResources().getIntArray(R.array.cores_noticias);
-//            tamanhoCoresNoticias = coresNoticias.length;
-//            Random random = new Random(tamanhoCoresNoticias * 2 + 1);
-//            for (int i = 0; i < tamanhoCoresNoticias; i++) {
-//                int n = random.nextInt(tamanhoCoresNoticias);
-//                int tmp = coresNoticias[i];
-//                coresNoticias[i] = coresNoticias[n];
-//                coresNoticias[n] = tmp;
-//            }
-//        }
+
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -146,6 +140,22 @@ public class ListaNoticiasFragment
 
     private void obterImagem(String urlImagem, int id) {
         ObtensorImagens.obterImagem(getActivity(), urlImagem, String.valueOf(id));
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.actions_fragment_lista_noticias, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_actualizar:
+                SyncUtils.TriggerRefresh();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     class NoticiasSimpleCursorAdapter extends SimpleCursorAdapter {

@@ -6,4 +6,7 @@
     <string name="noticia_texto_stb">Texto</string>
     <string name="categoria_designacao_stb">categoria</string>
 
+    <string name="titulo_action_actualizar">Actualizar</string>
+    <string name="titulo_cond_action_actualizar">@string/titulo_action_actualizar</string>
+
 </resources>
