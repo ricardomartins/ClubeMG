@@ -23,8 +23,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
 
@@ -41,7 +43,9 @@ public class ListaNoticiasFragment
 
     public static final String ARG_NOME_CATEGORIA = "categoria";
 
-    private ListView mNoticiasListView;
+    private LinearLayout mListaNoticiasLinearLayout;
+    private ListView mListaNoticiasListView;
+    private TextView mListaNoticiasVaziaTextView;
 
     private NoticiasSimpleCursorAdapter mNoticiasCursorAdapter;
 
@@ -94,11 +98,15 @@ public class ListaNoticiasFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.v(TAG, "Creating view");
-        mNoticiasListView = (ListView) inflater.inflate(R.layout.fragment_lista_noticias,
+        mListaNoticiasLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_lista_noticias,
                 container, false);
+        mListaNoticiasListView = (ListView) mListaNoticiasLinearLayout.findViewById(R.id.lista_noticias);
+        mListaNoticiasVaziaTextView = (TextView) mListaNoticiasLinearLayout.findViewById(R.id.sem_noticias);
+        mListaNoticiasListView.setEmptyView(mListaNoticiasVaziaTextView);
+
         getLoaderManager().initLoader(ID_LOADER_NOTICIAS, null, this);
 
-        return mNoticiasListView;
+        return mListaNoticiasLinearLayout;
     }
 
     @Override
@@ -112,21 +120,20 @@ public class ListaNoticiasFragment
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                 if (view instanceof ImageView) {
                     byte[] bytesImagem = cursor.getBlob(columnIndex);
-                    if (bytesImagem == null){
+                    if (bytesImagem == null) {
                         obterImagem(cursor.getString(cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE)), cursor.getInt(cursor.getColumnIndex(NoticiaContract.Noticia._ID)));
                     } else {
                         ByteArrayInputStream streamImagem = new ByteArrayInputStream(bytesImagem);
                         Bitmap aImagem = BitmapFactory.decodeStream(streamImagem);
                         ((ImageView) view).setImageBitmap(aImagem);
-//                        ((ImageView) view).setColorFilter(coresNoticias[cursor.getInt(cursor.getColumnIndex(NoticiaContract.Noticia._ID)) % tamanhoCoresNoticias]);
                     }
                     return true;
                 }
                 return false;
             }
         });
-        mNoticiasListView.setAdapter(mNoticiasCursorAdapter);
-        mNoticiasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListaNoticiasListView.setAdapter(mNoticiasCursorAdapter);
+        mListaNoticiasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursorNoticias = mNoticiasCursorAdapter.getCursor();

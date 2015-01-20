@@ -8,5 +8,6 @@
 
     <string name="titulo_action_actualizar">Actualizar</string>
     <string name="titulo_cond_action_actualizar">@string/titulo_action_actualizar</string>
+    <string name="info_sem_noticias">Aqui vão aparecer as notícias quando estiverem disponíveis</string>
 
 </resources>
