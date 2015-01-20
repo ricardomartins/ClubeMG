@@ -24,6 +24,8 @@ public class NoticiaProvider
         extends ContentProvider {
     private static final String TAG = NoticiaProvider.class.getName();
 
+    private static final int QUALIDADE_JPG_NA_BD = 35;
+
     // The constants below represent individual URI routes, as IDs. Every URI pattern recognized by
     // this ContentProvider is defined using sUriMatcher.addURI(), and associated with one of these
     // IDs.
@@ -582,7 +584,7 @@ public class NoticiaProvider
 
         Bitmap btmRedimensionado = Bitmap.createBitmap(btmOriginal, xNovo, yNovo, larguraNova, alturaNova, matrix, true);
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-        btmRedimensionado.compress(Bitmap.CompressFormat.JPEG, 35, byteArrayBitmapStream);
+        btmRedimensionado.compress(Bitmap.CompressFormat.JPEG, QUALIDADE_JPG_NA_BD, byteArrayBitmapStream);
         return byteArrayBitmapStream.toByteArray();
     }
 
@@ -793,7 +795,7 @@ public class NoticiaProvider
             /**
              * Nome da tabela onde são guardados os registos para os recursos do tipo "etiqueta_noticia".
              */
-            public static final String TABLE_NAME = "etiqueta_da_noticia";
+            public static final String TABLE_NAME = TABLE_NAME_SINGULAR;
             /**
              * Etiqueta que liga
              */

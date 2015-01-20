@@ -3,7 +3,6 @@ package pt.rikmartins.clubemg.clubemgandroid;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -12,32 +11,28 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
-import org.apache.http.util.ByteArrayBuffer;
-
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Arrays;
-import java.util.Random;
 
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
+import pt.rikmartins.clubemg.clubemgandroid.sync.SyncUtils;
 
 /**
  * Created by ricardo on 06-12-2014.
@@ -48,7 +43,9 @@ public class ListaNoticiasFragment
 
     public static final String ARG_NOME_CATEGORIA = "categoria";
 
-    private ListView mNoticiasListView;
+    private LinearLayout mListaNoticiasLinearLayout;
+    private ListView mListaNoticiasListView;
+    private TextView mListaNoticiasVaziaTextView;
 
     private NoticiasSimpleCursorAdapter mNoticiasCursorAdapter;
 
@@ -71,7 +68,7 @@ public class ListaNoticiasFragment
         return newInstance(null);
     }
 
-    private static int[] coresNoticias = null;
+//    private static int[] coresNoticias = null;
     private static int tamanhoCoresNoticias = 0;
 
     public static ListaNoticiasFragment newInstance(@Nullable String categoria) {
@@ -92,17 +89,8 @@ public class ListaNoticiasFragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) mCategoria = getArguments().getString(ARG_NOME_CATEGORIA, null);
         else mCategoria = null;
-        if (coresNoticias == null) {
-            coresNoticias = getActivity().getResources().getIntArray(R.array.cores_noticias);
-            tamanhoCoresNoticias = coresNoticias.length;
-            Random random = new Random(tamanhoCoresNoticias * 2 + 1);
-            for (int i = 0; i < tamanhoCoresNoticias; i++) {
-                int n = random.nextInt(tamanhoCoresNoticias);
-                int tmp = coresNoticias[i];
-                coresNoticias[i] = coresNoticias[n];
-                coresNoticias[n] = tmp;
-            }
-        }
+
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -110,11 +98,15 @@ public class ListaNoticiasFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.v(TAG, "Creating view");
-        mNoticiasListView = (ListView) inflater.inflate(R.layout.fragment_lista_noticias,
+        mListaNoticiasLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_lista_noticias,
                 container, false);
+        mListaNoticiasListView = (ListView) mListaNoticiasLinearLayout.findViewById(R.id.lista_noticias);
+        mListaNoticiasVaziaTextView = (TextView) mListaNoticiasLinearLayout.findViewById(R.id.sem_noticias);
+        mListaNoticiasListView.setEmptyView(mListaNoticiasVaziaTextView);
+
         getLoaderManager().initLoader(ID_LOADER_NOTICIAS, null, this);
 
-        return mNoticiasListView;
+        return mListaNoticiasLinearLayout;
     }
 
     @Override
@@ -128,21 +120,20 @@ public class ListaNoticiasFragment
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                 if (view instanceof ImageView) {
                     byte[] bytesImagem = cursor.getBlob(columnIndex);
-                    if (bytesImagem == null){
+                    if (bytesImagem == null) {
                         obterImagem(cursor.getString(cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE)), cursor.getInt(cursor.getColumnIndex(NoticiaContract.Noticia._ID)));
                     } else {
                         ByteArrayInputStream streamImagem = new ByteArrayInputStream(bytesImagem);
                         Bitmap aImagem = BitmapFactory.decodeStream(streamImagem);
                         ((ImageView) view).setImageBitmap(aImagem);
-                        ((ImageView) view).setColorFilter(coresNoticias[cursor.getInt(cursor.getColumnIndex(NoticiaContract.Noticia._ID)) % tamanhoCoresNoticias]);
                     }
                     return true;
                 }
                 return false;
             }
         });
-        mNoticiasListView.setAdapter(mNoticiasCursorAdapter);
-        mNoticiasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListaNoticiasListView.setAdapter(mNoticiasCursorAdapter);
+        mListaNoticiasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursorNoticias = mNoticiasCursorAdapter.getCursor();
@@ -155,58 +146,23 @@ public class ListaNoticiasFragment
     }
 
     private void obterImagem(String urlImagem, int id) {
-        new ObtensorImagens(getActivity()).execute(urlImagem, String.valueOf(id));
+        ObtensorImagens.obterImagem(getActivity(), urlImagem, String.valueOf(id));
     }
 
-    private static class ObtensorImagens extends AsyncTask<String, Void, byte[]> {
-        private final Context mContext;
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.actions_fragment_lista_noticias, menu);
+    }
 
-        private static final String TAG = ObtensorImagens.class.getSimpleName();
-
-        private ObtensorImagens(Context context) {
-            super();
-            mContext = context;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_actualizar:
+                SyncUtils.TriggerRefresh();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        private byte[] downloadImageAsByteArray(URL urlImagem){
-
-            Log.v(TAG, "downloadImageAsByteArray: " + urlImagem);
-            URLConnection con;
-            try {
-                con = urlImagem.openConnection();
-                BufferedInputStream bis = new BufferedInputStream(con.getInputStream());
-                ByteArrayBuffer baf = new ByteArrayBuffer(50);
-                int current;
-                while ((current = bis.read()) != -1) baf.append((byte) current);
-
-                return baf.toByteArray();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        private int saveImageToDatabase(byte[] ba, Uri uriDaNoticia) {
-            Log.v(TAG, "saveImageToDatabase: " + uriDaNoticia);
-            ContentValues valores = new ContentValues(1);
-            valores.put(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM, ba);
-            return mContext.getContentResolver().update(uriDaNoticia, valores, null, null);
-        }
-
-        @Override
-        protected byte[] doInBackground(String... params) {
-            Log.v(TAG, "doInBackground: " + Arrays.toString(params));
-            try {
-                byte[] ba = downloadImageAsByteArray(new URL(params[0]));
-                int resUpdate = saveImageToDatabase(ba, NoticiaContract.Noticia.CONTENT_URI.buildUpon().appendPath(params[1]).build());
-                return ba;
-            } catch (MalformedURLException e) {
-                return null;
-            } catch (NumberFormatException e) {
-                return null;
-            }
-        }
-
     }
 
     class NoticiasSimpleCursorAdapter extends SimpleCursorAdapter {
