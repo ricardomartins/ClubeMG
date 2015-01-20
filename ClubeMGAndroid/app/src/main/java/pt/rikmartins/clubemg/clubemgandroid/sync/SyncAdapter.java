@@ -98,8 +98,10 @@ public class SyncAdapter
             boolean adicionarALista = true;
             cursorNoticias.moveToFirst();
             while(!cursorNoticias.isAfterLast()) {
-                if (cursorNoticias.getString(indiceIdNoticia).equals(idNoticia))
+                if (cursorNoticias.getString(indiceIdNoticia).equals(idNoticia)) {
                     adicionarALista = false;
+                    break;
+                }
                 cursorNoticias.moveToNext();
             }
             if (adicionarALista) noticiasAInserir.add(noticia);
@@ -111,8 +113,10 @@ public class SyncAdapter
             boolean adicionarALista = true;
             cursorCategorias.moveToFirst();
             while(!cursorCategorias.isAfterLast()) {
-                if (cursorCategorias.getString(indiceDesignacaoCategoria).equals(categoria))
+                if (cursorCategorias.getString(indiceDesignacaoCategoria).equals(categoria)) {
                     adicionarALista = false;
+                    break;
+                }
                 cursorCategorias.moveToNext();
 
             }
@@ -125,8 +129,10 @@ public class SyncAdapter
             boolean adicionarALista = true;
             cursorEtiquetas.moveToFirst();
             while(!cursorEtiquetas.isAfterLast()) {
-                if (cursorEtiquetas.getString(indiceDesignacaoEtiqueta).equals(etiqueta))
+                if (cursorEtiquetas.getString(indiceDesignacaoEtiqueta).equals(etiqueta)) {
                     adicionarALista = false;
+                    break;
+                }
                 cursorEtiquetas.moveToNext();
             }
             if (adicionarALista) etiquetasAInserir.add(etiqueta);
