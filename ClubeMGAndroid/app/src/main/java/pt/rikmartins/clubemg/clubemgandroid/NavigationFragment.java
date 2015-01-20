@@ -127,7 +127,7 @@ public class NavigationFragment
                         NoticiaProvider.getCopyOfCategoriaDefaultProjection(),     // Projection to return
                         null,            // No selection clause
                         null,            // No selection arguments
-                        null             // Default sort order
+                        NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO             // Default sort order
                 );
             default:
                 // An invalid id was passed in
