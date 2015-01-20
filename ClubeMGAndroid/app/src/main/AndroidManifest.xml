@@ -69,15 +69,6 @@
             android:authorities="pt.rikmartins.clubemg.clubemgandroid"
             android:enabled="true"
             android:exported="false" />
-
-        <activity
-            android:name=".DefinicoesFragment"
-            android:label="@string/titulo_activity_definicoes"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="pt.rikmartins.clubemg.clubemgandroid.MainActivity" />
-        </activity>
     </application>
 
 </manifest>
