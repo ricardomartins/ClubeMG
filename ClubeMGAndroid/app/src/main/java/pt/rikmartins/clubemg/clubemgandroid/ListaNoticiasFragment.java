@@ -3,9 +3,11 @@ package pt.rikmartins.clubemg.clubemgandroid;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -14,6 +16,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,29 +26,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
 
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
+import pt.rikmartins.clubemg.clubemgandroid.sync.SyncAdapter;
 import pt.rikmartins.clubemg.clubemgandroid.sync.SyncUtils;
 
 /**
  * Created by ricardo on 06-12-2014.
  */
 public class ListaNoticiasFragment
-        extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = ListaNoticiasFragment.class.getName();
+        extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
+    private static final String TAG = ListaNoticiasFragment.class.getSimpleName();
 
     public static final String ARG_NOME_CATEGORIA = "categoria";
 
-    private LinearLayout mListaNoticiasLinearLayout;
+    private SwipeRefreshLayout mListaNoticiasSwipeRefreshLayout;
     private ListView mListaNoticiasListView;
-    private TextView mListaNoticiasVaziaTextView;
 
     private NoticiasSimpleCursorAdapter mNoticiasCursorAdapter;
 
@@ -63,13 +64,11 @@ public class ListaNoticiasFragment
     };
 
     private String mCategoria = null;
+    private BroadcastReceiver broadcastReceiver;
 
     public static ListaNoticiasFragment newInstance() {
         return newInstance(null);
     }
-
-//    private static int[] coresNoticias = null;
-    private static int tamanhoCoresNoticias = 0;
 
     public static ListaNoticiasFragment newInstance(@Nullable String categoria) {
         ListaNoticiasFragment myFragment = new ListaNoticiasFragment();
@@ -98,22 +97,22 @@ public class ListaNoticiasFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.v(TAG, "Creating view");
-        mListaNoticiasLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_lista_noticias,
+        mListaNoticiasSwipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_lista_noticias,
                 container, false);
-        mListaNoticiasListView = (ListView) mListaNoticiasLinearLayout.findViewById(R.id.lista_noticias);
-        mListaNoticiasVaziaTextView = (TextView) mListaNoticiasLinearLayout.findViewById(R.id.sem_noticias);
-        mListaNoticiasListView.setEmptyView(mListaNoticiasVaziaTextView);
+        mListaNoticiasSwipeRefreshLayout.setOnRefreshListener(this);
+
+        mListaNoticiasListView = (ListView) mListaNoticiasSwipeRefreshLayout.findViewById(R.id.lista_noticias);
+        mListaNoticiasListView.setEmptyView(mListaNoticiasSwipeRefreshLayout.findViewById(R.id.sem_noticias));
 
         getLoaderManager().initLoader(ID_LOADER_NOTICIAS, null, this);
 
-        return mListaNoticiasLinearLayout;
+        return mListaNoticiasSwipeRefreshLayout;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.v(TAG, "Activity created");
         super.onActivityCreated(savedInstanceState);
-
         mNoticiasCursorAdapter = new NoticiasSimpleCursorAdapter(getActivity(), R.layout.noticias_list_item, null, mNoticiasCursorAdapterFrom, mNoticiasCursorAdapterTo, 0);
         mNoticiasCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
@@ -143,6 +142,30 @@ public class ListaNoticiasFragment
                 getActivity().startActivity(i);
             }
         });
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SyncAdapter.ACTION_INICIA_ACTUALIZACAO);
+        intentFilter.addAction(SyncAdapter.ACTION_FINALIZA_ACTUALIZACAO);
+        getActivity().registerReceiver(broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getAction()) {
+                    case SyncAdapter.ACTION_INICIA_ACTUALIZACAO:
+                    case SyncAdapter.ACTION_A_ACTUALIZAR:
+                        iniciarAnimacaoActualizacao();
+                        break;
+                    case SyncAdapter.ACTION_FINALIZA_ACTUALIZACAO:
+                        finalizarAnimacaoActualizacao();
+                        break;
+                }
+            }
+        }, intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        getActivity().unregisterReceiver(broadcastReceiver);
+        super.onPause();
     }
 
     private void obterImagem(String urlImagem, int id) {
@@ -154,15 +177,33 @@ public class ListaNoticiasFragment
         inflater.inflate(R.menu.actions_fragment_lista_noticias, menu);
     }
 
+    private void iniciarAnimacaoActualizacao(){
+        if (!mListaNoticiasSwipeRefreshLayout.isRefreshing()) mListaNoticiasSwipeRefreshLayout.setRefreshing(true);
+    }
+
+    private void finalizarAnimacaoActualizacao(){
+        if (mListaNoticiasSwipeRefreshLayout.isRefreshing()) mListaNoticiasSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    private void iniciarActualizacao(){
+        SyncUtils.TriggerRefresh();
+        iniciarAnimacaoActualizacao();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_actualizar:
-                SyncUtils.TriggerRefresh();
+                iniciarActualizacao();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        iniciarActualizacao();
     }
 
     class NoticiasSimpleCursorAdapter extends SimpleCursorAdapter {
@@ -209,5 +250,4 @@ public class ListaNoticiasFragment
     public void onLoaderReset(Loader loader) {
         mNoticiasCursorAdapter.changeCursor(null);
     }
-
 }

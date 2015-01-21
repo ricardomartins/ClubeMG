@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
-    android:orientation="vertical" >
+    tools:context=".ListaNoticiasFragment">
 
     <ListView
         android:id="@+id/lista_noticias"
         android:layout_height="fill_parent"
         android:layout_width="fill_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         style="@style/ListaNoticias" />
 
     <TextView
@@ -18,8 +19,8 @@
         android:text="@string/info_sem_noticias"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_gravity="center"
-        android:visibility="visible"
+        android:visibility="gone"
         android:gravity="center"
         android:layout_margin="16dp" />
 
-</LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
