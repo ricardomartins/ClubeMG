@@ -142,10 +142,14 @@ public class ListaNoticiasFragment
                 getActivity().startActivity(i);
             }
         });
+    }
 
+    @Override
+    public void onResume() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(SyncAdapter.ACTION_INICIA_ACTUALIZACAO);
         intentFilter.addAction(SyncAdapter.ACTION_FINALIZA_ACTUALIZACAO);
+
         getActivity().registerReceiver(broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -160,10 +164,12 @@ public class ListaNoticiasFragment
                 }
             }
         }, intentFilter);
+        super.onResume();
     }
 
     @Override
     public void onPause() {
+        finalizarAnimacaoActualizacao();
         getActivity().unregisterReceiver(broadcastReceiver);
         super.onPause();
     }
