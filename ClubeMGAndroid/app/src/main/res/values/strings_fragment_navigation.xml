@@ -9,10 +9,10 @@
         <item>pedestrianismo</item>
     </string-array>
     <array name="lista_icones_categorias"> <!-- Não traduzir -->
-        <item>btt</item>
-        <item>informacoes</item>
-        <item>montanha</item>
-        <item>pedestrianismo</item>
+        <item>@drawable/ic_cat_btt_grey600_24dp</item>
+        <item>@drawable/ic_cat_informacoes_grey600_24dp</item>
+        <item>@drawable/ic_cat_montanha_grey600_24dp</item>
+        <item>@drawable/ic_cat_pedestrianismo_grey600_24dp</item>
     </array>
 
     <string-array name="lista_titulos_categorias">
