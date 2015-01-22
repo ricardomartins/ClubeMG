@@ -36,6 +36,10 @@ public class SyncAdapter
         extends AbstractThreadedSyncAdapter {
     public static final String TAG = "SyncAdapter";
 
+    public static final String ACTION_INICIA_ACTUALIZACAO = "pt.rikmartins.clubemg.clubemgandroid.action.INICIA_ACTUALIZACAO";
+    public static final String ACTION_A_ACTUALIZAR = "pt.rikmartins.clubemg.clubemgandroid.action.A_ACTUALIZAR";
+    public static final String ACTION_FINALIZA_ACTUALIZACAO = "pt.rikmartins.clubemg.clubemgandroid.action.FINALIZA_ACTUALIZACAO";
+
     /**
      * Content resolver, for performing database operations.
      */
@@ -54,10 +58,12 @@ public class SyncAdapter
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider,
                               SyncResult syncResult) {
-        Log.i(TAG, "Beginning network synchronization");
+        Log.i(TAG, "A iniciar actualização");
+        getContext().sendBroadcast(new Intent(ACTION_INICIA_ACTUALIZACAO));
         ArrayList<SitioNoticias.Noticia> noticiasInseridas = null;
         try {
             SitioNoticiasClubeMG sitioNoticiasClubeMG = obterSitioNoticias();
+            getContext().sendBroadcast(new Intent(ACTION_A_ACTUALIZAR));
             noticiasInseridas = actualizarNoticiasLocais(sitioNoticiasClubeMG, syncResult);
         } catch (IOException e) {
             Log.e(TAG, "Error reading from network: " + e.toString());
@@ -72,7 +78,9 @@ public class SyncAdapter
             syncResult.databaseError = true;
             return;
         }
-        Log.i(TAG, "Network synchronization complete");
+        Log.i(TAG, "A finalizar actualização");
+        getContext().sendBroadcast(new Intent(ACTION_FINALIZA_ACTUALIZACAO));
+
         final Resources resources = getContext().getResources();
         final boolean notificar = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(resources.getString(R.string.pref_key_notificacoes_novas_noticias), false);
 
