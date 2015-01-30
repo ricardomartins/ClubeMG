@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 public class NoticiaProvider
         extends ContentProvider {
-    private static final String TAG = NoticiaProvider.class.getName();
+    private static final String TAG = NoticiaProvider.class.getSimpleName();
 
     private static final int QUALIDADE_JPG_NA_BD = 35;
 
@@ -92,7 +92,7 @@ public class NoticiaProvider
             NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM,
             NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE,
             NoticiaContract.Noticia.COLUMN_NAME_IMAGEM,
-            NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA,
+            NoticiaContract.Noticia.COLUMN_NAME_CATEGORIAS,
             NoticiaContract.Noticia.COLUMN_NAME_DESTACADA,
             NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS
     };
@@ -100,14 +100,16 @@ public class NoticiaProvider
             NoticiaDatabase.EtiquetaDaNoticia.TABLE_NAME + " ON " + NoticiaDatabase.Noticia.TABLE_NAME + "." +
             NoticiaDatabase.Noticia._ID + "=" + NoticiaDatabase.EtiquetaDaNoticia.TABLE_NAME + "." +
             NoticiaDatabase.EtiquetaDaNoticia.COLUMN_NAME_NOTICIA + " LEFT JOIN " + NoticiaDatabase.Etiqueta.TABLE_NAME + " ON " + NoticiaDatabase.EtiquetaDaNoticia.TABLE_NAME + "." +
-            NoticiaDatabase.EtiquetaDaNoticia.COLUMN_NAME_ETIQUETA + "=" + NoticiaDatabase.Etiqueta.TABLE_NAME + "." + NoticiaDatabase.Etiqueta._ID + " LEFT JOIN " + NoticiaDatabase.Categoria.TABLE_NAME + " ON " + NoticiaDatabase.Noticia.TABLE_NAME + "." +
-            NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA + "=" + NoticiaDatabase.Categoria.TABLE_NAME + "." +
-            NoticiaDatabase.Etiqueta._ID;
+            NoticiaDatabase.EtiquetaDaNoticia.COLUMN_NAME_ETIQUETA + "=" + NoticiaDatabase.Etiqueta.TABLE_NAME + "." + NoticiaDatabase.Etiqueta._ID + " LEFT JOIN " + NoticiaDatabase.CategoriaDaNoticia.TABLE_NAME + " ON " + NoticiaDatabase.Noticia.TABLE_NAME + "." +
+            NoticiaDatabase.Noticia._ID + "=" + NoticiaDatabase.CategoriaDaNoticia.TABLE_NAME + "." +
+            NoticiaDatabase.CategoriaDaNoticia.COLUMN_NAME_NOTICIA + " LEFT JOIN " + NoticiaDatabase.Categoria.TABLE_NAME + " ON " +
+            NoticiaDatabase.CategoriaDaNoticia.TABLE_NAME + "." + NoticiaDatabase.CategoriaDaNoticia.COLUMN_NAME_CATEGORIA + "=" +
+            NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria._ID;
     private static final String NOTICIA_COLUMN_ID = NoticiaDatabase.Noticia.TABLE_NAME + "." + NoticiaDatabase.Noticia._ID;
+    private static final String NOTICIA_COLUMN_CATEGORIAS = "GROUP_CONCAT(" +
+            NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO + ")";
     private static final String NOTICIA_COLUMN_ETIQUETAS = "GROUP_CONCAT(" +
             NoticiaDatabase.Etiqueta.TABLE_NAME + "." + NoticiaDatabase.Etiqueta.COLUMN_NAME_DESIGNACAO + ")";
-    private static final String NOTICIA_COLUMN_CATEGORIA = NoticiaDatabase.Categoria.TABLE_NAME + "." +
-            NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO;
     private static final String NOTICIA_GROUP_BY = NoticiaDatabase.Noticia.TABLE_NAME + "." + NoticiaDatabase.Noticia._ID;
     private static final String[] CATEGORIA_DEFAULT_PROJECTION = new String[]{
             NoticiaContract.Categoria._ID,
@@ -215,7 +217,7 @@ public class NoticiaProvider
         // Obter as etiquetas duma notícia como uma lista separada por vírgulas
         builder.map(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS, NOTICIA_COLUMN_ETIQUETAS);
         // Obter a categoria da tabela categorias
-        builder.map(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA, NOTICIA_COLUMN_CATEGORIA);
+        builder.map(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIAS, NOTICIA_COLUMN_CATEGORIAS);
 
         switch (uriMatch) {
             case ROUTE_NOTICIA_ID:
@@ -228,7 +230,7 @@ public class NoticiaProvider
                 break;
             case ROUTE_NOTICIA_CATEGORIA_ID:
                 // Devolver todas as notícia duma categoria.
-                builder.where(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA + "=?", uri.getLastPathSegment());
+                builder.where(NoticiaContract.Categoria.TABLE_NAME + "." + NoticiaContract.Categoria._ID+ "=?", uri.getLastPathSegment());
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -299,10 +301,10 @@ public class NoticiaProvider
                 NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO, NoticiaDatabase.Categoria._ID);
     }
 
-    private long inserirNoticia(SQLiteDatabase db, ContentValues values, long idCategoria) {
+    private long inserirNoticia(SQLiteDatabase db, ContentValues values) {
         ContentValues novaNoticia = new ContentValues(values);
         novaNoticia.remove(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS);
-        novaNoticia.put(NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA, idCategoria);
+        novaNoticia.remove(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIAS);
 
         return db.insertOrThrow(NoticiaDatabase.Noticia.TABLE_NAME, null, novaNoticia);
     }
@@ -361,6 +363,60 @@ public class NoticiaProvider
         return idsEtiquetas;
     }
 
+    private ArrayList<Long> inserirCategorias(SQLiteDatabase db, String categoriasNoticia) {
+        String[] categoriasNoticiaSeparadas = categoriasNoticia.split(",");
+
+        StringBuilder categoriasWhereStringBuilder = new StringBuilder(NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO + " IN (");
+        for (int i = 0; i < categoriasNoticiaSeparadas.length; i++) {
+            categoriasWhereStringBuilder.append("?");
+            if (i < categoriasNoticiaSeparadas.length - 1) categoriasWhereStringBuilder.append(",");
+        }
+        categoriasWhereStringBuilder.append(")");
+
+        SelectionBuilder builder = new SelectionBuilder().table(NoticiaDatabase.Categoria.TABLE_NAME).where(
+                categoriasWhereStringBuilder.toString(), categoriasNoticiaSeparadas);
+
+        Cursor categoriasDaBD = builder.query(db, new String[]{NoticiaDatabase.Categoria._ID, NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO},
+                null);
+        ArrayList<Long> idsCategorias = new ArrayList<>();
+        if (categoriasDaBD.getCount() < categoriasNoticiaSeparadas.length) {
+            // Algumas etiquetas não constam da base de dados
+            int indiceDesignacao = categoriasDaBD.getColumnIndex(NoticiaDatabase.Etiqueta.COLUMN_NAME_DESIGNACAO);
+            int indiceId = categoriasDaBD.getColumnIndex(NoticiaDatabase.Etiqueta._ID);
+
+            ArrayList<String> categoriasAInserir = new ArrayList<>();
+            categoriasDaBD.moveToNext();
+            while (!categoriasDaBD.isAfterLast()) {
+                String categoriaJaNaBD = categoriasDaBD.getString(indiceDesignacao);
+
+                idsCategorias.add(categoriasDaBD.getLong(indiceId));
+
+                boolean encontrado = false;
+                for (String categoriaDaNoticia : categoriasNoticiaSeparadas)
+                    if (categoriaJaNaBD.equals(categoriaDaNoticia)) {
+                        encontrado = true;
+                        break;
+                    }
+                if (!encontrado) categoriasAInserir.add(categoriaJaNaBD);
+                categoriasDaBD.moveToNext();
+            }
+
+            for (String categoriaNovaStr : categoriasAInserir) {
+                ContentValues novaCategoria = new ContentValues(1);
+                novaCategoria.put(NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO, categoriaNovaStr);
+                idsCategorias.add(db.insertOrThrow(NoticiaDatabase.Categoria.TABLE_NAME, null, novaCategoria));
+            }
+        } else {
+            int indiceId = categoriasDaBD.getColumnIndex(NoticiaDatabase.Categoria._ID);
+            categoriasDaBD.moveToNext();
+            while (!categoriasDaBD.isAfterLast()) {
+                idsCategorias.add(categoriasDaBD.getLong(indiceId));
+                categoriasDaBD.moveToNext();
+            }
+        }
+        return idsCategorias;
+    }
+
     private long inserirEtiqueta(SQLiteDatabase db, String etiquetaStr) {
         ContentValues values = new ContentValues(1);
         values.put(NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO, etiquetaStr);
@@ -406,6 +462,19 @@ public class NoticiaProvider
         return idsEtiquetasDasNoticias;
     }
 
+    private ArrayList<Long> inserirCategoriasDasNoticias(SQLiteDatabase db, long idNoticia, ArrayList<Long> idsCategorias) {
+        ArrayList<Long> idsCategoriasDasNoticias = new ArrayList<>(idsCategorias.size());
+
+        ContentValues novaCategoriaDaNoticia = new ContentValues(2);
+        novaCategoriaDaNoticia.put(NoticiaDatabase.CategoriaDaNoticia.COLUMN_NAME_NOTICIA, idNoticia);
+        for (long idCategoria : idsCategorias) {
+            novaCategoriaDaNoticia.put(NoticiaDatabase.CategoriaDaNoticia.COLUMN_NAME_CATEGORIA, idCategoria);
+            idsCategoriasDasNoticias.add(db.insertOrThrow(NoticiaDatabase.CategoriaDaNoticia.TABLE_NAME, null,
+                    novaCategoriaDaNoticia));
+        }
+        return idsCategoriasDasNoticias;
+    }
+
     /**
      * Insert a new entry into the database.
      */
@@ -417,11 +486,12 @@ public class NoticiaProvider
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case ROUTE_NOTICIA:
-                final long idCategoriaDaNoticia = inserirCategoria(db, values.getAsString(NoticiaContract.Noticia
-                        .COLUMN_NAME_CATEGORIA));
+                final long idNoticia = inserirNoticia(db, values);
+                final ArrayList<Long> idsCategorias = inserirCategorias(db, values.getAsString(
+                        NoticiaContract.Noticia.COLUMN_NAME_CATEGORIAS));
                 final ArrayList<Long> idsEtiquetas = inserirEtiquetas(db, values.getAsString(
                         NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS));
-                final long idNoticia = inserirNoticia(db, values, idCategoriaDaNoticia);
+                final ArrayList<Long> idsCategoriasDasNoticias = inserirCategoriasDasNoticias(db, idNoticia, idsCategorias);
                 final ArrayList<Long> idsEtiquetasDasNoticias = inserirEtiquetasDasNoticias(db, idNoticia, idsEtiquetas);
 
                 result = Uri.parse(NoticiaContract.Noticia.CONTENT_URI + "/" + idNoticia);
@@ -517,9 +587,9 @@ public class NoticiaProvider
             case ROUTE_NOTICIA:
                 builder.table(NoticiaDatabase.Noticia.TABLE_NAME);
 
-                if (valoresFinais.containsKey(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA)) {
-                    long idCategoria = inserirCategoria(db, valoresFinais.getAsString(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA));
-                    valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_CATEGORIA, idCategoria);
+                if (valoresFinais.containsKey(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIAS)) {
+                    // TODO: Implementar actualização das categorias de uma notícia
+                    throw new UnsupportedOperationException("Alterar categorias de uma notícia");
                 }
                 if (valoresFinais.containsKey(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM)) {
                     byte[] imagem = redimensionarImagem(valoresFinais.getAsByteArray(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM));
@@ -624,7 +694,6 @@ public class NoticiaProvider
                 Noticia.COLUMN_NAME_ENDERECO_IMAGEM + TYPE_TEXT + COMMA_SEP +
                 Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE + TYPE_TEXT + COMMA_SEP +
                 Noticia.COLUMN_NAME_IMAGEM + TYPE_BLOB + COMMA_SEP +
-                Noticia.COLUMN_NAME_CATEGORIA + TYPE_INTEGER + COMMA_SEP +
                 Noticia.COLUMN_NAME_DESTACADA + TYPE_INTEGER + ")";
         /**
          * SQL statement to create "categoria" table.
@@ -635,6 +704,14 @@ public class NoticiaProvider
         /**
          * SQL statement to create "etiqueta" table.
          */
+        /**
+         * SQL statement to create "etiqueta_da_noticia" table.
+         */
+        private static final String SQL_CREATE_CATEGORIA_DA_NOTICIA = "CREATE TABLE " +
+                CategoriaDaNoticia.TABLE_NAME + " (" +
+                CategoriaDaNoticia._ID + " INTEGER PRIMARY KEY," +
+                CategoriaDaNoticia.COLUMN_NAME_NOTICIA + TYPE_INTEGER + COMMA_SEP +
+                CategoriaDaNoticia.COLUMN_NAME_CATEGORIA + TYPE_INTEGER + ")";
         private static final String SQL_CREATE_ETIQUETA = "CREATE TABLE " + Etiqueta.TABLE_NAME + " " +
                 "(" +
                 Etiqueta._ID + " INTEGER PRIMARY KEY," +
@@ -657,19 +734,32 @@ public class NoticiaProvider
          */
         private static final String SQL_DELETE_CATEGORIA = "DROP TABLE IF EXISTS " + Categoria.TABLE_NAME;
         /**
+         * SQL statement to drop "categoria_da_noticia" table.
+         */
+        private static final String SQL_DELETE_CATEGORIA_DA_NOTICIA = "DROP TABLE IF EXISTS " + CategoriaDaNoticia.TABLE_NAME;
+        /**
          * SQL statement to drop "etiqueta" table.
          */
         private static final String SQL_DELETE_ETIQUETA = "DROP TABLE IF EXISTS " + Etiqueta.TABLE_NAME;
         /**
-         * SQL statement to drop "etiqueta" table.
+         * SQL statement to drop "etiqueta_da_noticia" table.
          */
         private static final String SQL_DELETE_ETIQUETA_DA_NOTICIA = "DROP TABLE IF EXISTS " + EtiquetaDaNoticia.TABLE_NAME;
+
+        // TODO: IMPORTANTE, triggers devem ser revistos,
 
         private static final String TRIGGER_SQL_DELETE_ETIQUETAS_DAS_NOTICIAS = "DELETE FROM " + EtiquetaDaNoticia.TABLE_NAME + " " +
                 "WHERE " + EtiquetaDaNoticia.COLUMN_NAME_NOTICIA + " = OLD." + BaseColumns._ID;
 
+        private static final String TRIGGER_SQL_DELETE_CATEGORIAS_DAS_NOTICIAS = "DELETE FROM " + CategoriaDaNoticia.TABLE_NAME + " " +
+                "WHERE " + CategoriaDaNoticia.COLUMN_NAME_NOTICIA + " = OLD." + BaseColumns._ID;
+
         private static final String SQL_CREATE_TRIGGER_APAGAR_NOTICIA = "CREATE TRIGGER IF NOT EXISTS apagar_" + Noticia.TABLE_NAME_SINGULAR + " AFTER DELETE ON " + Noticia.TABLE_NAME + " FOR EACH ROW BEGIN " +
-                TRIGGER_SQL_DELETE_ETIQUETAS_DAS_NOTICIAS + "; END";
+                TRIGGER_SQL_DELETE_ETIQUETAS_DAS_NOTICIAS + ";" + TRIGGER_SQL_DELETE_CATEGORIAS_DAS_NOTICIAS + "; END";
+
+        private static final String SQL_CREATE_TRIGGER_APAGAR_CATEGORIA = "CREATE TRIGGER IF NOT EXISTS apagar_" +
+                Categoria.TABLE_NAME_SINGULAR + " AFTER DELETE ON " + Categoria.TABLE_NAME + " FOR EACH ROW BEGIN " +
+                TRIGGER_SQL_DELETE_CATEGORIAS_DAS_NOTICIAS + "; END";
 
         private static final String SQL_CREATE_TRIGGER_APAGAR_ETIQUETA = "CREATE TRIGGER IF NOT EXISTS apagar_" +
                 Etiqueta.TABLE_NAME_SINGULAR + " AFTER DELETE ON " + Etiqueta.TABLE_NAME + " FOR EACH ROW BEGIN " +
@@ -685,12 +775,16 @@ public class NoticiaProvider
             db.execSQL(SQL_CREATE_NOTICIA);
             Log.i(TAG, SQL_CREATE_CATEGORIA);
             db.execSQL(SQL_CREATE_CATEGORIA);
+            Log.i(TAG, SQL_CREATE_CATEGORIA_DA_NOTICIA);
+            db.execSQL(SQL_CREATE_CATEGORIA_DA_NOTICIA);
             Log.i(TAG, SQL_CREATE_ETIQUETA);
             db.execSQL(SQL_CREATE_ETIQUETA);
             Log.i(TAG, SQL_CREATE_ETIQUETA_DA_NOTICIA);
             db.execSQL(SQL_CREATE_ETIQUETA_DA_NOTICIA);
             Log.i(TAG, SQL_CREATE_TRIGGER_APAGAR_NOTICIA);
             db.execSQL(SQL_CREATE_TRIGGER_APAGAR_NOTICIA);
+            Log.i(TAG, SQL_CREATE_TRIGGER_APAGAR_CATEGORIA);
+            db.execSQL(SQL_CREATE_TRIGGER_APAGAR_CATEGORIA);
             Log.i(TAG, SQL_CREATE_TRIGGER_APAGAR_ETIQUETA);
             db.execSQL(SQL_CREATE_TRIGGER_APAGAR_ETIQUETA);
         }
@@ -701,6 +795,7 @@ public class NoticiaProvider
             // to simply to discard the data and start over
             db.execSQL(SQL_DELETE_NOTICIA);
             db.execSQL(SQL_DELETE_CATEGORIA);
+            db.execSQL(SQL_DELETE_CATEGORIA_DA_NOTICIA);
             db.execSQL(SQL_DELETE_ETIQUETA);
             db.execSQL(SQL_DELETE_ETIQUETA_DA_NOTICIA);
             onCreate(db);
@@ -748,10 +843,6 @@ public class NoticiaProvider
              */
             public static final String COLUMN_NAME_IMAGEM = "imagem";
             /**
-             * Categoria a que a notícia pertence
-             */
-            public static final String COLUMN_NAME_CATEGORIA = "categoria";
-            /**
              * Indicação de que a notícia está destacada no sítio de origem
              */
             public static final String COLUMN_NAME_DESTACADA = "destacada";
@@ -770,6 +861,25 @@ public class NoticiaProvider
              * Designação da categoria
              */
             public static final String COLUMN_NAME_DESIGNACAO = "designacao";
+        }
+
+        public static class CategoriaDaNoticia
+                implements BaseColumns {
+            public static final String TABLE_NAME_SINGULAR = "categoria_da_noticia";
+            public static final String TABLE_NAME_PLURAL = "categorias_das_noticias";
+
+            /**
+             * Nome da tabela onde são guardados os registos para os recursos do tipo "categoria_noticia".
+             */
+            public static final String TABLE_NAME = TABLE_NAME_SINGULAR;
+            /**
+             * Categoria que liga
+             */
+            public static final String COLUMN_NAME_CATEGORIA = Categoria.TABLE_NAME_SINGULAR;
+            /**
+             * Noticia que liga
+             */
+            public static final String COLUMN_NAME_NOTICIA = Noticia.TABLE_NAME_SINGULAR;
         }
 
         public static class Etiqueta
@@ -799,11 +909,11 @@ public class NoticiaProvider
             /**
              * Etiqueta que liga
              */
-            public static final String COLUMN_NAME_ETIQUETA = "etiqueta";
+            public static final String COLUMN_NAME_ETIQUETA = Etiqueta.TABLE_NAME_SINGULAR;
             /**
              * Noticia que liga
              */
-            public static final String COLUMN_NAME_NOTICIA = "noticia";
+            public static final String COLUMN_NAME_NOTICIA = Noticia.TABLE_NAME_SINGULAR;
         }
     }
 }

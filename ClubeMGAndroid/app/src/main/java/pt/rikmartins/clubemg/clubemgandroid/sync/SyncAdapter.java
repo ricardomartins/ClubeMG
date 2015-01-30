@@ -34,7 +34,7 @@ import pt.rikmartins.utilitarios.noticias.SitioNoticias;
  */
 public class SyncAdapter
         extends AbstractThreadedSyncAdapter {
-    public static final String TAG = "SyncAdapter";
+    public static final String TAG = SyncAdapter.class.getSimpleName();
 
     public static final String ACTION_INICIA_ACTUALIZACAO = "pt.rikmartins.clubemg.clubemgandroid.action.INICIA_ACTUALIZACAO";
     public static final String ACTION_A_ACTUALIZAR = "pt.rikmartins.clubemg.clubemgandroid.action.A_ACTUALIZAR";
@@ -92,8 +92,11 @@ public class SyncAdapter
 
     private ArrayList<SitioNoticias.Noticia> actualizarNoticiasLocais(final SitioNoticiasClubeMG sitioNoticiasClubeMG, final SyncResult syncResult) throws RemoteException, OperationApplicationException {
         Cursor cursorNoticias = mContentResolver.query(NoticiaContract.Noticia.CONTENT_URI, null, null, null, null);
+        Log.v(TAG, "noticias anteriores: " + cursorNoticias.getColumnCount());
         Cursor cursorCategorias = mContentResolver.query(NoticiaContract.Categoria.CONTENT_URI, null, null, null, null);
+        Log.v(TAG, "categorias anteriores: " + cursorCategorias.getColumnCount());
         Cursor cursorEtiquetas = mContentResolver.query(NoticiaContract.Etiqueta.CONTENT_URI, null, null, null, null);
+        Log.v(TAG, "etiquetas anteriores: " + cursorEtiquetas.getColumnCount());
 
         ArrayList<SitioNoticias.Noticia> noticiasAInserir = new ArrayList<>();
         ArrayList<String> categoriasAInserir = new ArrayList<>();
@@ -114,6 +117,7 @@ public class SyncAdapter
             }
             if (adicionarALista) noticiasAInserir.add(noticia);
         }
+        Log.v(TAG, "noticias a inserir: " + noticiasAInserir.size());
 
         int indiceDesignacaoCategoria = cursorCategorias.getColumnIndex(NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO);
         for (String categoria : sitioNoticiasClubeMG.getCategorias()) {
@@ -130,6 +134,7 @@ public class SyncAdapter
             }
             if (adicionarALista) categoriasAInserir.add(categoria);
         }
+        Log.v(TAG, "categorias a inserir: " + categoriasAInserir.size());
 
         int indiceDesignacaoEtiqueta = cursorEtiquetas.getColumnIndex(NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO);
         for (String etiqueta : sitioNoticiasClubeMG.getEtiquetas()) {
@@ -145,6 +150,7 @@ public class SyncAdapter
             }
             if (adicionarALista) etiquetasAInserir.add(etiqueta);
         }
+        Log.v(TAG, "etiquetas a inserir: " + etiquetasAInserir.size());
 
         ArrayList<ContentProviderOperation> lote = new ArrayList<>();
 
@@ -154,12 +160,13 @@ public class SyncAdapter
             insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_TITULO, noticiaDoSitio.getTitulo());
             insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_SUBTITULO, noticiaDoSitio.getSubtitulo());
             insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_TEXTO, noticiaDoSitio.getTexto());
-            insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIA, noticiaDoSitio.getCategoria());
+            insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIAS, ((SitioNoticiasClubeMG.NoticiaClubeMG) noticiaDoSitio).getCategoriasAsString());
             insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS, ((SitioNoticiasClubeMG.NoticiaClubeMG) noticiaDoSitio).getEtiquetasAsString());
             insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_DESTACADA, noticiaDoSitio.isDestacada());
             insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM, noticiaDoSitio.getEnderecoImagem().toString());
             insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_NOTICIA, noticiaDoSitio.getEnderecoNoticia().toString());
             insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE, ((SitioNoticiasClubeMG.NoticiaClubeMG) noticiaDoSitio).getEnderecoImagemGrande().toString());
+            Log.v(TAG, "operação notícia: " + insertOperationBuilder.toString());
 
             lote.add(insertOperationBuilder.build());
         }
@@ -172,6 +179,7 @@ public class SyncAdapter
                     .withValue(NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO, designacaoEtiqueta)
                     .build());
         syncResult.stats.numInserts = syncResult.stats.numEntries = noticiasAInserir.size() + categoriasAInserir.size() + etiquetasAInserir.size();
+        Log.v(TAG, "lote: " + lote.size());
 
         mContentResolver.applyBatch(NoticiaContract.CONTENT_AUTHORITY, lote);
         return noticiasAInserir;
@@ -179,9 +187,11 @@ public class SyncAdapter
 
     private SitioNoticiasClubeMG obterSitioNoticias() throws IOException {
         SitioNoticiasClubeMG sitioNoticiasClubeMG = new SitioNoticiasClubeMG();
-        Log.i(TAG, "Parsing page.");
-        sitioNoticiasClubeMG.actualizarNoticias();
-        Log.i(TAG, "Parsing complete.");
+        Log.v(TAG, "A analizar a página.");
+        if (!sitioNoticiasClubeMG.actualizarNoticias()) {
+            throw new IOException(); // TODO: Alterar esta excepção para algo que melhor descreva o problema
+        }
+        Log.v(TAG, "Análize da página completa.");
 
         return sitioNoticiasClubeMG;
     }

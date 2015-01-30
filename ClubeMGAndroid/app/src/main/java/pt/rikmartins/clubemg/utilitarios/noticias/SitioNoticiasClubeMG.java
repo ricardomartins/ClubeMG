@@ -1,5 +1,7 @@
 package pt.rikmartins.clubemg.utilitarios.noticias;
 
+import android.util.Log;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -7,6 +9,7 @@ import pt.rikmartins.utilitarios.noticias.SitioNoticias;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -15,6 +18,8 @@ import java.util.StringTokenizer;
  * Created by ricardo on 01-12-2014.
  */
 public class SitioNoticiasClubeMG extends SitioNoticias {
+    private static final String TAG = SitioNoticiasClubeMG.class.getSimpleName();
+
     public SitioNoticiasClubeMG() {
         super();
     }
@@ -25,8 +30,11 @@ public class SitioNoticiasClubeMG extends SitioNoticias {
 
     @Override
     protected ClasseEElemento[] processarSitioNoticias(Document pagina) {
+        Log.v(TAG, "inicio do processarSitioNoticias");
         Element contentwrap = pagina.getElementById("contentwrap");
         Elements noticias = contentwrap.getElementsByClass("post");
+
+        Log.v(TAG, "processarSitioNoticias, quantidade de notícias: " + noticias.size());
 
         ClasseEElemento[] resultado = new ClasseEElemento[noticias.size()];
         int n = 0;
@@ -34,6 +42,8 @@ public class SitioNoticiasClubeMG extends SitioNoticias {
             resultado[n] = new ClasseEElemento(NoticiaClubeMG.class, element);
             n++;
         }
+
+        Log.v(TAG, "fim do processarSitioNoticias");
         return resultado;
     }
 
@@ -42,6 +52,7 @@ public class SitioNoticiasClubeMG extends SitioNoticias {
         try {
             return new URL("http://www.montanhismo-guarda.pt/portal/");
         } catch (MalformedURLException e) {
+            Log.e(TAG, e.getMessage());
             assert false;
         }
         return null; // Inatingível
@@ -99,7 +110,7 @@ public class SitioNoticiasClubeMG extends SitioNoticias {
                 }
                 String corpo = corpoBuilder.toString();
 
-                if (cabeca.equals("category")) this.categoria = corpo;
+                if (cabeca.equals("category")) this.categorias.add(corpo);
                 else if (cabeca.equals("tag")) this.etiquetas.add(corpo);
                 else if (cabeca.equals("featured")) this.destacada = true;
                 else if (cabeca.equals("post") && !corpo.equals("")) this.identificacaoNoticia = corpo;
@@ -115,6 +126,7 @@ public class SitioNoticiasClubeMG extends SitioNoticias {
             try {
                 this.enderecoNoticia = new URL(title.getElementsByTag("a").attr("href"));
             } catch (MalformedURLException e) {
+                Log.e(TAG, e.getMessage());
                 e.printStackTrace(); // TODO: Fazer algo com esta excepção, e tentar dar a volta com URI concatenado ao url do sítio
             }
 
@@ -123,12 +135,14 @@ public class SitioNoticiasClubeMG extends SitioNoticias {
             try {
                 this.enderecoImagemGrande = new URL(enderecoImagemHtml.replaceAll("-\\d+x\\d+.", "."));
             } catch (MalformedURLException e) {
+                Log.e(TAG, e.getMessage());
                 e.printStackTrace(); // TODO: Fazer algo com esta excepção, e tentar dar a volta com URI concatenado ao url do sítio
             }
 
             try {
                 this.enderecoImagem = new URL(enderecoImagemHtml);
             } catch (MalformedURLException e){
+                Log.e(TAG, e.getMessage());
                 e.printStackTrace(); // TODO: Fazer algo com esta excepção, e tentar dar a volta com URI concatenado ao url do sítio
             }
         }
@@ -137,10 +151,10 @@ public class SitioNoticiasClubeMG extends SitioNoticias {
             return enderecoImagemGrande;
         }
 
-        public String getEtiquetasAsString(String separador){
+        private String getCollectionAsString(Collection<String> collection, String separador){
             StringBuilder resultado = new StringBuilder();
 
-            Iterator<String> iterator = etiquetas.iterator();
+            Iterator<String> iterator = collection.iterator();
             while (iterator.hasNext()) {
                 resultado.append(iterator.next());
                 if (iterator.hasNext()) resultado.append(separador);
@@ -148,8 +162,20 @@ public class SitioNoticiasClubeMG extends SitioNoticias {
             return resultado.toString();
         }
 
+        public String getEtiquetasAsString(String separador){
+            return getCollectionAsString(etiquetas, separador);
+        }
+
         public String getEtiquetasAsString(){
             return getEtiquetasAsString(","); // Padrão
+        }
+
+        public String getCategoriasAsString(String separador){
+            return getCollectionAsString(categorias, separador);
+        }
+
+        public String getCategoriasAsString(){
+            return getCategoriasAsString(","); // Padrão
         }
 
     }
