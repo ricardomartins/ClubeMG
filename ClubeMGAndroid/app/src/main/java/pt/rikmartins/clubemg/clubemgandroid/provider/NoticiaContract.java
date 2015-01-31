@@ -27,6 +27,10 @@ public class NoticiaContract {
         public static final Uri CONTENT_URI_CATEGORIA = CONTENT_URI.buildUpon().appendPath(Categoria.PATH_CATEGORIA)
                 .build();
         /**
+         * Categorias da notícia
+         */
+        public static final String COLUMN_NAME_CATEGORIAS = "categorias";
+        /**
          * Etiquetas da notícia
          */
         public static final String COLUMN_NAME_ETIQUETAS = "etiquetas";
