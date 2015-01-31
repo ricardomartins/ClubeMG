@@ -62,6 +62,8 @@ class ObtensorImagens {
         }
 
         private int saveImageToDatabase(byte[] ba, Uri uriDaNoticia) {
+            if (ba == null) return -1;
+
             Log.v(TAG, "saveImageToDatabase: " + uriDaNoticia);
             ContentValues valores = new ContentValues(1);
             valores.put(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM, ba);
