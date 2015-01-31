@@ -592,8 +592,12 @@ public class NoticiaProvider
                     throw new UnsupportedOperationException("Alterar categorias de uma notícia");
                 }
                 if (valoresFinais.containsKey(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM)) {
-                    byte[] imagem = redimensionarImagem(valoresFinais.getAsByteArray(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM));
-                    valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_IMAGEM, imagem);
+                    byte[] imagemOriginal = valoresFinais.getAsByteArray(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM);
+                    Log.d(TAG, "Imagem original: " + imagemOriginal);
+                    if (imagemOriginal != null) {
+                        byte[] imagem = redimensionarImagem(imagemOriginal);
+                        valoresFinais.put(NoticiaDatabase.Noticia.COLUMN_NAME_IMAGEM, imagem);
+                    }
                 }
                 if (values.containsKey(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS)) {
                     // TODO: Implementar actualização das etiquetas de uma notícia
@@ -702,9 +706,6 @@ public class NoticiaProvider
                 Categoria._ID + " INTEGER PRIMARY KEY," +
                 Categoria.COLUMN_NAME_DESIGNACAO + TYPE_TEXT + " UNIQUE ON CONFLICT IGNORE)";
         /**
-         * SQL statement to create "etiqueta" table.
-         */
-        /**
          * SQL statement to create "etiqueta_da_noticia" table.
          */
         private static final String SQL_CREATE_CATEGORIA_DA_NOTICIA = "CREATE TABLE " +
@@ -712,6 +713,9 @@ public class NoticiaProvider
                 CategoriaDaNoticia._ID + " INTEGER PRIMARY KEY," +
                 CategoriaDaNoticia.COLUMN_NAME_NOTICIA + TYPE_INTEGER + COMMA_SEP +
                 CategoriaDaNoticia.COLUMN_NAME_CATEGORIA + TYPE_INTEGER + ")";
+        /**
+         * SQL statement to create "etiqueta" table.
+         */
         private static final String SQL_CREATE_ETIQUETA = "CREATE TABLE " + Etiqueta.TABLE_NAME + " " +
                 "(" +
                 Etiqueta._ID + " INTEGER PRIMARY KEY," +
