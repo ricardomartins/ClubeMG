@@ -111,10 +111,12 @@ public class NoticiaProvider
     private static final String NOTICIA_COLUMN_ETIQUETAS = "GROUP_CONCAT(" +
             NoticiaDatabase.Etiqueta.TABLE_NAME + "." + NoticiaDatabase.Etiqueta.COLUMN_NAME_DESIGNACAO + ")";
     private static final String NOTICIA_GROUP_BY = NoticiaDatabase.Noticia.TABLE_NAME + "." + NoticiaDatabase.Noticia._ID;
+
     private static final String[] CATEGORIA_DEFAULT_PROJECTION = new String[]{
             NoticiaContract.Categoria._ID,
             NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO
     };
+
     private static final String[] ETIQUETA_DEFAULT_PROJECTION = new String[]{
             NoticiaContract.Etiqueta._ID,
             NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO
@@ -222,7 +224,7 @@ public class NoticiaProvider
         switch (uriMatch) {
             case ROUTE_NOTICIA_ID:
                 // Devolver uma notícia, pelo ID.
-                builder.where(NoticiaContract.Noticia.TABLE_NAME + "." + NoticiaContract.Noticia._ID + "=?", uri.getLastPathSegment());
+                builder.where(NoticiaDatabase.Noticia.TABLE_NAME + "." + NoticiaDatabase.Noticia._ID + "=?", uri.getLastPathSegment());
                 break;
             case ROUTE_NOTICIA:
                 // Devolver todas as notícias.
@@ -230,7 +232,7 @@ public class NoticiaProvider
                 break;
             case ROUTE_NOTICIA_CATEGORIA_ID:
                 // Devolver todas as notícia duma categoria.
-                builder.where(NoticiaContract.Categoria.TABLE_NAME + "." + NoticiaContract.Categoria._ID+ "=?", uri.getLastPathSegment());
+                builder.where(NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria._ID+ "=?", uri.getLastPathSegment());
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -238,7 +240,7 @@ public class NoticiaProvider
 
         builder.where(selection, selectionArgs);
 
-        Log.i(TAG, builder.getSelection());
+        Log.i(TAG, "builder: " + builder);
         return builder.query(db, projection, NOTICIA_GROUP_BY, null, sortOrder, null);
     }
 
@@ -330,7 +332,7 @@ public class NoticiaProvider
             int indiceDesignacao = etiquetasDaBD.getColumnIndex(NoticiaDatabase.Etiqueta.COLUMN_NAME_DESIGNACAO);
             int indiceId = etiquetasDaBD.getColumnIndex(NoticiaDatabase.Etiqueta._ID);
 
-            ArrayList<String> etiquetasAInserir = new ArrayList<>();
+            ArrayList<String> etiquetasAInserir = new ArrayList<>(Arrays.asList(etiquetasNoticiaSeparadas));
             etiquetasDaBD.moveToNext();
             while (!etiquetasDaBD.isAfterLast()) {
                 String etiquetaJaNaBD = etiquetasDaBD.getString(indiceDesignacao);
@@ -343,7 +345,7 @@ public class NoticiaProvider
                         encontrado = true;
                         break;
                     }
-                if (!encontrado) etiquetasAInserir.add(etiquetaJaNaBD);
+                if (encontrado) etiquetasAInserir.remove(etiquetaJaNaBD);
                 etiquetasDaBD.moveToNext();
             }
 
@@ -380,11 +382,11 @@ public class NoticiaProvider
                 null);
         ArrayList<Long> idsCategorias = new ArrayList<>();
         if (categoriasDaBD.getCount() < categoriasNoticiaSeparadas.length) {
-            // Algumas etiquetas não constam da base de dados
-            int indiceDesignacao = categoriasDaBD.getColumnIndex(NoticiaDatabase.Etiqueta.COLUMN_NAME_DESIGNACAO);
-            int indiceId = categoriasDaBD.getColumnIndex(NoticiaDatabase.Etiqueta._ID);
+            // Algumas categorias não constam da base de dados
+            int indiceDesignacao = categoriasDaBD.getColumnIndex(NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO);
+            int indiceId = categoriasDaBD.getColumnIndex(NoticiaDatabase.Categoria._ID);
 
-            ArrayList<String> categoriasAInserir = new ArrayList<>();
+            ArrayList<String> categoriasAInserir = new ArrayList<>(Arrays.asList(categoriasNoticiaSeparadas));
             categoriasDaBD.moveToNext();
             while (!categoriasDaBD.isAfterLast()) {
                 String categoriaJaNaBD = categoriasDaBD.getString(indiceDesignacao);
@@ -397,7 +399,7 @@ public class NoticiaProvider
                         encontrado = true;
                         break;
                     }
-                if (!encontrado) categoriasAInserir.add(categoriaJaNaBD);
+                if (encontrado) categoriasAInserir.remove(categoriaJaNaBD);
                 categoriasDaBD.moveToNext();
             }
 
