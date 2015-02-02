@@ -102,7 +102,6 @@ public class ListaNoticiasFragment
         mListaNoticiasSwipeRefreshLayout.setOnRefreshListener(this);
 
         mListaNoticiasListView = (ListView) mListaNoticiasSwipeRefreshLayout.findViewById(R.id.lista_noticias);
-        mListaNoticiasListView.setEmptyView(mListaNoticiasSwipeRefreshLayout.findViewById(R.id.sem_noticias));
 
         getLoaderManager().initLoader(ID_LOADER_NOTICIAS, null, this);
 
@@ -240,7 +239,7 @@ public class ListaNoticiasFragment
                     uriNoticias = NoticiaContract.Noticia.CONTENT_URI_CATEGORIA.buildUpon().appendPath(mCategoria).build();
 
                 return new CursorLoader(getActivity(), uriNoticias,
-                        NoticiaProvider.getCopyOfNoticiaDefaultProjection(), null, null, NoticiaContract.Noticia.COLUMN_NAME_ID_NOTICIA + " DESC");
+                        NoticiaProvider.getCopyOfNoticiaDefaultProjection(), null, null, NoticiaContract.Noticia.COLUMN_NAME_DESTACADA + " DESC, " + NoticiaContract.Noticia.COLUMN_NAME_ID_NOTICIA + " DESC");
             default:
                 // id inválido
                 return null;
