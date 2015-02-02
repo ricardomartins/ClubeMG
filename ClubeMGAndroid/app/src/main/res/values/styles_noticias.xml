@@ -14,9 +14,9 @@
     </style>
     <style name="ListaNoticias" parent="AppTheme">
         <item name="android:divider">@android:color/transparent</item>
-        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingTop">0dp</item>
         <item name="android:dividerHeight">@dimen/noticias_grid_spacing</item>
-        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingBottom">0dp</item>
         <item name="android:paddingLeft">@dimen/noticias_grid_spacing</item>
         <item name="android:paddingRight">@dimen/noticias_grid_spacing</item>
     </style>
