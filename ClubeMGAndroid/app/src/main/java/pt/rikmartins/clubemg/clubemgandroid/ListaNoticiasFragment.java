@@ -14,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -25,9 +24,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
 
@@ -51,17 +51,6 @@ public class ListaNoticiasFragment
     private NoticiasSimpleCursorAdapter mNoticiasCursorAdapter;
 
     private static final int ID_LOADER_NOTICIAS = 0;
-
-    private static final String[] mNoticiasCursorAdapterFrom = new String[]{
-            NoticiaContract.Noticia.COLUMN_NAME_TITULO,
-            NoticiaContract.Noticia.COLUMN_NAME_TEXTO,
-            NoticiaContract.Noticia.COLUMN_NAME_IMAGEM
-    };
-    private static final int[] mNoticiasCursorAdapterTo = new int[]{
-            R.id.titulo_noticia,
-            R.id.texto_noticia,
-            R.id.imagem_noticia
-    };
 
     private String mCategoria = null;
     private BroadcastReceiver broadcastReceiver;
@@ -112,24 +101,7 @@ public class ListaNoticiasFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.v(TAG, "Activity created");
         super.onActivityCreated(savedInstanceState);
-        mNoticiasCursorAdapter = new NoticiasSimpleCursorAdapter(getActivity(), R.layout.noticias_list_item, null, mNoticiasCursorAdapterFrom, mNoticiasCursorAdapterTo, 0);
-        mNoticiasCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
-            @Override
-            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-                if (view instanceof ImageView) {
-                    byte[] bytesImagem = cursor.getBlob(columnIndex);
-                    if (bytesImagem == null) {
-                        obterImagem(cursor.getString(cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE)), cursor.getInt(cursor.getColumnIndex(NoticiaContract.Noticia._ID)));
-                    } else {
-                        ByteArrayInputStream streamImagem = new ByteArrayInputStream(bytesImagem);
-                        Bitmap aImagem = BitmapFactory.decodeStream(streamImagem);
-                        ((ImageView) view).setImageBitmap(aImagem);
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });
+        mNoticiasCursorAdapter = new NoticiasSimpleCursorAdapter(getActivity(), null);
         mListaNoticiasListView.setAdapter(mNoticiasCursorAdapter);
         mListaNoticiasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -211,15 +183,82 @@ public class ListaNoticiasFragment
         iniciarActualizacao();
     }
 
-    class NoticiasSimpleCursorAdapter extends SimpleCursorAdapter {
+    class NoticiasSimpleCursorAdapter extends CursorAdapter {
+        private final LayoutInflater mInflater;
 
-        public NoticiasSimpleCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
-            super(context, layout, c, from, to, flags);
+        private int mIndiceId;
+        private int mIndiceTitulo;
+        private int mIndiceTexto;
+        private int mIndiceImagem;
+        private int mIndiceEnderecoImagemGrande;
+        private int mIndiceDestacada;
+
+        public NoticiasSimpleCursorAdapter(Context context, Cursor c) {
+            super(context, c, true);
+            mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         @Override
-        public void bindView(@NonNull View view, Context context, @NonNull Cursor cursor) {
-            super.bindView(view, context, cursor);
+        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+            return mInflater.inflate((cursor.getInt(mIndiceDestacada) != 1) ? R.layout.noticia_normal_list_item : R.layout.noticia_destacada_list_item, parent, false);
+        }
+
+        private void actualizaIndices(Cursor cursor){
+            if (cursor == null) return;
+            mIndiceId = cursor.getColumnIndex(NoticiaContract.Noticia._ID);
+            mIndiceTitulo = cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_TITULO);
+            mIndiceTexto = cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_TEXTO);
+            mIndiceImagem = cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM);
+            mIndiceDestacada = cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_DESTACADA);
+            mIndiceEnderecoImagemGrande = cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE);
+        }
+
+        @Override
+        public void changeCursor(Cursor cursor) {
+            super.changeCursor(cursor);
+            actualizaIndices(cursor);
+        }
+
+        @Override
+        public Cursor swapCursor(Cursor newCursor) {
+            Cursor oldCursor = super.swapCursor(newCursor);
+            actualizaIndices(newCursor);
+            return oldCursor;
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+            TextView textViewTitulo = (TextView) view.findViewById(R.id.titulo_noticia);
+            TextView textViewTexto = (TextView) view.findViewById(R.id.texto_noticia);
+            ImageView imageViewImagem = (ImageView) view.findViewById(R.id.imagem_noticia);
+
+            textViewTitulo.setText(cursor.getString(mIndiceTitulo));
+            textViewTexto.setText(cursor.getString(mIndiceTexto));
+
+            byte[] bytesImagem = cursor.getBlob(mIndiceImagem);
+            if (bytesImagem == null) {
+                imageViewImagem.setImageBitmap(null);
+                obterImagem(cursor.getString(mIndiceEnderecoImagemGrande), cursor.getInt(mIndiceId));
+            } else {
+                ByteArrayInputStream streamImagem = new ByteArrayInputStream(bytesImagem);
+                Bitmap aImagem = BitmapFactory.decodeStream(streamImagem);
+                imageViewImagem.setImageBitmap(aImagem);
+            }
+        }
+
+        private int getItemViewType(Cursor cursor) {
+            return cursor.getInt(mIndiceDestacada);
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            Cursor cursor = (Cursor) getItem(position);
+            return getItemViewType(cursor);
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return 2;
         }
     }
 
