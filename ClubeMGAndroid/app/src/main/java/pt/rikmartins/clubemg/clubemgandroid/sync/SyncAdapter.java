@@ -77,9 +77,10 @@ public class SyncAdapter
             Log.e(TAG, "Error updating database: " + e.toString());
             syncResult.databaseError = true;
             return;
+        } finally {
+            Log.i(TAG, "A finalizar actualização");
+            getContext().sendBroadcast(new Intent(ACTION_FINALIZA_ACTUALIZACAO));
         }
-        Log.i(TAG, "A finalizar actualização");
-        getContext().sendBroadcast(new Intent(ACTION_FINALIZA_ACTUALIZACAO));
 
         final Resources resources = getContext().getResources();
         final boolean notificar = PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(resources.getString(R.string.pref_key_notificacoes_novas_noticias), false);

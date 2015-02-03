@@ -20,6 +20,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import pt.rikmartins.clubemg.clubemgandroid.R;
+
 public class NoticiaProvider
         extends ContentProvider {
     private static final String TAG = NoticiaProvider.class.getSimpleName();
@@ -563,14 +565,6 @@ public class NoticiaProvider
         return count;
     }
 
-    private static final int LARGURA_IMAGEM_NORMAL = 480;
-    private static final int ALTURA_IMAGEM_NORMAL = 320;
-    private static final float RACIO_IMAGEM_NORMAL = ((float) LARGURA_IMAGEM_NORMAL) / ALTURA_IMAGEM_NORMAL;
-
-    private static final int LARGURA_IMAGEM_DESTACADA = 480;
-    private static final int ALTURA_IMAGEM_DESTACADA = 640;
-    private static final float RACIO_IMAGEM_DESTACADA = ((float) LARGURA_IMAGEM_DESTACADA) / ALTURA_IMAGEM_DESTACADA;
-
     /**
      * Update an entry in the database by URI.
      */
@@ -638,27 +632,11 @@ public class NoticiaProvider
         int alturaOriginal = btmOriginal.getHeight();
         if (larguraOriginal < 64 || alturaOriginal < 64) return null;
 
-        float racioOriginal = ((float) larguraOriginal) / alturaOriginal;
-
-        int larguraNova = larguraOriginal;
-        int xNovo = 0;
-        int alturaNova = alturaOriginal;
-        int yNovo = 0;
-        if (racioOriginal > RACIO_IMAGEM_NORMAL) {
-            // Muito Larga
-            larguraNova = (int) (alturaOriginal * RACIO_IMAGEM_NORMAL);
-            xNovo = (larguraOriginal - larguraNova) / 2;
-        } else if (racioOriginal < RACIO_IMAGEM_NORMAL) {
-            // Muito Alta
-            alturaNova = (int) (larguraOriginal / RACIO_IMAGEM_NORMAL);
-            yNovo = (alturaOriginal - alturaNova) / 2;
-        }
-
-        float escalonamento = ((float) LARGURA_IMAGEM_NORMAL) / larguraNova;
+        float escalonamento = ((float) getContext().getResources().getInteger(R.integer.largura_imagens)) / larguraOriginal;
         Matrix matrix = new Matrix();
         matrix.postScale(escalonamento, escalonamento);
 
-        Bitmap btmRedimensionado = Bitmap.createBitmap(btmOriginal, xNovo, yNovo, larguraNova, alturaNova, matrix, true);
+        Bitmap btmRedimensionado = Bitmap.createBitmap(btmOriginal, 0, 0, larguraOriginal, alturaOriginal, matrix, true);
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
         btmRedimensionado.compress(Bitmap.CompressFormat.JPEG, QUALIDADE_JPG_NA_BD, byteArrayBitmapStream);
         return byteArrayBitmapStream.toByteArray();

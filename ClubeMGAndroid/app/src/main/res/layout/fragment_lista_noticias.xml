@@ -12,15 +12,4 @@
         android:visibility="visible"
         style="@style/ListaNoticias" />
 
-    <TextView
-        android:id="@+id/sem_noticias"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/info_sem_noticias"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:gravity="center"
-        android:layout_margin="16dp" />
-
 </android.support.v4.widget.SwipeRefreshLayout>
