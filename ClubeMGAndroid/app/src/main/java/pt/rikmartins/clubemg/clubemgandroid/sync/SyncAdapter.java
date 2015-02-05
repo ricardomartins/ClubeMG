@@ -22,6 +22,8 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import pt.rikmartins.clubemg.clubemgandroid.MainActivity;
 import pt.rikmartins.clubemg.clubemgandroid.R;
@@ -100,18 +102,23 @@ public class SyncAdapter
         Log.v(TAG, "etiquetas anteriores: " + cursorEtiquetas.getColumnCount());
 
         ArrayList<SitioNoticias.Noticia> noticiasAInserir = new ArrayList<>();
+        Map<Long, SitioNoticias.Noticia> noticiasAActualizar = new HashMap<>();
         ArrayList<String> categoriasAInserir = new ArrayList<>();
         ArrayList<String> etiquetasAInserir = new ArrayList<>();
 
         int indiceIdNoticia = cursorNoticias.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ID_NOTICIA);
+        int indiceDestacada = cursorNoticias.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_DESTACADA);
         for (SitioNoticias.Noticia noticia : sitioNoticiasClubeMG.getNoticias()) {
-            String idNoticia = noticia.getIdentificacaoNoticia();
+            String idNoticiaExterna = noticia.getIdentificacaoNoticia();
+            boolean eNoticiaDestacadaExterna = noticia.isDestacada();
 
             boolean adicionarALista = true;
             cursorNoticias.moveToFirst();
             while(!cursorNoticias.isAfterLast()) {
-                if (cursorNoticias.getString(indiceIdNoticia).equals(idNoticia)) {
+                if (cursorNoticias.getString(indiceIdNoticia).equals(idNoticiaExterna)) {
                     adicionarALista = false;
+                    if ((cursorNoticias.getInt(indiceDestacada) == 1) ^ eNoticiaDestacadaExterna)
+                        noticiasAActualizar.put(cursorNoticias.getLong(cursorNoticias.getColumnIndex(NoticiaContract.Noticia._ID)), noticia);
                     break;
                 }
                 cursorNoticias.moveToNext();
@@ -167,18 +174,32 @@ public class SyncAdapter
             insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM, noticiaDoSitio.getEnderecoImagem().toString());
             insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_NOTICIA, noticiaDoSitio.getEnderecoNoticia().toString());
             insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE, ((SitioNoticiasClubeMG.NoticiaClubeMG) noticiaDoSitio).getEnderecoImagemGrande().toString());
-            Log.v(TAG, "operação notícia: " + insertOperationBuilder.toString());
+            Log.v(TAG, "operação inserir notícia: " + insertOperationBuilder.toString());
 
             lote.add(insertOperationBuilder.build());
         }
+
+        for (long idNoticiaAActualizar : noticiasAActualizar.keySet()) {
+            SitioNoticias.Noticia noticiaDoSitio = noticiasAActualizar.get(idNoticiaAActualizar);
+
+            final ContentProviderOperation.Builder updateOperationBuilder = ContentProviderOperation.newUpdate(NoticiaContract.Noticia.CONTENT_URI.buildUpon().appendPath(String.valueOf(idNoticiaAActualizar)).build());
+            updateOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_TEXTO, noticiaDoSitio.getTexto());
+            updateOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_DESTACADA, noticiaDoSitio.isDestacada());
+            Log.v(TAG, "operação actualizar notícia: " + updateOperationBuilder.toString());
+
+            lote.add(updateOperationBuilder.build());
+        }
+
         for (String designacaoCategoria : categoriasAInserir)
             lote.add(ContentProviderOperation.newInsert(NoticiaContract.Categoria.CONTENT_URI)
                     .withValue(NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO, designacaoCategoria)
                     .build());
+
         for (String designacaoEtiqueta : etiquetasAInserir)
             lote.add(ContentProviderOperation.newInsert(NoticiaContract.Etiqueta.CONTENT_URI)
                     .withValue(NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO, designacaoEtiqueta)
                     .build());
+
         syncResult.stats.numInserts = syncResult.stats.numEntries = noticiasAInserir.size() + categoriasAInserir.size() + etiquetasAInserir.size();
         Log.v(TAG, "lote: " + lote.size());
 
