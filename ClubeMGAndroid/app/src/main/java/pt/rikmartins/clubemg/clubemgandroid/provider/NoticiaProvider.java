@@ -553,9 +553,9 @@ public class NoticiaProvider
                 builder.table(NoticiaDatabase.Etiqueta.TABLE_NAME);
                 break;
             case ROUTE_NOTICIA_CATEGORIA_ID:
-                throw new UnsupportedOperationException("Delete not supported on URI: " + uri);
+                throw new UnsupportedOperationException("Apagar no URI: " + uri);
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                throw new UnsupportedOperationException("Uri desconhecido: " + uri);
         }
         count = builder.delete(db);
         // Send broadcast to registered ContentObservers, to refresh UI.
@@ -613,9 +613,9 @@ public class NoticiaProvider
                 builder.table(NoticiaDatabase.Etiqueta.TABLE_NAME);
                 break;
             case ROUTE_NOTICIA_CATEGORIA_ID:
-                throw new UnsupportedOperationException("Delete not supported on URI: " + uri);
+                throw new UnsupportedOperationException("Actualização no URI: " + uri);
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                throw new UnsupportedOperationException("Uri desconhecido: " + uri);
         }
     count = builder.update(db, valoresFinais);
 
