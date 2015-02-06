@@ -13,4 +13,6 @@
     <dimen name="noticia_destacada_altura">480dp</dimen>
 
     <integer name="largura_imagens">480</integer>
+    <dimen name="toolbar_padding">0dp</dimen>
+
 </resources>
