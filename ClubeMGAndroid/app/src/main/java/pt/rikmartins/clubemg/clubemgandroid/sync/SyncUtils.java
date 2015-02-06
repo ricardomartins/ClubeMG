@@ -13,6 +13,7 @@ import android.util.Log;
 
 import java.util.List;
 
+import pt.rikmartins.clubemg.clubemgandroid.R;
 import pt.rikmartins.clubemg.clubemgandroid.accounts.GenericAccountService;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 
@@ -62,36 +63,28 @@ public class SyncUtils {
         }
     }
 
-    public static boolean UpdateSyncPeriod(Context context){
-        return UpdateSyncPeriod(context, GenericAccountService.GetAccount(ACCOUNT_TYPE), CONTENT_AUTHORITY);
+    public static void UpdateSyncPeriod(Context context){
+        UpdateSyncPeriod(context, GenericAccountService.GetAccount(ACCOUNT_TYPE), CONTENT_AUTHORITY);
     }
 
-    private static boolean UpdateSyncPeriod(Context context, Account account, String authority){
-        List<PeriodicSync> periodicSyncs = ContentResolver.getPeriodicSyncs(account, authority);
-
-        long old_sync_frequency = periodicSyncs.isEmpty() ? -1 : periodicSyncs.get(0).period;
-        long new_sync_frequency = Long.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString("sync_frequency", DEFAULT_SYNC_FREQUENCY));
-
-        return UpdateSyncPeriod(account, authority, old_sync_frequency, new_sync_frequency);
+    private static void UpdateSyncPeriod(Context context, Account account, String authority){
+        long new_sync_frequency = Long.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getResources().getString(R.string.pref_key_freq_sinc), DEFAULT_SYNC_FREQUENCY));
+        UpdateSyncPeriod(account, authority, new_sync_frequency);
     }
 
-    private static boolean UpdateSyncPeriod(Account account, String authority, long old_sync_frequency, long new_sync_frequency){
-        if (new_sync_frequency != old_sync_frequency) {
-            if (new_sync_frequency != -1) {
-                // Inform the system that this account is eligible for auto sync when the network is up
-                ContentResolver.setSyncAutomatically(account, authority, true);
-                // Recommend a schedule for automatic synchronization. The system may modify this based
-                // on other scheduled syncs and network utilization.
-                ContentResolver.addPeriodicSync(
-                        account, authority, new Bundle(), new_sync_frequency);
-            } else {
-                // Inform the system that this account is not eligible for auto sync when the network is up
-                ContentResolver.setSyncAutomatically(account, authority, false);
-                ContentResolver.removePeriodicSync(account, authority, new Bundle());
-            }
-            return true;
+    private static void UpdateSyncPeriod(Account account, String authority, long newSyncFrequency){
+        if (newSyncFrequency != -1) {
+            // Inform the system that this account is eligible for auto sync when the network is up
+            ContentResolver.setSyncAutomatically(account, authority, true);
+            // Recommend a schedule for automatic synchronization. The system may modify this based
+            // on other scheduled syncs and network utilization.
+            ContentResolver.addPeriodicSync(
+                    account, authority, new Bundle(), newSyncFrequency);
+        } else {
+            // Inform the system that this account is not eligible for auto sync when the network is up
+            ContentResolver.setSyncAutomatically(account, authority, false);
+            ContentResolver.removePeriodicSync(account, authority, new Bundle());
         }
-        return false;
     }
 
     /**
