@@ -8,4 +8,5 @@
     <dimen name="navigation_drawer_width">260dp</dimen>
 
     <dimen name="noticias_grid_spacing">4dp</dimen>
+    <dimen name="toolbar_padding">0dp</dimen>
 </resources>
