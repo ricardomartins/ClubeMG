@@ -237,7 +237,7 @@ public class ListaNoticiasFragment
 
             byte[] bytesImagem = cursor.getBlob(mIndiceImagem);
             if (bytesImagem == null) {
-                imageViewImagem.setImageBitmap(null);
+                imageViewImagem.setImageResource(R.drawable.fundo_noticia);
                 obterImagem(cursor.getString(mIndiceEnderecoImagemGrande), cursor.getInt(mIndiceId));
             } else {
                 ByteArrayInputStream streamImagem = new ByteArrayInputStream(bytesImagem);
