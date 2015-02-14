@@ -1,3 +1,5 @@
 <resources>
     <dimen name="toolbar_padding">24dp</dimen>
+    <dimen name="cabecalho_altura">172dp</dimen>
+    <dimen name="cabecalho_icones_margem_superior">40dp</dimen>
 </resources>
