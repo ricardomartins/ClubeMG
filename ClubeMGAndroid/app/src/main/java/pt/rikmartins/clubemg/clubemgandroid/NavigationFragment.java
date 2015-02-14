@@ -16,17 +16,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.commonsware.cwac.merge.MergeAdapter;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
@@ -46,7 +41,7 @@ public class NavigationFragment
     private LinearLayout mNavigationLinearLayout;
     private ListView     mCategoriasListView;
 
-    private MergeAdapter mNavigationMergeAdapter;
+    private SimpleCursorAdapter mSimpleCursorAdapter;
 
     private static final int URL_LOADER_CATEGORIAS = 10;
 
@@ -55,20 +50,10 @@ public class NavigationFragment
             NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO
     };
 
-    private static final String OUTROS_ICON = "icon";
-    private static final String OUTROS_TITULO = "título";
-    private static final String[] OUTROS_FROM = new String[] {
-            OUTROS_ICON,
-            OUTROS_TITULO
-    };
-
     private static final int[] DRAWER_LIST_ITEM_TO = new int[]{
             R.id.image_view_item_navegacao,
             R.id.item_navegacao,
     };
-
-
-    private SimpleCursorAdapter mCategoriasCursorAdapter;
 
     private HashMap<String, DescriptorCategoriaConhecida> descricaoCategoriasConhecidas;
 
@@ -76,6 +61,23 @@ public class NavigationFragment
     public void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
+    }
+
+    private void criarItensNavegacaoEstaticos(LayoutInflater inflater){
+        View cabecalhoNavegacao = inflater.inflate(R.layout.cabecalho_navigation, mCategoriasListView, false);
+        mCategoriasListView.addHeaderView(cabecalhoNavegacao);
+
+        View itemNavegacaoNoticias = inflater.inflate(R.layout.drawer_list_item, mCategoriasListView, false);
+        ((ImageView) itemNavegacaoNoticias.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_dashboard_grey600_24dp);
+        ((TextView) itemNavegacaoNoticias.findViewById(R.id.item_navegacao)).setText(R.string.item_navegacao_noticias);
+        itemNavegacaoNoticias.setTag(TIPO_ON_CLICK_NOTICIAS);
+        mCategoriasListView.addHeaderView(itemNavegacaoNoticias);
+
+        View itemNavegacaoDefinicoes = inflater.inflate(R.layout.drawer_list_item, mCategoriasListView, false);
+        ((ImageView) itemNavegacaoDefinicoes.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_settings_grey600_24dp);
+        ((TextView) itemNavegacaoDefinicoes.findViewById(R.id.item_navegacao)).setText(R.string.item_navegacao_definicoes);
+        itemNavegacaoDefinicoes.setTag(TIPO_ON_CLICK_DEFINICOES);
+        mCategoriasListView.addFooterView(itemNavegacaoDefinicoes);
     }
 
     @Nullable
@@ -87,6 +89,9 @@ public class NavigationFragment
                 container, false);
         mCategoriasListView = (ListView) mNavigationLinearLayout.findViewById(
                 R.id.left_navigation_drawer_categorias_list);
+
+        criarItensNavegacaoEstaticos(inflater);
+
         getLoaderManager().initLoader(URL_LOADER_CATEGORIAS, null, this);
 
         return mNavigationLinearLayout;
@@ -97,20 +102,11 @@ public class NavigationFragment
         Log.v(TAG, "Activity created");
         super.onActivityCreated(savedInstanceState);
 
-        mNavigationMergeAdapter = new MergeAdapter();
-
-        ArrayList<HashMap<String, Object>> simpleAdapterData = new ArrayList<>(1);
-        simpleAdapterData.add(new HashMap<String, Object>(2));
-        simpleAdapterData.get(0).put(OUTROS_ICON, R.drawable.ic_dashboard_grey600_24dp);
-        simpleAdapterData.get(0).put(OUTROS_TITULO, "Notícias");
-        SimpleAdapter semFiltroAdapter = new SimpleAdapter(getActivity(), simpleAdapterData, R.layout.drawer_list_item, OUTROS_FROM, DRAWER_LIST_ITEM_TO);
-
-        mNavigationMergeAdapter.addAdapter(semFiltroAdapter);
+        mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.drawer_list_item, null, CATEGORIAS_FROM, DRAWER_LIST_ITEM_TO, 0);
 
         descricaoCategoriasConhecidas = construirDescricaoCategoriasConhecidas();
 
-        mCategoriasCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.drawer_list_item, null, CATEGORIAS_FROM, DRAWER_LIST_ITEM_TO, 0);
-        mCategoriasCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+        mSimpleCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                 String categoria = cursor.getString(cursor.getColumnIndex(NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO));
@@ -139,24 +135,18 @@ public class NavigationFragment
                 return false;
             }
         });
-        mNavigationMergeAdapter.addAdapter(mCategoriasCursorAdapter);
 
-        simpleAdapterData = new ArrayList<>(1);
-        simpleAdapterData.add(new HashMap<String, Object>(2));
-        simpleAdapterData.get(0).put(OUTROS_ICON, R.drawable.ic_settings_grey600_24dp);
-        simpleAdapterData.get(0).put(OUTROS_TITULO, "Definições");
-        SimpleAdapter definicoesAdapter = new SimpleAdapter(getActivity(), simpleAdapterData, R.layout.drawer_list_item, OUTROS_FROM, DRAWER_LIST_ITEM_TO);
-
-        mNavigationMergeAdapter.addAdapter(definicoesAdapter);
-
-        mCategoriasListView.setAdapter(mNavigationMergeAdapter);
+        mCategoriasListView.setAdapter(mSimpleCursorAdapter);
 
         mCategoriasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_NOTICIAS, null);
-                else if (position == (parent.getCount() - 1)) ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_DEFINICOES, null);
-                else ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, String.valueOf(id));
+                Log.d(TAG, "onItemClick -> Position: " + position + "; Id: " + id);
+                if (id != -1)
+                    ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, String.valueOf(id));
+                else if (view.getTag() != null) {
+                    ((MainActivity) getActivity()).onNavigationEvent((String) view.getTag(), null);
+                }
             }
         });
     }
@@ -188,13 +178,13 @@ public class NavigationFragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCategoriasCursorAdapter.changeCursor(data);
+        mSimpleCursorAdapter.changeCursor(data);
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mCategoriasCursorAdapter.changeCursor(null);
+        mSimpleCursorAdapter.changeCursor(null);
     }
 
     private HashMap<String, DescriptorCategoriaConhecida> construirDescricaoCategoriasConhecidas
