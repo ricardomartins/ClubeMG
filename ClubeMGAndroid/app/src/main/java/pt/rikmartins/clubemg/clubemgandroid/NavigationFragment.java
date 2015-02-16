@@ -3,12 +3,15 @@ package pt.rikmartins.clubemg.clubemgandroid;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.ActivityNotFoundException;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -31,7 +34,7 @@ import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
  * Created by ricardo on 08-12-2014.
  */
 public class NavigationFragment
-        extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+        extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener, View.OnClickListener{
     private static final String TAG = NavigationFragment.class.getSimpleName();
 
     public static final String TIPO_ON_CLICK_NOTICIAS = "noticias";
@@ -65,13 +68,21 @@ public class NavigationFragment
 
     private void criarItensNavegacaoEstaticos(LayoutInflater inflater){
         View cabecalhoNavegacao = inflater.inflate(R.layout.cabecalho_navigation, mCategoriasListView, false);
+
+        // cabecalhoNavegacao.findViewById(R.id.icone_aplicacao).setOnClickListener(this);
+        cabecalhoNavegacao.findViewById(R.id.icone_facebook).setOnClickListener(this);
+        cabecalhoNavegacao.findViewById(R.id.icone_googleplus).setOnClickListener(this);
+
         mCategoriasListView.addHeaderView(cabecalhoNavegacao);
+        mCategoriasListView.addHeaderView(inflater.inflate(R.layout.separador_lista_transparente, mCategoriasListView, false));
 
         View itemNavegacaoNoticias = inflater.inflate(R.layout.drawer_list_item, mCategoriasListView, false);
         ((ImageView) itemNavegacaoNoticias.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_dashboard_grey600_24dp);
         ((TextView) itemNavegacaoNoticias.findViewById(R.id.item_navegacao)).setText(R.string.item_navegacao_noticias);
         itemNavegacaoNoticias.setTag(TIPO_ON_CLICK_NOTICIAS);
         mCategoriasListView.addHeaderView(itemNavegacaoNoticias);
+
+        mCategoriasListView.addFooterView(inflater.inflate(R.layout.separador_lista_linha, mCategoriasListView, false));
 
         View itemNavegacaoDefinicoes = inflater.inflate(R.layout.drawer_list_item, mCategoriasListView, false);
         ((ImageView) itemNavegacaoDefinicoes.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_settings_grey600_24dp);
@@ -137,18 +148,7 @@ public class NavigationFragment
         });
 
         mCategoriasListView.setAdapter(mSimpleCursorAdapter);
-
-        mCategoriasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "onItemClick -> Position: " + position + "; Id: " + id);
-                if (id != -1)
-                    ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, String.valueOf(id));
-                else if (view.getTag() != null) {
-                    ((MainActivity) getActivity()).onNavigationEvent((String) view.getTag(), null);
-                }
-            }
-        });
+        mCategoriasListView.setOnItemClickListener(this);
     }
 
     @Override
@@ -200,6 +200,48 @@ public class NavigationFragment
             resultado.put(categorias[i], new DescriptorCategoriaConhecida(categorias[i], iconesCategorias.getDrawable(i), titulosCategorias[i]));
 
         return resultado;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Uri uriAplicacao = null;
+        Uri uriAlternativo = null;
+        switch (v.getId()) {
+            case R.id.icone_aplicacao:
+                break;
+            case R.id.icone_facebook:
+                uriAplicacao = Uri.parse("https://www.facebook.com/pages/Clube-de-Montanhismo-da-Guarda/123780544307693");
+                uriAlternativo = null;
+                break;
+            case R.id.icone_googleplus:
+                uriAplicacao = Uri.parse("https://plus.google.com/u/0/114873093924282530167/posts");
+                uriAlternativo = null;
+                break;
+        }
+        if (uriAplicacao != null) {
+            Intent i = new Intent(Intent.ACTION_VIEW, uriAplicacao);
+            try {
+                getActivity().startActivity(i);
+            } catch (ActivityNotFoundException e) {
+                if (uriAlternativo != null) {
+                    i = new Intent(Intent.ACTION_VIEW, uriAlternativo);
+                    getActivity().startActivity(i);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "onItemClick -> Position: " + position + "; Id: " + id);
+        if (position == 0) {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.montanhismo-guarda.pt/portal/"));
+            getActivity().startActivity(i);
+        } else if (id != -1)
+            ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, String.valueOf(id));
+        else if (view.getTag() != null) {
+            ((MainActivity) getActivity()).onNavigationEvent((String) view.getTag(), null);
+        }
     }
 
     private static class DescriptorCategoriaConhecida {
