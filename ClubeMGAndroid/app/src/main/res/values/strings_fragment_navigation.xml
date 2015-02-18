@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="item_navegacao_noticias">Notícias</string>
-    <string name="item_navegacao_definicoes">Definições</string>
-
     <string name="categoria_designacao_stb">categoria</string>
 
     <string-array name="lista_categorias"> <!-- Não traduzir -->
