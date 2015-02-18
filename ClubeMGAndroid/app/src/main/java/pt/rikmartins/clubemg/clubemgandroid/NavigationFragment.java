@@ -78,7 +78,7 @@ public class NavigationFragment
 
         View itemNavegacaoNoticias = inflater.inflate(R.layout.drawer_list_item, mCategoriasListView, false);
         ((ImageView) itemNavegacaoNoticias.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_dashboard_grey600_24dp);
-        ((TextView) itemNavegacaoNoticias.findViewById(R.id.item_navegacao)).setText(R.string.item_navegacao_noticias);
+        ((TextView) itemNavegacaoNoticias.findViewById(R.id.item_navegacao)).setText(R.string.titulo_fragmento_noticias);
         itemNavegacaoNoticias.setTag(TIPO_ON_CLICK_NOTICIAS);
         mCategoriasListView.addHeaderView(itemNavegacaoNoticias);
 
@@ -86,7 +86,7 @@ public class NavigationFragment
 
         View itemNavegacaoDefinicoes = inflater.inflate(R.layout.drawer_list_item, mCategoriasListView, false);
         ((ImageView) itemNavegacaoDefinicoes.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_settings_grey600_24dp);
-        ((TextView) itemNavegacaoDefinicoes.findViewById(R.id.item_navegacao)).setText(R.string.item_navegacao_definicoes);
+        ((TextView) itemNavegacaoDefinicoes.findViewById(R.id.item_navegacao)).setText(R.string.titulo_fragmento_definicoes);
         itemNavegacaoDefinicoes.setTag(TIPO_ON_CLICK_DEFINICOES);
         mCategoriasListView.addFooterView(itemNavegacaoDefinicoes);
     }
@@ -138,6 +138,11 @@ public class NavigationFragment
                         if (view.getId() == R.id.item_navegacao) {
                             String categoriaCapitalizada = categoria.substring(0, 1).toUpperCase() + categoria.substring(1);
                             ((TextView) view).setText(categoriaCapitalizada);
+                            return true;
+                        }
+                    } else if (view instanceof ImageView) {
+                        if (view.getId() == R.id.image_view_item_navegacao) {
+                            ((ImageView) view).setImageResource(R.drawable.ic_cat_generico_grey600_24dp);
                             return true;
                         }
                     }
