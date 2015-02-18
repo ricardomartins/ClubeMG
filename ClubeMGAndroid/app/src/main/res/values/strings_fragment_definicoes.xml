@@ -1,5 +1,5 @@
 <resources>
-    <string name="titulo_activity_definicoes">Definições</string>
+    <string name="titulo_fragmento_definicoes">Definições</string>
 
     <!-- Dados e sincronização -->
     <string name="pref_header_dados_sinc">Dados e sincronização</string>
