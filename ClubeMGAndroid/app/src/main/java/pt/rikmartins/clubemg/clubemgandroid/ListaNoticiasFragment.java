@@ -30,6 +30,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
@@ -92,7 +94,7 @@ public class ListaNoticiasFragment
 
         mListaNoticiasListView = (ListView) mListaNoticiasSwipeRefreshLayout.findViewById(R.id.lista_noticias);
 
-        getLoaderManager().initLoader(ID_LOADER_NOTICIAS, null, this);
+        substituirCategoria(mCategoria);
 
         return mListaNoticiasSwipeRefreshLayout;
     }
@@ -268,14 +270,28 @@ public class ListaNoticiasFragment
         super.onAttach(activity);
     }
 
+    private void substituirCursor(Cursor novoCursor) {
+        String categoriaCursor = novoCursor.getExtras().getString(NoticiaProvider.QUERY_NOTICIAS_ID_CATEGORIA, null);
+        mNoticiasCursorAdapter.swapCursor(novoCursor);
+
+        mCategoria = categoriaCursor;
+    }
+
+    public void substituirCategoria(String categoria){
+        Bundle bundleLoader = new Bundle();
+        bundleLoader.putString(ARG_NOME_CATEGORIA, categoria);
+        getLoaderManager().restartLoader(ID_LOADER_NOTICIAS, bundleLoader, this);
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String categoria = (args != null) ? args.getString(ARG_NOME_CATEGORIA) : null;
+
         switch (id) {
             case ID_LOADER_NOTICIAS:
                 Uri uriNoticias;
-                if (mCategoria == null) uriNoticias = NoticiaContract.Noticia.CONTENT_URI;
-                else
-                    uriNoticias = NoticiaContract.Noticia.CONTENT_URI_CATEGORIA.buildUpon().appendPath(mCategoria).build();
+                if (categoria == null) uriNoticias = NoticiaContract.Noticia.CONTENT_URI;
+                else uriNoticias = NoticiaContract.Noticia.CONTENT_URI_CATEGORIA.buildUpon().appendPath(categoria).build();
 
                 return new CursorLoader(getActivity(), uriNoticias,
                         NoticiaProvider.getCopyOfNoticiaDefaultProjection(), null, null, NoticiaContract.Noticia.COLUMN_NAME_DESTACADA + " DESC, " + NoticiaContract.Noticia.COLUMN_NAME_ID_NOTICIA + " DESC");
@@ -287,11 +303,11 @@ public class ListaNoticiasFragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mNoticiasCursorAdapter.changeCursor(data);
+        substituirCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
-        mNoticiasCursorAdapter.changeCursor(null);
+        mNoticiasCursorAdapter.swapCursor(null);
     }
 }
