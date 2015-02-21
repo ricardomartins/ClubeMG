@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.util.Log;
 
@@ -205,6 +206,8 @@ public class NoticiaProvider
         return c;
     }
 
+    public static final String QUERY_NOTICIAS_ID_CATEGORIA = "CATEGORIA";
+
     public Cursor queryNoticiaQuery(SQLiteDatabase db, Uri uri, int uriMatch, String[] projection, String selection,
                                     String[] selectionArgs, String sortOrder) {
         if (projection == null) projection = NoticiaProvider.getCopyOfNoticiaDefaultProjection();
@@ -223,18 +226,19 @@ public class NoticiaProvider
         // Obter a categoria da tabela categorias
         builder.map(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIAS, NOTICIA_COLUMN_CATEGORIAS);
 
+        String idCategoria;
         switch (uriMatch) {
             case ROUTE_NOTICIA_ID:
                 // Devolver uma notícia, pelo ID.
                 builder.where(NoticiaDatabase.Noticia.TABLE_NAME + "." + NoticiaDatabase.Noticia._ID + "=?", uri.getLastPathSegment());
-                break;
             case ROUTE_NOTICIA:
                 // Devolver todas as notícias.
-                // Nada a fazer
+                idCategoria = null;
                 break;
             case ROUTE_NOTICIA_CATEGORIA_ID:
                 // Devolver todas as notícia duma categoria.
-                builder.where(NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria._ID+ "=?", uri.getLastPathSegment());
+                idCategoria = uri.getLastPathSegment();
+                builder.where(NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria._ID+ "=?", idCategoria);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -243,7 +247,11 @@ public class NoticiaProvider
         builder.where(selection, selectionArgs);
 
         Log.i(TAG, "builder: " + builder);
-        return builder.query(db, projection, NOTICIA_GROUP_BY, null, sortOrder, null);
+        Cursor cursor = builder.query(db, projection, NOTICIA_GROUP_BY, null, sortOrder, null);
+        Bundle extrasCursor = cursor.getExtras();
+        extrasCursor.putString(QUERY_NOTICIAS_ID_CATEGORIA, idCategoria);
+        cursor.respond(extrasCursor);
+        return cursor;
     }
 
     public Cursor queryCategoriaQuery(SQLiteDatabase db, Uri uri, int uriMatch, String[] projection, String selection,

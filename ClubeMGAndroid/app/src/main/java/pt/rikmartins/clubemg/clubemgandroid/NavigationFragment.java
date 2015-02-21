@@ -48,6 +48,8 @@ public class NavigationFragment
 
     private static final int URL_LOADER_CATEGORIAS = 10;
 
+    private ItemClickListener itemClickListener;
+
     private static final String[] CATEGORIAS_FROM = new String[]{
             NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO,
             NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO
@@ -159,6 +161,8 @@ public class NavigationFragment
     @Override
     public void onAttach(Activity activity) {
         Log.v(TAG, "Fragment attached to Activity");
+        if (activity instanceof ItemClickListener) itemClickListener = (ItemClickListener) activity;
+        else itemClickListener = null;
         super.onAttach(activity);
     }
 
@@ -243,9 +247,9 @@ public class NavigationFragment
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.montanhismo-guarda.pt/portal/"));
             getActivity().startActivity(i);
         } else if (id != -1)
-            ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, String.valueOf(id));
+            itemClickListener.onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, String.valueOf(id));
         else if (view.getTag() != null) {
-            ((MainActivity) getActivity()).onNavigationEvent((String) view.getTag(), null);
+            itemClickListener.onNavigationEvent((String) view.getTag(), null);
         }
     }
 
@@ -259,5 +263,9 @@ public class NavigationFragment
         public String categoria;
         public Drawable iconeCategoria;
         public String tituloCategoria;
+    }
+
+    interface ItemClickListener {
+        public void onNavigationEvent(String modo, String dados);
     }
 }

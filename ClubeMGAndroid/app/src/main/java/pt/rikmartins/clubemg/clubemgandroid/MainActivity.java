@@ -1,5 +1,6 @@
 package pt.rikmartins.clubemg.clubemgandroid;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
@@ -13,7 +14,7 @@ import android.widget.FrameLayout;
 import pt.rikmartins.clubemg.clubemgandroid.sync.SyncUtils;
 
 public class MainActivity
-        extends ActionBarActivity {
+        extends ActionBarActivity implements NavigationFragment.ItemClickListener{
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private View               mMainLayout;
@@ -45,8 +46,10 @@ public class MainActivity
         if  (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT) onCreateWithDrawerLayout(savedInstanceState);
         else assert false; // TODO: Alterar isto
 
-        ListaNoticiasFragment listaNoticiasFragment = ListaNoticiasFragment.newInstance();
-        getFragmentManager().beginTransaction().add(R.id.main_container, listaNoticiasFragment).commit();
+        if (savedInstanceState == null) {
+            ListaNoticiasFragment listaNoticiasFragment = ListaNoticiasFragment.newInstance();
+            getFragmentManager().beginTransaction().add(R.id.main_container, listaNoticiasFragment, TAG_FRAGMENTO_LISTA_NOTICIAS).commit();
+        }
     }
 
     private void onCreateWithDrawerLayout(Bundle savedInstanceState){
@@ -54,8 +57,8 @@ public class MainActivity
         mToolbar.setTitleTextColor(getResources().getColor(R.color.colorTextLight));
 
         mNavigationDrawerToggle = new ActionBarDrawerToggle(this, (DrawerLayout) mMainLayout, mToolbar,
-                                                            R.string.navigation_drawer_open,
-                                                            R.string.navigation_drawer_close) {
+                                                            R.string.abrir_gaveta_navegacao,
+                                                            R.string.fechar_gaveta_navegacao) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -82,21 +85,28 @@ public class MainActivity
         return mToolbar;
     }
 
-    public void onNavigationEvent(String modo, String dados){
+    private static final String TAG_FRAGMENTO_DEFINICOES = "definições";
+    private static final String TAG_FRAGMENTO_LISTA_NOTICIAS = "notícias";
+
+    @Override
+    public void onNavigationEvent(String modo, String dados) {
+        FragmentManager fragmentManager = getFragmentManager();
         switch(modo){
             case NavigationFragment.TIPO_ON_CLICK_CATEGORIA:
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.main_container, ListaNoticiasFragment.newInstance(dados))
-                        .commit();
-                break;
             case NavigationFragment.TIPO_ON_CLICK_NOTICIAS:
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.main_container, ListaNoticiasFragment.newInstance())
-                        .commit();
+                ListaNoticiasFragment listaNoticiasFragment = (ListaNoticiasFragment) fragmentManager.findFragmentByTag(TAG_FRAGMENTO_LISTA_NOTICIAS);
+                if (listaNoticiasFragment != null) {
+                    listaNoticiasFragment.substituirCategoria(dados);
+                } else {
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.main_container, ListaNoticiasFragment.newInstance(dados))
+                            .commit();
+                }
                 break;
             case NavigationFragment.TIPO_ON_CLICK_DEFINICOES:
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.main_container, new DefinicoesFragment()).commit();
+                DefinicoesFragment definicoesFragment = (DefinicoesFragment) fragmentManager.findFragmentByTag(TAG_FRAGMENTO_DEFINICOES);
+                fragmentManager.beginTransaction()
+                    .replace(R.id.main_container, (definicoesFragment == null) ? new DefinicoesFragment() : definicoesFragment, TAG_FRAGMENTO_DEFINICOES).commit();
                 break;
         }
         if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT)
