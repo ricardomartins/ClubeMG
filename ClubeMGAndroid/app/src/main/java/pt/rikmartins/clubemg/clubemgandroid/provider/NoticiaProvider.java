@@ -738,24 +738,19 @@ public class NoticiaProvider
          */
         private static final String SQL_DELETE_ETIQUETA_DA_NOTICIA = "DROP TABLE IF EXISTS " + EtiquetaDaNoticia.TABLE_NAME;
 
-        // TODO: IMPORTANTE, triggers devem ser revistos,
-
-        private static final String TRIGGER_SQL_DELETE_ETIQUETAS_DAS_NOTICIAS = "DELETE FROM " + EtiquetaDaNoticia.TABLE_NAME + " " +
-                "WHERE " + EtiquetaDaNoticia.COLUMN_NAME_NOTICIA + " = OLD." + BaseColumns._ID;
-
-        private static final String TRIGGER_SQL_DELETE_CATEGORIAS_DAS_NOTICIAS = "DELETE FROM " + CategoriaDaNoticia.TABLE_NAME + " " +
-                "WHERE " + CategoriaDaNoticia.COLUMN_NAME_NOTICIA + " = OLD." + BaseColumns._ID;
+        private static final String DELETE_GENERICO_DE_TRIGGER_ON_DELETE = "DELETE FROM %1$s WHERE %2$s = OLD." + BaseColumns._ID;
 
         private static final String SQL_CREATE_TRIGGER_APAGAR_NOTICIA = "CREATE TRIGGER IF NOT EXISTS apagar_" + Noticia.TABLE_NAME_SINGULAR + " AFTER DELETE ON " + Noticia.TABLE_NAME + " FOR EACH ROW BEGIN " +
-                TRIGGER_SQL_DELETE_ETIQUETAS_DAS_NOTICIAS + ";" + TRIGGER_SQL_DELETE_CATEGORIAS_DAS_NOTICIAS + "; END";
+                String.format(DELETE_GENERICO_DE_TRIGGER_ON_DELETE, EtiquetaDaNoticia.TABLE_NAME, EtiquetaDaNoticia.COLUMN_NAME_NOTICIA) + ";" +
+                String.format(DELETE_GENERICO_DE_TRIGGER_ON_DELETE, CategoriaDaNoticia.TABLE_NAME, CategoriaDaNoticia.COLUMN_NAME_NOTICIA) + "; END";
 
         private static final String SQL_CREATE_TRIGGER_APAGAR_CATEGORIA = "CREATE TRIGGER IF NOT EXISTS apagar_" +
                 Categoria.TABLE_NAME_SINGULAR + " AFTER DELETE ON " + Categoria.TABLE_NAME + " FOR EACH ROW BEGIN " +
-                TRIGGER_SQL_DELETE_CATEGORIAS_DAS_NOTICIAS + "; END";
+                String.format(DELETE_GENERICO_DE_TRIGGER_ON_DELETE, CategoriaDaNoticia.TABLE_NAME, CategoriaDaNoticia.COLUMN_NAME_CATEGORIA) + "; END";
 
         private static final String SQL_CREATE_TRIGGER_APAGAR_ETIQUETA = "CREATE TRIGGER IF NOT EXISTS apagar_" +
                 Etiqueta.TABLE_NAME_SINGULAR + " AFTER DELETE ON " + Etiqueta.TABLE_NAME + " FOR EACH ROW BEGIN " +
-                TRIGGER_SQL_DELETE_ETIQUETAS_DAS_NOTICIAS + "; END";
+                String.format(DELETE_GENERICO_DE_TRIGGER_ON_DELETE, EtiquetaDaNoticia.TABLE_NAME, EtiquetaDaNoticia.COLUMN_NAME_ETIQUETA) + "; END";
 
         public NoticiaDatabase(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
