@@ -1,6 +1,7 @@
 package pt.rikmartins.clubemg.clubemgandroid;
 
 import android.app.FragmentManager;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
@@ -11,10 +12,12 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import java.util.HashMap;
+
 import pt.rikmartins.clubemg.clubemgandroid.sync.SyncUtils;
 
 public class MainActivity
-        extends ActionBarActivity implements NavigationFragment.ItemClickListener{
+        extends ActionBarActivity implements NavigationFragment.ItemClickListener, ToolbarHolder {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private View               mMainLayout;
@@ -47,7 +50,7 @@ public class MainActivity
         else assert false; // TODO: Alterar isto
 
         if (savedInstanceState == null) {
-            ListaNoticiasFragment listaNoticiasFragment = new ListaNoticiasFragment();
+            ListaNoticiasFragment listaNoticiasFragment = ListaNoticiasFragment.newInstance();
             getFragmentManager().beginTransaction().add(R.id.main_container, listaNoticiasFragment, TAG_FRAGMENTO_LISTA_NOTICIAS).commit();
         }
     }
@@ -81,6 +84,7 @@ public class MainActivity
         setMainLayout(findViewById(id));
     }
 
+    @Override
     public Toolbar getToolbar() {
         return mToolbar;
     }
@@ -99,7 +103,7 @@ public class MainActivity
                     listaNoticiasFragment.substituirCategoria(dados);
                 } else {
                     fragmentManager.beginTransaction()
-                            .replace(R.id.main_container, new ListaNoticiasFragment())
+                            .replace(R.id.main_container, ListaNoticiasFragment.newInstance(dados), TAG_FRAGMENTO_LISTA_NOTICIAS)
                             .commit();
                 }
                 break;

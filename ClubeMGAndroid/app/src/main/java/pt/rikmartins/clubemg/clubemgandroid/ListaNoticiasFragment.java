@@ -30,6 +30,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
+import java.util.HashMap;
 
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
@@ -52,9 +53,25 @@ public class ListaNoticiasFragment
 
     private static final int ID_LOADER_NOTICIAS = 0;
 
-    private String mIdCategoria = null;
-    private String mDesignacaoCategoria = null;
     private BroadcastReceiver broadcastReceiver;
+    private ToolbarHolder mToolbarHolder;
+    private HashMap<String, NavigationFragment.DescriptorCategoriaConhecida> descricaoCategoriasConhecidas;
+
+    public static ListaNoticiasFragment newInstance() {
+        return newInstance(null);
+    }
+
+    public static ListaNoticiasFragment newInstance(@Nullable String categoria) {
+        ListaNoticiasFragment myFragment = new ListaNoticiasFragment();
+
+        if (categoria != null) {
+            Bundle args = new Bundle();
+            args.putString(ARG_NOME_CATEGORIA, categoria);
+            myFragment.setArguments(args);
+        }
+
+        return myFragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +79,8 @@ public class ListaNoticiasFragment
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+
+        descricaoCategoriasConhecidas = NavigationFragment.construirDescricaoCategoriasConhecidas(getResources());
     }
 
     @Nullable
@@ -75,7 +94,7 @@ public class ListaNoticiasFragment
 
         mListaNoticiasListView = (ListView) mListaNoticiasSwipeRefreshLayout.findViewById(R.id.lista_noticias);
 
-        substituirCategoria(mIdCategoria);
+        substituirCategoria((getArguments() != null) ? getArguments().getString(ARG_NOME_CATEGORIA, null) : null);
 
         return mListaNoticiasSwipeRefreshLayout;
     }
@@ -96,6 +115,8 @@ public class ListaNoticiasFragment
                 getActivity().startActivity(i);
             }
         });
+
+        mToolbarHolder = getActivity() instanceof ToolbarHolder ? (ToolbarHolder) getActivity() : null;
     }
 
     @Override
@@ -264,7 +285,17 @@ public class ListaNoticiasFragment
         }
         mNoticiasCursorAdapter.swapCursor(novoCursor);
 
-        setCategoria(idCategoriaCursor, designacaoCategoriaCursor);
+        if (designacaoCategoriaCursor != null) {
+            String titulo;
+            if (descricaoCategoriasConhecidas.containsKey(designacaoCategoriaCursor))
+                titulo = descricaoCategoriasConhecidas.get(designacaoCategoriaCursor).tituloCategoria;
+            else
+                titulo = designacaoCategoriaCursor;
+            if (mToolbarHolder != null)
+                mToolbarHolder.getToolbar().setTitle(titulo);
+        } else if (mToolbarHolder != null)
+            mToolbarHolder.getToolbar().setTitle(R.string.titulo_fragmento_noticias);
+
     }
 
     public void substituirCategoria(String categoria){
@@ -289,11 +320,6 @@ public class ListaNoticiasFragment
                 // id inválido
                 return null;
         }
-    }
-
-    private void setCategoria(String id, String designacao) {
-        this.mIdCategoria = id;
-        this.mDesignacaoCategoria = designacao;
     }
 
     @Override

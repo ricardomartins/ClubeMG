@@ -117,7 +117,7 @@ public class NavigationFragment
 
         mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.drawer_list_item, null, CATEGORIAS_FROM, DRAWER_LIST_ITEM_TO, 0);
 
-        descricaoCategoriasConhecidas = construirDescricaoCategoriasConhecidas();
+        descricaoCategoriasConhecidas = construirDescricaoCategoriasConhecidas(getResources()); // TODO: Colocar esta estrutura num local mais acessivel (actividade)
 
         mSimpleCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
@@ -196,9 +196,8 @@ public class NavigationFragment
         mSimpleCursorAdapter.changeCursor(null);
     }
 
-    private HashMap<String, DescriptorCategoriaConhecida> construirDescricaoCategoriasConhecidas
-            (){
-        Resources res = getResources();
+    public static HashMap<String, DescriptorCategoriaConhecida> construirDescricaoCategoriasConhecidas
+            (Resources res){
         String[] categorias = res.getStringArray(R.array.lista_categorias);
         TypedArray iconesCategorias = res.obtainTypedArray(R.array.lista_icones_categorias);
         String[] titulosCategorias = res.getStringArray(R.array.lista_titulos_categorias);
@@ -208,6 +207,7 @@ public class NavigationFragment
         for (int i = 0; i < quantidadeCategorias; i++)
             resultado.put(categorias[i], new DescriptorCategoriaConhecida(categorias[i], iconesCategorias.getDrawable(i), titulosCategorias[i]));
 
+        iconesCategorias.recycle();
         return resultado;
     }
 
@@ -219,11 +219,11 @@ public class NavigationFragment
             case R.id.icone_aplicacao:
                 break;
             case R.id.icone_facebook:
-                uriAplicacao = Uri.parse("https://www.facebook.com/pages/Clube-de-Montanhismo-da-Guarda/123780544307693");
-                uriAlternativo = null;
+                uriAplicacao = Uri.parse("fb://page/123780544307693"); // TODO: Passar as identificações para XML
+                uriAlternativo = Uri.parse("https://www.facebook.com/pages/Clube-de-Montanhismo-da-Guarda/123780544307693"); // TODO: Passar as identificações para XML
                 break;
             case R.id.icone_googleplus:
-                uriAplicacao = Uri.parse("https://plus.google.com/u/0/114873093924282530167/posts");
+                uriAplicacao = Uri.parse("https://plus.google.com/u/0/114873093924282530167/posts"); // TODO: Passar as identificações para XML
                 uriAlternativo = null;
                 break;
         }
@@ -253,7 +253,7 @@ public class NavigationFragment
         }
     }
 
-    private static class DescriptorCategoriaConhecida {
+    static class DescriptorCategoriaConhecida {
         public DescriptorCategoriaConhecida(String categoria, Drawable iconeCategoria, String tituloCategoria){
             this.categoria = categoria;
             this.iconeCategoria = iconeCategoria;
