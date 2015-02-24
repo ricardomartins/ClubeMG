@@ -47,7 +47,7 @@ public class MainActivity
         else assert false; // TODO: Alterar isto
 
         if (savedInstanceState == null) {
-            ListaNoticiasFragment listaNoticiasFragment = ListaNoticiasFragment.newInstance();
+            ListaNoticiasFragment listaNoticiasFragment = new ListaNoticiasFragment();
             getFragmentManager().beginTransaction().add(R.id.main_container, listaNoticiasFragment, TAG_FRAGMENTO_LISTA_NOTICIAS).commit();
         }
     }
@@ -99,7 +99,7 @@ public class MainActivity
                     listaNoticiasFragment.substituirCategoria(dados);
                 } else {
                     fragmentManager.beginTransaction()
-                            .replace(R.id.main_container, ListaNoticiasFragment.newInstance(dados))
+                            .replace(R.id.main_container, new ListaNoticiasFragment())
                             .commit();
                 }
                 break;

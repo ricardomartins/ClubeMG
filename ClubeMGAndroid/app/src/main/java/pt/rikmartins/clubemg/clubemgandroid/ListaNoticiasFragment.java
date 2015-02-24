@@ -30,8 +30,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
@@ -54,31 +52,14 @@ public class ListaNoticiasFragment
 
     private static final int ID_LOADER_NOTICIAS = 0;
 
-    private String mCategoria = null;
+    private String mIdCategoria = null;
+    private String mDesignacaoCategoria = null;
     private BroadcastReceiver broadcastReceiver;
-
-    public static ListaNoticiasFragment newInstance() {
-        return newInstance(null);
-    }
-
-    public static ListaNoticiasFragment newInstance(@Nullable String categoria) {
-        ListaNoticiasFragment myFragment = new ListaNoticiasFragment();
-
-        if (categoria != null) {
-            Bundle args = new Bundle();
-            args.putString(ARG_NOME_CATEGORIA, categoria);
-            myFragment.setArguments(args);
-        }
-
-        return myFragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) mCategoria = getArguments().getString(ARG_NOME_CATEGORIA, null);
-        else mCategoria = null;
 
         setHasOptionsMenu(true);
     }
@@ -94,7 +75,7 @@ public class ListaNoticiasFragment
 
         mListaNoticiasListView = (ListView) mListaNoticiasSwipeRefreshLayout.findViewById(R.id.lista_noticias);
 
-        substituirCategoria(mCategoria);
+        substituirCategoria(mIdCategoria);
 
         return mListaNoticiasSwipeRefreshLayout;
     }
@@ -271,10 +252,19 @@ public class ListaNoticiasFragment
     }
 
     private void substituirCursor(Cursor novoCursor) {
-        String categoriaCursor = novoCursor.getExtras().getString(NoticiaProvider.QUERY_NOTICIAS_ID_CATEGORIA, null);
+        String idCategoriaCursor = null;
+        String designacaoCategoriaCursor = null;
+        try {
+            if (novoCursor.moveToFirst()) {
+                idCategoriaCursor = novoCursor.getString(novoCursor.getColumnIndexOrThrow("cat_id")); // TODO: Livrar deste hack
+                designacaoCategoriaCursor = novoCursor.getString(novoCursor.getColumnIndexOrThrow("cat_des")); // TODO: Livrar deste hack
+            }
+        } catch(IllegalArgumentException e) {
+
+        }
         mNoticiasCursorAdapter.swapCursor(novoCursor);
 
-        mCategoria = categoriaCursor;
+        setCategoria(idCategoriaCursor, designacaoCategoriaCursor);
     }
 
     public void substituirCategoria(String categoria){
@@ -299,6 +289,11 @@ public class ListaNoticiasFragment
                 // id inválido
                 return null;
         }
+    }
+
+    private void setCategoria(String id, String designacao) {
+        this.mIdCategoria = id;
+        this.mDesignacaoCategoria = designacao;
     }
 
     @Override

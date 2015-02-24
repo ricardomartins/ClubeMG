@@ -238,7 +238,10 @@ public class NoticiaProvider
             case ROUTE_NOTICIA_CATEGORIA_ID:
                 // Devolver todas as notícia duma categoria.
                 idCategoria = uri.getLastPathSegment();
-                builder.where(NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria._ID+ "=?", idCategoria);
+                builder.where(NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria._ID + "=?", idCategoria);
+                projection = Arrays.copyOf(projection, projection.length + 2);
+                projection[projection.length - 2] = NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria._ID + " AS cat_id"; // TODO: Livrar deste hack
+                projection[projection.length - 1] = NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO + " AS cat_des"; // TODO: Livrar deste hack
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -247,11 +250,7 @@ public class NoticiaProvider
         builder.where(selection, selectionArgs);
 
         Log.i(TAG, "builder: " + builder);
-        Cursor cursor = builder.query(db, projection, NOTICIA_GROUP_BY, null, sortOrder, null);
-        Bundle extrasCursor = cursor.getExtras();
-        extrasCursor.putString(QUERY_NOTICIAS_ID_CATEGORIA, idCategoria);
-        cursor.respond(extrasCursor);
-        return cursor;
+        return builder.query(db, projection, NOTICIA_GROUP_BY, null, sortOrder, null);
     }
 
     public Cursor queryCategoriaQuery(SQLiteDatabase db, Uri uri, int uriMatch, String[] projection, String selection,
