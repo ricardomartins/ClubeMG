@@ -53,6 +53,9 @@ public class ListaNoticiasFragment
 
     private static final int ID_LOADER_NOTICIAS = 0;
 
+    private String mIdCategoria = null;
+    private String mDesignacaoCategoria = null;
+
     private BroadcastReceiver broadcastReceiver;
     private ToolbarHolder mToolbarHolder;
     private HashMap<String, NavigationFragment.DescriptorCategoriaConhecida> descricaoCategoriasConhecidas;
@@ -285,6 +288,11 @@ public class ListaNoticiasFragment
         }
         mNoticiasCursorAdapter.swapCursor(novoCursor);
 
+        if ((idCategoriaCursor == null || !idCategoriaCursor.equals(mIdCategoria)) && ((idCategoriaCursor != null || (mIdCategoria != null))))
+            mListaNoticiasListView.setSelection(0);
+
+        setCategoria(idCategoriaCursor, designacaoCategoriaCursor);
+
         if (designacaoCategoriaCursor != null) {
             String titulo;
             if (descricaoCategoriasConhecidas.containsKey(designacaoCategoriaCursor))
@@ -299,9 +307,16 @@ public class ListaNoticiasFragment
     }
 
     public void substituirCategoria(String categoria){
-        Bundle bundleLoader = new Bundle();
-        bundleLoader.putString(ARG_NOME_CATEGORIA, categoria);
-        getLoaderManager().restartLoader(ID_LOADER_NOTICIAS, bundleLoader, this);
+        if ((categoria == null || !categoria.equals(mIdCategoria)) && (categoria != null || mIdCategoria != null)) {
+            Bundle bundleLoader = new Bundle();
+            bundleLoader.putString(ARG_NOME_CATEGORIA, categoria);
+            getLoaderManager().restartLoader(ID_LOADER_NOTICIAS, bundleLoader, this);
+        }
+    }
+
+    private void setCategoria(String id, String designacao) {
+        this.mIdCategoria = id;
+        this.mDesignacaoCategoria = designacao;
     }
 
     @Override
