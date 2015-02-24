@@ -3,12 +3,15 @@ package pt.rikmartins.clubemg.clubemgandroid;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.content.ActivityNotFoundException;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -16,17 +19,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.commonsware.cwac.merge.MergeAdapter;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
@@ -36,7 +34,7 @@ import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
  * Created by ricardo on 08-12-2014.
  */
 public class NavigationFragment
-        extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+        extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener, View.OnClickListener{
     private static final String TAG = NavigationFragment.class.getSimpleName();
 
     public static final String TIPO_ON_CLICK_NOTICIAS = "noticias";
@@ -46,20 +44,15 @@ public class NavigationFragment
     private LinearLayout mNavigationLinearLayout;
     private ListView     mCategoriasListView;
 
-    private MergeAdapter mNavigationMergeAdapter;
+    private SimpleCursorAdapter mSimpleCursorAdapter;
 
     private static final int URL_LOADER_CATEGORIAS = 10;
+
+    private ItemClickListener itemClickListener;
 
     private static final String[] CATEGORIAS_FROM = new String[]{
             NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO,
             NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO
-    };
-
-    private static final String OUTROS_ICON = "icon";
-    private static final String OUTROS_TITULO = "título";
-    private static final String[] OUTROS_FROM = new String[] {
-            OUTROS_ICON,
-            OUTROS_TITULO
     };
 
     private static final int[] DRAWER_LIST_ITEM_TO = new int[]{
@@ -67,15 +60,37 @@ public class NavigationFragment
             R.id.item_navegacao,
     };
 
-
-    private SimpleCursorAdapter mCategoriasCursorAdapter;
-
     private HashMap<String, DescriptorCategoriaConhecida> descricaoCategoriasConhecidas;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
+    }
+
+    private void criarItensNavegacaoEstaticos(LayoutInflater inflater){
+        View cabecalhoNavegacao = inflater.inflate(R.layout.cabecalho_navigation, mCategoriasListView, false);
+
+        // cabecalhoNavegacao.findViewById(R.id.icone_aplicacao).setOnClickListener(this);
+        cabecalhoNavegacao.findViewById(R.id.icone_facebook).setOnClickListener(this);
+        cabecalhoNavegacao.findViewById(R.id.icone_googleplus).setOnClickListener(this);
+
+        mCategoriasListView.addHeaderView(cabecalhoNavegacao);
+        mCategoriasListView.addHeaderView(inflater.inflate(R.layout.separador_lista_transparente, mCategoriasListView, false));
+
+        View itemNavegacaoNoticias = inflater.inflate(R.layout.drawer_list_item, mCategoriasListView, false);
+        ((ImageView) itemNavegacaoNoticias.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_dashboard_grey600_24dp);
+        ((TextView) itemNavegacaoNoticias.findViewById(R.id.item_navegacao)).setText(R.string.titulo_fragmento_noticias);
+        itemNavegacaoNoticias.setTag(TIPO_ON_CLICK_NOTICIAS);
+        mCategoriasListView.addHeaderView(itemNavegacaoNoticias);
+
+        mCategoriasListView.addFooterView(inflater.inflate(R.layout.separador_lista_linha, mCategoriasListView, false));
+
+        View itemNavegacaoDefinicoes = inflater.inflate(R.layout.drawer_list_item, mCategoriasListView, false);
+        ((ImageView) itemNavegacaoDefinicoes.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_settings_grey600_24dp);
+        ((TextView) itemNavegacaoDefinicoes.findViewById(R.id.item_navegacao)).setText(R.string.titulo_fragmento_definicoes);
+        itemNavegacaoDefinicoes.setTag(TIPO_ON_CLICK_DEFINICOES);
+        mCategoriasListView.addFooterView(itemNavegacaoDefinicoes);
     }
 
     @Nullable
@@ -87,6 +102,9 @@ public class NavigationFragment
                 container, false);
         mCategoriasListView = (ListView) mNavigationLinearLayout.findViewById(
                 R.id.left_navigation_drawer_categorias_list);
+
+        criarItensNavegacaoEstaticos(inflater);
+
         getLoaderManager().initLoader(URL_LOADER_CATEGORIAS, null, this);
 
         return mNavigationLinearLayout;
@@ -97,20 +115,11 @@ public class NavigationFragment
         Log.v(TAG, "Activity created");
         super.onActivityCreated(savedInstanceState);
 
-        mNavigationMergeAdapter = new MergeAdapter();
+        mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.drawer_list_item, null, CATEGORIAS_FROM, DRAWER_LIST_ITEM_TO, 0);
 
-        ArrayList<HashMap<String, Object>> simpleAdapterData = new ArrayList<>(1);
-        simpleAdapterData.add(new HashMap<String, Object>(2));
-        simpleAdapterData.get(0).put(OUTROS_ICON, R.drawable.ic_dashboard_grey600_24dp);
-        simpleAdapterData.get(0).put(OUTROS_TITULO, "Notícias");
-        SimpleAdapter semFiltroAdapter = new SimpleAdapter(getActivity(), simpleAdapterData, R.layout.drawer_list_item, OUTROS_FROM, DRAWER_LIST_ITEM_TO);
+        descricaoCategoriasConhecidas = construirDescricaoCategoriasConhecidas(getResources()); // TODO: Colocar esta estrutura num local mais acessivel (actividade)
 
-        mNavigationMergeAdapter.addAdapter(semFiltroAdapter);
-
-        descricaoCategoriasConhecidas = construirDescricaoCategoriasConhecidas();
-
-        mCategoriasCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.drawer_list_item, null, CATEGORIAS_FROM, DRAWER_LIST_ITEM_TO, 0);
-        mCategoriasCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+        mSimpleCursorAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
                 String categoria = cursor.getString(cursor.getColumnIndex(NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO));
@@ -133,37 +142,27 @@ public class NavigationFragment
                             ((TextView) view).setText(categoriaCapitalizada);
                             return true;
                         }
+                    } else if (view instanceof ImageView) {
+                        if (view.getId() == R.id.image_view_item_navegacao) {
+                            ((ImageView) view).setImageResource(R.drawable.ic_cat_generico_grey600_24dp);
+                            return true;
+                        }
                     }
                 }
 
                 return false;
             }
         });
-        mNavigationMergeAdapter.addAdapter(mCategoriasCursorAdapter);
 
-        simpleAdapterData = new ArrayList<>(1);
-        simpleAdapterData.add(new HashMap<String, Object>(2));
-        simpleAdapterData.get(0).put(OUTROS_ICON, R.drawable.ic_settings_grey600_24dp);
-        simpleAdapterData.get(0).put(OUTROS_TITULO, "Definições");
-        SimpleAdapter definicoesAdapter = new SimpleAdapter(getActivity(), simpleAdapterData, R.layout.drawer_list_item, OUTROS_FROM, DRAWER_LIST_ITEM_TO);
-
-        mNavigationMergeAdapter.addAdapter(definicoesAdapter);
-
-        mCategoriasListView.setAdapter(mNavigationMergeAdapter);
-
-        mCategoriasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_NOTICIAS, null);
-                else if (position == (parent.getCount() - 1)) ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_DEFINICOES, null);
-                else ((MainActivity) getActivity()).onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, String.valueOf(id));
-            }
-        });
+        mCategoriasListView.setAdapter(mSimpleCursorAdapter);
+        mCategoriasListView.setOnItemClickListener(this);
     }
 
     @Override
     public void onAttach(Activity activity) {
         Log.v(TAG, "Fragment attached to Activity");
+        if (activity instanceof ItemClickListener) itemClickListener = (ItemClickListener) activity;
+        else itemClickListener = null;
         super.onAttach(activity);
     }
 
@@ -188,18 +187,17 @@ public class NavigationFragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mCategoriasCursorAdapter.changeCursor(data);
+        mSimpleCursorAdapter.changeCursor(data);
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mCategoriasCursorAdapter.changeCursor(null);
+        mSimpleCursorAdapter.changeCursor(null);
     }
 
-    private HashMap<String, DescriptorCategoriaConhecida> construirDescricaoCategoriasConhecidas
-            (){
-        Resources res = getResources();
+    public static HashMap<String, DescriptorCategoriaConhecida> construirDescricaoCategoriasConhecidas
+            (Resources res){
         String[] categorias = res.getStringArray(R.array.lista_categorias);
         TypedArray iconesCategorias = res.obtainTypedArray(R.array.lista_icones_categorias);
         String[] titulosCategorias = res.getStringArray(R.array.lista_titulos_categorias);
@@ -209,10 +207,53 @@ public class NavigationFragment
         for (int i = 0; i < quantidadeCategorias; i++)
             resultado.put(categorias[i], new DescriptorCategoriaConhecida(categorias[i], iconesCategorias.getDrawable(i), titulosCategorias[i]));
 
+        iconesCategorias.recycle();
         return resultado;
     }
 
-    private static class DescriptorCategoriaConhecida {
+    @Override
+    public void onClick(View v) {
+        Uri uriAplicacao = null;
+        Uri uriAlternativo = null;
+        switch (v.getId()) {
+            case R.id.icone_aplicacao:
+                break;
+            case R.id.icone_facebook:
+                uriAplicacao = Uri.parse("fb://page/123780544307693"); // TODO: Passar as identificações para XML
+                uriAlternativo = Uri.parse("https://www.facebook.com/pages/Clube-de-Montanhismo-da-Guarda/123780544307693"); // TODO: Passar as identificações para XML
+                break;
+            case R.id.icone_googleplus:
+                uriAplicacao = Uri.parse("https://plus.google.com/u/0/114873093924282530167/posts"); // TODO: Passar as identificações para XML
+                uriAlternativo = null;
+                break;
+        }
+        if (uriAplicacao != null) {
+            Intent i = new Intent(Intent.ACTION_VIEW, uriAplicacao);
+            try {
+                getActivity().startActivity(i);
+            } catch (ActivityNotFoundException e) {
+                if (uriAlternativo != null) {
+                    i = new Intent(Intent.ACTION_VIEW, uriAlternativo);
+                    getActivity().startActivity(i);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "onItemClick -> Position: " + position + "; Id: " + id);
+        if (position == 0) {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.montanhismo-guarda.pt/portal/"));
+            getActivity().startActivity(i);
+        } else if (id != -1)
+            itemClickListener.onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, String.valueOf(id));
+        else if (view.getTag() != null) {
+            itemClickListener.onNavigationEvent((String) view.getTag(), null);
+        }
+    }
+
+    static class DescriptorCategoriaConhecida {
         public DescriptorCategoriaConhecida(String categoria, Drawable iconeCategoria, String tituloCategoria){
             this.categoria = categoria;
             this.iconeCategoria = iconeCategoria;
@@ -222,5 +263,9 @@ public class NavigationFragment
         public String categoria;
         public Drawable iconeCategoria;
         public String tituloCategoria;
+    }
+
+    interface ItemClickListener {
+        public void onNavigationEvent(String modo, String dados);
     }
 }

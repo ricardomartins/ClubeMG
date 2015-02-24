@@ -30,6 +30,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
+import java.util.HashMap;
 
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
@@ -52,8 +53,9 @@ public class ListaNoticiasFragment
 
     private static final int ID_LOADER_NOTICIAS = 0;
 
-    private String mCategoria = null;
     private BroadcastReceiver broadcastReceiver;
+    private ToolbarHolder mToolbarHolder;
+    private HashMap<String, NavigationFragment.DescriptorCategoriaConhecida> descricaoCategoriasConhecidas;
 
     public static ListaNoticiasFragment newInstance() {
         return newInstance(null);
@@ -75,10 +77,10 @@ public class ListaNoticiasFragment
     public void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "Creating");
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) mCategoria = getArguments().getString(ARG_NOME_CATEGORIA, null);
-        else mCategoria = null;
 
         setHasOptionsMenu(true);
+
+        descricaoCategoriasConhecidas = NavigationFragment.construirDescricaoCategoriasConhecidas(getResources());
     }
 
     @Nullable
@@ -92,7 +94,7 @@ public class ListaNoticiasFragment
 
         mListaNoticiasListView = (ListView) mListaNoticiasSwipeRefreshLayout.findViewById(R.id.lista_noticias);
 
-        getLoaderManager().initLoader(ID_LOADER_NOTICIAS, null, this);
+        substituirCategoria((getArguments() != null) ? getArguments().getString(ARG_NOME_CATEGORIA, null) : null);
 
         return mListaNoticiasSwipeRefreshLayout;
     }
@@ -113,6 +115,8 @@ public class ListaNoticiasFragment
                 getActivity().startActivity(i);
             }
         });
+
+        mToolbarHolder = getActivity() instanceof ToolbarHolder ? (ToolbarHolder) getActivity() : null;
     }
 
     @Override
@@ -237,7 +241,7 @@ public class ListaNoticiasFragment
 
             byte[] bytesImagem = cursor.getBlob(mIndiceImagem);
             if (bytesImagem == null) {
-                imageViewImagem.setImageBitmap(null);
+                imageViewImagem.setImageResource(R.drawable.fundo_noticia);
                 obterImagem(cursor.getString(mIndiceEnderecoImagemGrande), cursor.getInt(mIndiceId));
             } else {
                 ByteArrayInputStream streamImagem = new ByteArrayInputStream(bytesImagem);
@@ -268,14 +272,47 @@ public class ListaNoticiasFragment
         super.onAttach(activity);
     }
 
+    private void substituirCursor(Cursor novoCursor) {
+        String idCategoriaCursor = null;
+        String designacaoCategoriaCursor = null;
+        try {
+            if (novoCursor.moveToFirst()) {
+                idCategoriaCursor = novoCursor.getString(novoCursor.getColumnIndexOrThrow("cat_id")); // TODO: Livrar deste hack
+                designacaoCategoriaCursor = novoCursor.getString(novoCursor.getColumnIndexOrThrow("cat_des")); // TODO: Livrar deste hack
+            }
+        } catch(IllegalArgumentException e) {
+
+        }
+        mNoticiasCursorAdapter.swapCursor(novoCursor);
+
+        if (designacaoCategoriaCursor != null) {
+            String titulo;
+            if (descricaoCategoriasConhecidas.containsKey(designacaoCategoriaCursor))
+                titulo = descricaoCategoriasConhecidas.get(designacaoCategoriaCursor).tituloCategoria;
+            else
+                titulo = designacaoCategoriaCursor;
+            if (mToolbarHolder != null)
+                mToolbarHolder.getToolbar().setTitle(titulo);
+        } else if (mToolbarHolder != null)
+            mToolbarHolder.getToolbar().setTitle(R.string.titulo_fragmento_noticias);
+
+    }
+
+    public void substituirCategoria(String categoria){
+        Bundle bundleLoader = new Bundle();
+        bundleLoader.putString(ARG_NOME_CATEGORIA, categoria);
+        getLoaderManager().restartLoader(ID_LOADER_NOTICIAS, bundleLoader, this);
+    }
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String categoria = (args != null) ? args.getString(ARG_NOME_CATEGORIA) : null;
+
         switch (id) {
             case ID_LOADER_NOTICIAS:
                 Uri uriNoticias;
-                if (mCategoria == null) uriNoticias = NoticiaContract.Noticia.CONTENT_URI;
-                else
-                    uriNoticias = NoticiaContract.Noticia.CONTENT_URI_CATEGORIA.buildUpon().appendPath(mCategoria).build();
+                if (categoria == null) uriNoticias = NoticiaContract.Noticia.CONTENT_URI;
+                else uriNoticias = NoticiaContract.Noticia.CONTENT_URI_CATEGORIA.buildUpon().appendPath(categoria).build();
 
                 return new CursorLoader(getActivity(), uriNoticias,
                         NoticiaProvider.getCopyOfNoticiaDefaultProjection(), null, null, NoticiaContract.Noticia.COLUMN_NAME_DESTACADA + " DESC, " + NoticiaContract.Noticia.COLUMN_NAME_ID_NOTICIA + " DESC");
@@ -287,11 +324,11 @@ public class ListaNoticiasFragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mNoticiasCursorAdapter.changeCursor(data);
+        substituirCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
-        mNoticiasCursorAdapter.changeCursor(null);
+        mNoticiasCursorAdapter.swapCursor(null);
     }
 }

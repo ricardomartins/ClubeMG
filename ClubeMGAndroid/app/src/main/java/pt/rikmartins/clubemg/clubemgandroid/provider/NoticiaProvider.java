@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.util.Log;
 
@@ -205,6 +206,8 @@ public class NoticiaProvider
         return c;
     }
 
+    public static final String QUERY_NOTICIAS_ID_CATEGORIA = "CATEGORIA";
+
     public Cursor queryNoticiaQuery(SQLiteDatabase db, Uri uri, int uriMatch, String[] projection, String selection,
                                     String[] selectionArgs, String sortOrder) {
         if (projection == null) projection = NoticiaProvider.getCopyOfNoticiaDefaultProjection();
@@ -223,18 +226,22 @@ public class NoticiaProvider
         // Obter a categoria da tabela categorias
         builder.map(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIAS, NOTICIA_COLUMN_CATEGORIAS);
 
+        String idCategoria;
         switch (uriMatch) {
             case ROUTE_NOTICIA_ID:
                 // Devolver uma notícia, pelo ID.
                 builder.where(NoticiaDatabase.Noticia.TABLE_NAME + "." + NoticiaDatabase.Noticia._ID + "=?", uri.getLastPathSegment());
-                break;
             case ROUTE_NOTICIA:
                 // Devolver todas as notícias.
-                // Nada a fazer
+                idCategoria = null;
                 break;
             case ROUTE_NOTICIA_CATEGORIA_ID:
                 // Devolver todas as notícia duma categoria.
-                builder.where(NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria._ID+ "=?", uri.getLastPathSegment());
+                idCategoria = uri.getLastPathSegment();
+                builder.where(NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria._ID + "=?", idCategoria);
+                projection = Arrays.copyOf(projection, projection.length + 2);
+                projection[projection.length - 2] = NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria._ID + " AS cat_id"; // TODO: Livrar deste hack
+                projection[projection.length - 1] = NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO + " AS cat_des"; // TODO: Livrar deste hack
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -730,24 +737,19 @@ public class NoticiaProvider
          */
         private static final String SQL_DELETE_ETIQUETA_DA_NOTICIA = "DROP TABLE IF EXISTS " + EtiquetaDaNoticia.TABLE_NAME;
 
-        // TODO: IMPORTANTE, triggers devem ser revistos,
-
-        private static final String TRIGGER_SQL_DELETE_ETIQUETAS_DAS_NOTICIAS = "DELETE FROM " + EtiquetaDaNoticia.TABLE_NAME + " " +
-                "WHERE " + EtiquetaDaNoticia.COLUMN_NAME_NOTICIA + " = OLD." + BaseColumns._ID;
-
-        private static final String TRIGGER_SQL_DELETE_CATEGORIAS_DAS_NOTICIAS = "DELETE FROM " + CategoriaDaNoticia.TABLE_NAME + " " +
-                "WHERE " + CategoriaDaNoticia.COLUMN_NAME_NOTICIA + " = OLD." + BaseColumns._ID;
+        private static final String DELETE_GENERICO_DE_TRIGGER_ON_DELETE = "DELETE FROM %1$s WHERE %2$s = OLD." + BaseColumns._ID;
 
         private static final String SQL_CREATE_TRIGGER_APAGAR_NOTICIA = "CREATE TRIGGER IF NOT EXISTS apagar_" + Noticia.TABLE_NAME_SINGULAR + " AFTER DELETE ON " + Noticia.TABLE_NAME + " FOR EACH ROW BEGIN " +
-                TRIGGER_SQL_DELETE_ETIQUETAS_DAS_NOTICIAS + ";" + TRIGGER_SQL_DELETE_CATEGORIAS_DAS_NOTICIAS + "; END";
+                String.format(DELETE_GENERICO_DE_TRIGGER_ON_DELETE, EtiquetaDaNoticia.TABLE_NAME, EtiquetaDaNoticia.COLUMN_NAME_NOTICIA) + ";" +
+                String.format(DELETE_GENERICO_DE_TRIGGER_ON_DELETE, CategoriaDaNoticia.TABLE_NAME, CategoriaDaNoticia.COLUMN_NAME_NOTICIA) + "; END";
 
         private static final String SQL_CREATE_TRIGGER_APAGAR_CATEGORIA = "CREATE TRIGGER IF NOT EXISTS apagar_" +
                 Categoria.TABLE_NAME_SINGULAR + " AFTER DELETE ON " + Categoria.TABLE_NAME + " FOR EACH ROW BEGIN " +
-                TRIGGER_SQL_DELETE_CATEGORIAS_DAS_NOTICIAS + "; END";
+                String.format(DELETE_GENERICO_DE_TRIGGER_ON_DELETE, CategoriaDaNoticia.TABLE_NAME, CategoriaDaNoticia.COLUMN_NAME_CATEGORIA) + "; END";
 
         private static final String SQL_CREATE_TRIGGER_APAGAR_ETIQUETA = "CREATE TRIGGER IF NOT EXISTS apagar_" +
                 Etiqueta.TABLE_NAME_SINGULAR + " AFTER DELETE ON " + Etiqueta.TABLE_NAME + " FOR EACH ROW BEGIN " +
-                TRIGGER_SQL_DELETE_ETIQUETAS_DAS_NOTICIAS + "; END";
+                String.format(DELETE_GENERICO_DE_TRIGGER_ON_DELETE, EtiquetaDaNoticia.TABLE_NAME, EtiquetaDaNoticia.COLUMN_NAME_ETIQUETA) + "; END";
 
         public NoticiaDatabase(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
