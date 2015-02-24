@@ -89,7 +89,7 @@ public class SyncAdapter
 
         if (notificar && noticiasInseridas.size() > 0) {
             SitioNoticias.Noticia noticia = noticiasInseridas.get(0);
-            SyncAdapter.Notificacao.notificar(getContext(), noticia.getTitulo(), noticia.getTexto(), "Uma nova notícia", R.drawable.ic_notification);
+            SyncAdapter.Notificacao.notificar(getContext(), noticia.getTitulo(), noticia.getTexto(), "Uma nova notícia", R.drawable.ic_notificacao);
         }
     }
 
