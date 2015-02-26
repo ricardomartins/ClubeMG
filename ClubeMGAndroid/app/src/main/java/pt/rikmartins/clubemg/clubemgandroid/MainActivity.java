@@ -1,6 +1,7 @@
 package pt.rikmartins.clubemg.clubemgandroid;
 
 import android.app.FragmentManager;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -31,6 +32,8 @@ public class MainActivity
 
     // Quando é DrawerLayout
     private ActionBarDrawerToggle mNavigationDrawerToggle;
+    private boolean mUtilizadorAprendeuNavegacao;
+    private View mNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,9 @@ public class MainActivity
         mMainContainer = (FrameLayout) findViewById(R.id.main_container);
         setSupportActionBar(mToolbar = (Toolbar) findViewById(R.id.toolbar));
         mNavigationFragment = (NavigationFragment) getFragmentManager().findFragmentById(R.id.navigation_fragment);
+        mNavigationView = findViewById(R.id.navigation_fragment);
+
+        mUtilizadorAprendeuNavegacao = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.pref_key_utilizador_aprendeu_navegacao), false);
 
         if  (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT) onCreateWithDrawerLayout(savedInstanceState);
         else assert false; // TODO: Alterar isto
@@ -59,12 +65,19 @@ public class MainActivity
         mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         mToolbar.setTitleTextColor(getResources().getColor(R.color.colorTextLight));
 
-        mNavigationDrawerToggle = new ActionBarDrawerToggle(this, (DrawerLayout) mMainLayout, mToolbar,
+        DrawerLayout drawerLayout = (DrawerLayout) mMainLayout;
+        mNavigationDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, mToolbar,
                                                             R.string.abrir_gaveta_navegacao,
                                                             R.string.fechar_gaveta_navegacao) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                if (!mUtilizadorAprendeuNavegacao) {
+                    mUtilizadorAprendeuNavegacao = true;
+                    SharedPreferences sp = PreferenceManager
+                            .getDefaultSharedPreferences(MainActivity.this);
+                    sp.edit().putBoolean(getString(R.string.pref_key_utilizador_aprendeu_navegacao), true).apply();
+                }
             }
 
             @Override
@@ -72,6 +85,12 @@ public class MainActivity
                 super.onDrawerClosed(drawerView);
             }
         };
+
+        drawerLayout.setDrawerListener(mNavigationDrawerToggle);
+
+        if (!mUtilizadorAprendeuNavegacao && savedInstanceState == null) {
+            drawerLayout.openDrawer(mNavigationView);
+        }
     }
 
     private void setMainLayout(View layout){

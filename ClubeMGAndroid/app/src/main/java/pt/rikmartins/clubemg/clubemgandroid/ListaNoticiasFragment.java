@@ -53,7 +53,7 @@ public class ListaNoticiasFragment
 
     private static final int ID_LOADER_NOTICIAS = 0;
 
-    private String mIdCategoria = null;
+    private String mIdCategoria = "-1";
     private String mDesignacaoCategoria = null;
 
     private BroadcastReceiver broadcastReceiver;
@@ -289,7 +289,7 @@ public class ListaNoticiasFragment
         mNoticiasCursorAdapter.swapCursor(novoCursor);
 
         if ((idCategoriaCursor == null || !idCategoriaCursor.equals(mIdCategoria)) && ((idCategoriaCursor != null || (mIdCategoria != null))))
-            mListaNoticiasListView.setSelection(0);
+            mListaNoticiasListView.smoothScrollToPosition(0);
 
         setCategoria(idCategoriaCursor, designacaoCategoriaCursor);
 
@@ -303,7 +303,6 @@ public class ListaNoticiasFragment
                 mToolbarHolder.getToolbar().setTitle(titulo);
         } else if (mToolbarHolder != null)
             mToolbarHolder.getToolbar().setTitle(R.string.titulo_fragmento_noticias);
-
     }
 
     public void substituirCategoria(String categoria){
