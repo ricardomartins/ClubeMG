@@ -3,23 +3,47 @@
     <string name="categoria_designacao_stb">categoria</string>
 
     <string-array name="lista_categorias"> <!-- Não traduzir -->
+        <item>actividadesnauticas</item>
         <item>btt</item>
+        <item>canoagem</item>
+        <item>competicao</item>
+        <item>corridamontanha</item>
+        <item>escalada</item>
+        <item>formacao</item>
         <item>informacoes</item>
         <item>montanha</item>
+        <item>orientacao</item>
         <item>pedestrianismo</item>
+        <item>vela</item>
     </string-array>
     <array name="lista_icones_categorias"> <!-- Não traduzir -->
+        <item>@drawable/ic_cat_generico_grey600_24dp</item>
         <item>@drawable/ic_cat_btt_grey600_24dp</item>
+        <item>@drawable/ic_cat_generico_grey600_24dp</item>
+        <item>@drawable/ic_cat_generico_grey600_24dp</item>
+        <item>@drawable/ic_cat_generico_grey600_24dp</item>
+        <item>@drawable/ic_cat_generico_grey600_24dp</item>
+        <item>@drawable/ic_cat_generico_grey600_24dp</item>
         <item>@drawable/ic_cat_informacoes_grey600_24dp</item>
         <item>@drawable/ic_cat_montanha_grey600_24dp</item>
+        <item>@drawable/ic_cat_generico_grey600_24dp</item>
         <item>@drawable/ic_cat_pedestrianismo_grey600_24dp</item>
+        <item>@drawable/ic_cat_generico_grey600_24dp</item>
     </array>
 
     <string-array name="lista_titulos_categorias">
+        <item>Actividades Nauticas</item>
         <item>BTT</item>
+        <item>Canoagem</item>
+        <item>Competição</item>
+        <item>Corrida de Montanha</item>
+        <item>Escalada</item>
+        <item>Formação</item>
         <item>Informações</item>
         <item>Montanha</item>
+        <item>Orientação</item>
         <item>Pedestrianismo</item>
+        <item>Vela</item>
     </string-array>
 
 </resources>
