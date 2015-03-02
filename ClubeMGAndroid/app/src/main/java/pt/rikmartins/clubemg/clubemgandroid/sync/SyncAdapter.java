@@ -23,6 +23,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import pt.rikmartins.clubemg.clubemgandroid.MainActivity;
@@ -94,20 +95,17 @@ public class SyncAdapter
     }
 
     private ArrayList<SitioNoticias.Noticia> actualizarNoticiasLocais(final SitioNoticiasClubeMG sitioNoticiasClubeMG, final SyncResult syncResult) throws RemoteException, OperationApplicationException {
-        Cursor cursorNoticias = mContentResolver.query(NoticiaContract.Noticia.CONTENT_URI, null, null, null, null);
+        Cursor cursorNoticias = mContentResolver.query(NoticiaContract.Noticia.CONTENT_URI, null, null, null, NoticiaContract.Noticia.COLUMN_NAME_DESTACADA + " DESC, " + NoticiaContract.Noticia.COLUMN_NAME_ID_NOTICIA + " DESC");
         Log.v(TAG, "noticias anteriores: " + cursorNoticias.getColumnCount());
-        Cursor cursorCategorias = mContentResolver.query(NoticiaContract.Categoria.CONTENT_URI, null, null, null, null);
-        Log.v(TAG, "categorias anteriores: " + cursorCategorias.getColumnCount());
-        Cursor cursorEtiquetas = mContentResolver.query(NoticiaContract.Etiqueta.CONTENT_URI, null, null, null, null);
-        Log.v(TAG, "etiquetas anteriores: " + cursorEtiquetas.getColumnCount());
 
         ArrayList<SitioNoticias.Noticia> noticiasAInserir = new ArrayList<>();
         Map<Long, SitioNoticias.Noticia> noticiasAActualizar = new HashMap<>();
-        ArrayList<String> categoriasAInserir = new ArrayList<>();
-        ArrayList<String> etiquetasAInserir = new ArrayList<>();
+        HashSet<Long> noticiasAApagar = new HashSet<>();
 
         int indiceIdNoticia = cursorNoticias.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ID_NOTICIA);
         int indiceDestacada = cursorNoticias.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_DESTACADA);
+        int indiceId = cursorNoticias.getColumnIndex(NoticiaContract.Noticia._ID);
+        int i = 0;
         for (SitioNoticias.Noticia noticia : sitioNoticiasClubeMG.getNoticias()) {
             String idNoticiaExterna = noticia.getIdentificacaoNoticia();
             boolean eNoticiaDestacadaExterna = noticia.isDestacada();
@@ -115,17 +113,30 @@ public class SyncAdapter
             boolean adicionarALista = true;
             cursorNoticias.moveToFirst();
             while(!cursorNoticias.isAfterLast()) {
+                if (i >= 0) {
+                    i++;
+                    if (i > 11) {
+                        noticiasAApagar.add(cursorNoticias.getLong(indiceId));
+                        i = -1;
+                    }
+                }
                 if (cursorNoticias.getString(indiceIdNoticia).equals(idNoticiaExterna)) {
                     adicionarALista = false;
                     if ((cursorNoticias.getInt(indiceDestacada) == 1) ^ eNoticiaDestacadaExterna)
-                        noticiasAActualizar.put(cursorNoticias.getLong(cursorNoticias.getColumnIndex(NoticiaContract.Noticia._ID)), noticia);
-                    break;
+                        noticiasAActualizar.put(cursorNoticias.getLong(indiceId), noticia);
+                    if (i < 0) break;
                 }
                 cursorNoticias.moveToNext();
             }
+            i = -1;
             if (adicionarALista) noticiasAInserir.add(noticia);
         }
         Log.v(TAG, "noticias a inserir: " + noticiasAInserir.size());
+
+        Cursor cursorCategorias = mContentResolver.query(NoticiaContract.Categoria.CONTENT_URI, null, null, null, null);
+        Log.v(TAG, "categorias anteriores: " + cursorCategorias.getColumnCount());
+
+        ArrayList<String> categoriasAInserir = new ArrayList<>();
 
         int indiceDesignacaoCategoria = cursorCategorias.getColumnIndex(NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO);
         for (String categoria : sitioNoticiasClubeMG.getCategorias()) {
@@ -143,6 +154,11 @@ public class SyncAdapter
             if (adicionarALista) categoriasAInserir.add(categoria);
         }
         Log.v(TAG, "categorias a inserir: " + categoriasAInserir.size());
+
+        Cursor cursorEtiquetas = mContentResolver.query(NoticiaContract.Etiqueta.CONTENT_URI, null, null, null, null);
+        Log.v(TAG, "etiquetas anteriores: " + cursorEtiquetas.getColumnCount());
+
+        ArrayList<String> etiquetasAInserir = new ArrayList<>();
 
         int indiceDesignacaoEtiqueta = cursorEtiquetas.getColumnIndex(NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO);
         for (String etiqueta : sitioNoticiasClubeMG.getEtiquetas()) {
@@ -190,6 +206,13 @@ public class SyncAdapter
             lote.add(updateOperationBuilder.build());
         }
 
+        for (long idNoticiaAApagar : noticiasAApagar) {
+            final ContentProviderOperation.Builder deleteOperationBuilder = ContentProviderOperation.newDelete(NoticiaContract.Noticia.CONTENT_URI.buildUpon().appendPath(String.valueOf(idNoticiaAApagar)).build());
+            Log.v(TAG, "operação apagar notícia: " + deleteOperationBuilder.toString());
+
+            lote.add(deleteOperationBuilder.build());
+        }
+
         for (String designacaoCategoria : categoriasAInserir)
             lote.add(ContentProviderOperation.newInsert(NoticiaContract.Categoria.CONTENT_URI)
                     .withValue(NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO, designacaoCategoria)
@@ -200,10 +223,17 @@ public class SyncAdapter
                     .withValue(NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO, designacaoEtiqueta)
                     .build());
 
-        syncResult.stats.numInserts = syncResult.stats.numEntries = noticiasAInserir.size() + categoriasAInserir.size() + etiquetasAInserir.size();
+        syncResult.stats.numEntries = syncResult.stats.numInserts = noticiasAInserir.size() + categoriasAInserir.size() + etiquetasAInserir.size();
+        syncResult.stats.numEntries += syncResult.stats.numUpdates = noticiasAActualizar.size();
+        syncResult.stats.numEntries += syncResult.stats.numDeletes = noticiasAApagar.size();
         Log.v(TAG, "lote: " + lote.size());
 
         mContentResolver.applyBatch(NoticiaContract.CONTENT_AUTHORITY, lote);
+
+        if (cursorNoticias != null && !cursorNoticias.isClosed()) cursorNoticias.close();
+        if (cursorCategorias != null && !cursorCategorias.isClosed()) cursorCategorias.close();
+        if (cursorEtiquetas != null && !cursorEtiquetas.isClosed()) cursorEtiquetas.close();
+
         return noticiasAInserir;
     }
 
