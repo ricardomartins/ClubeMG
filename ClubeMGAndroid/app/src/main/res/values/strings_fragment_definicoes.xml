@@ -31,4 +31,7 @@
 
     <string name="pref_titulo_vibrar">Vibrar</string>
     <string name="pref_key_notificacoes_vibrar">notificacoes_vibrar</string>
+
+    <!-- Outros -->
+    <string name="pref_key_utilizador_aprendeu_navegacao">utilizador_aprendeu_navegacao</string>
 </resources>

@@ -31,7 +31,10 @@ import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
+<<<<<<< HEAD
 import java.util.Map;
+=======
+>>>>>>> 07ab1f448f8edbff903113f891b22aaaf1201311
 
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
@@ -98,7 +101,11 @@ public class ListaNoticiasFragment
 
         mListaNoticiasListView = (ListView) mListaNoticiasSwipeRefreshLayout.findViewById(R.id.lista_noticias);
 
+<<<<<<< HEAD
+        substituirCategoria(mCategoria);
+=======
         substituirCategoria((getArguments() != null) ? getArguments().getString(ARG_NOME_CATEGORIA, null) : null);
+>>>>>>> 07ab1f448f8edbff903113f891b22aaaf1201311
 
         return mListaNoticiasSwipeRefreshLayout;
     }
@@ -277,6 +284,18 @@ public class ListaNoticiasFragment
     }
 
     private void substituirCursor(Cursor novoCursor) {
+<<<<<<< HEAD
+        String categoriaCursor = novoCursor.getExtras().getString(NoticiaProvider.QUERY_NOTICIAS_ID_CATEGORIA, null);
+        mNoticiasCursorAdapter.swapCursor(novoCursor);
+
+        mCategoria = categoriaCursor;
+    }
+
+    public void substituirCategoria(String categoria){
+        Bundle bundleLoader = new Bundle();
+        bundleLoader.putString(ARG_NOME_CATEGORIA, categoria);
+        getLoaderManager().restartLoader(ID_LOADER_NOTICIAS, bundleLoader, this);
+=======
         String idCategoriaCursor = null;
         String designacaoCategoriaCursor = null;
         try {
@@ -317,6 +336,7 @@ public class ListaNoticiasFragment
     private void setCategoria(String id, String designacao) {
         this.mIdCategoria = id;
         this.mDesignacaoCategoria = designacao;
+>>>>>>> 07ab1f448f8edbff903113f891b22aaaf1201311
     }
 
     @Override

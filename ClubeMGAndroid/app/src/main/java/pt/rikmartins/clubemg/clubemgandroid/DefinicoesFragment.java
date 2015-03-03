@@ -15,6 +15,7 @@ public class DefinicoesFragment extends PreferenceFragment implements SharedPref
     private Resources resources;
 
     private static Map<String, String> freqSincValorTitulo = null;
+    private ToolbarHolder mToolbarHolder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,8 @@ public class DefinicoesFragment extends PreferenceFragment implements SharedPref
         super.onActivityCreated(savedInstanceState);
 
         actualizaSumarioFrequenciaSincronizacao(getPreferenceManager().getSharedPreferences());
+
+        mToolbarHolder = getActivity() instanceof ToolbarHolder ? (ToolbarHolder) getActivity() : null;
     }
 
     private static void inicializarFreqSincValorTitulo(Resources resources){
@@ -69,6 +72,9 @@ public class DefinicoesFragment extends PreferenceFragment implements SharedPref
         super.onResume();
         getPreferenceScreen().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
+
+        if (mToolbarHolder != null)
+            mToolbarHolder.getToolbar().setTitle(R.string.titulo_fragmento_definicoes);
     }
 
     @Override

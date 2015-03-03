@@ -1,8 +1,11 @@
 package pt.rikmartins.clubemg.clubemgandroid;
 
 import android.app.FragmentManager;
+<<<<<<< HEAD
+=======
 import android.content.SharedPreferences;
 import android.database.Cursor;
+>>>>>>> 07ab1f448f8edbff903113f891b22aaaf1201311
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
@@ -18,7 +21,11 @@ import java.util.HashMap;
 import pt.rikmartins.clubemg.clubemgandroid.sync.SyncUtils;
 
 public class MainActivity
+<<<<<<< HEAD
+        extends ActionBarActivity implements NavigationFragment.ItemClickListener{
+=======
         extends ActionBarActivity implements NavigationFragment.ItemClickListener, ToolbarHolder {
+>>>>>>> 07ab1f448f8edbff903113f891b22aaaf1201311
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private View               mMainLayout;
@@ -65,8 +72,12 @@ public class MainActivity
         mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         mToolbar.setTitleTextColor(getResources().getColor(R.color.colorTextLight));
 
+<<<<<<< HEAD
+        mNavigationDrawerToggle = new ActionBarDrawerToggle(this, (DrawerLayout) mMainLayout, mToolbar,
+=======
         DrawerLayout drawerLayout = (DrawerLayout) mMainLayout;
         mNavigationDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, mToolbar,
+>>>>>>> 07ab1f448f8edbff903113f891b22aaaf1201311
                                                             R.string.abrir_gaveta_navegacao,
                                                             R.string.fechar_gaveta_navegacao) {
             @Override
@@ -122,7 +133,11 @@ public class MainActivity
                     listaNoticiasFragment.substituirCategoria(dados);
                 } else {
                     fragmentManager.beginTransaction()
+<<<<<<< HEAD
+                            .replace(R.id.main_container, ListaNoticiasFragment.newInstance(dados))
+=======
                             .replace(R.id.main_container, ListaNoticiasFragment.newInstance(dados), TAG_FRAGMENTO_LISTA_NOTICIAS)
+>>>>>>> 07ab1f448f8edbff903113f891b22aaaf1201311
                             .commit();
                 }
                 break;

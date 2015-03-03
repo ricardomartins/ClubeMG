@@ -238,10 +238,14 @@ public class NoticiaProvider
             case ROUTE_NOTICIA_CATEGORIA_ID:
                 // Devolver todas as notícia duma categoria.
                 idCategoria = uri.getLastPathSegment();
+<<<<<<< HEAD
+                builder.where(NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria._ID+ "=?", idCategoria);
+=======
                 builder.where(NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria._ID + "=?", idCategoria);
                 projection = Arrays.copyOf(projection, projection.length + 2);
                 projection[projection.length - 2] = NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria._ID + " AS cat_id"; // TODO: Livrar deste hack
                 projection[projection.length - 1] = NoticiaDatabase.Categoria.TABLE_NAME + "." + NoticiaDatabase.Categoria.COLUMN_NAME_DESIGNACAO + " AS cat_des"; // TODO: Livrar deste hack
+>>>>>>> 07ab1f448f8edbff903113f891b22aaaf1201311
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

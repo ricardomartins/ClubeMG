@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 744.09448819 1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="icone_cat_canoagem.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="13.166569"
+     inkscape:cx="0.31880082"
+     inkscape:cy="4.1053554"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="false"
+     inkscape:snap-page="true"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="false"
+     inkscape:snap-grids="false"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1033"
+     inkscape:window-x="1438"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1"
+     inkscape:snap-intersection-paths="true"
+     inkscape:object-nodes="true"
+     inkscape:snap-bbox-midpoints="false"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-midpoints="true"
+     inkscape:snap-nodes="true"
+     inkscape:snap-to-guides="false"
+     inkscape:object-paths="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4226"
+       spacingx="2"
+       spacingy="2" />
+    <sodipodi:guide
+       position="0,24.000023"
+       orientation="24,0"
+       id="guide4615" />
+    <sodipodi:guide
+       position="0,2.2107223e-05"
+       orientation="0,24"
+       id="guide4617" />
+    <sodipodi:guide
+       position="24,2.2107223e-05"
+       orientation="-24,0"
+       id="guide4619" />
+    <sodipodi:guide
+       position="24,24.000023"
+       orientation="0,-24"
+       id="guide4621" />
+    <sodipodi:guide
+       position="0,12.000005"
+       orientation="0,24"
+       id="guide4658" />
+    <sodipodi:guide
+       position="0,4.7244097e-06"
+       orientation="-24,24"
+       id="guide4711" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:#757575;fill-opacity:1;stroke:none;stroke-width:2.05200005;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 12 1028.3613 A 3 11.999989 0 0 0 9 1040.3613 A 3 11.999989 0 0 0 9.0429688 1042.2578 L 6.2421875 1045.0586 L 5.1816406 1045.0586 L 0.93945312 1049.3008 L 1.46875 1049.832 L 2.53125 1050.8926 L 3.0605469 1051.4219 L 7.3027344 1047.1797 L 7.3027344 1046.1211 L 9.1660156 1044.2578 L 10.570312 1042.8535 A 1.5 5.000011 0 0 1 10.5 1041.3613 A 1.5 5.000011 0 0 1 12 1036.3613 A 1.5 5.000011 0 0 1 13.441406 1039.9824 L 14.960938 1038.4629 L 17.757812 1035.666 L 18.818359 1035.666 L 23.060547 1031.4238 L 22.53125 1030.8926 L 21.46875 1029.832 L 20.939453 1029.3008 L 16.697266 1033.5449 L 16.697266 1034.6035 L 14.832031 1036.4688 A 3 11.999989 0 0 0 12 1028.3613 z M 14.998047 1040.5488 L 13.484375 1042.0625 A 1.5 5.000011 0 0 1 12 1046.3613 A 1.5 5.000011 0 0 1 10.876953 1044.6699 L 9.3789062 1046.168 A 3 11.999989 0 0 0 12 1052.3613 A 3 11.999989 0 0 0 14.998047 1040.5488 z "
+       id="path4716" />
+  </g>
+</svg>

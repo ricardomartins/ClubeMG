@@ -75,14 +75,16 @@ class ObtensorImagens {
             Log.v(TAG, "doInBackground: " + Arrays.toString(params));
             try {
                 String oUrl = params[0];
-                int indice = oUrl.lastIndexOf("/");
+                int indice = oUrl.lastIndexOf("/") + 1;
                 String nomeFicheiro = oUrl.substring(indice);
                 try {
                     oUrl = oUrl.substring(0, indice) + URLEncoder.encode(nomeFicheiro, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     Log.e(TAG, e.getLocalizedMessage());
                 }
-                byte[] ba = downloadImageAsByteArray(new URL(params[0]));
+                Log.v(TAG, "URL codificado: " + oUrl);
+
+                byte[] ba = downloadImageAsByteArray(new URL(oUrl));
                 int resUpdate = saveImageToDatabase(ba, NoticiaContract.Noticia.CONTENT_URI.buildUpon().appendPath(params[1]).build());
                 return ba;
             } catch (MalformedURLException e) {
