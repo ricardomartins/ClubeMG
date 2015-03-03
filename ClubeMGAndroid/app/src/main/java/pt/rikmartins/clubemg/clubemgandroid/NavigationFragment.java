@@ -78,7 +78,7 @@ public class NavigationFragment
         mCategoriasListView.addHeaderView(cabecalhoNavegacao);
         mCategoriasListView.addHeaderView(inflater.inflate(R.layout.separador_lista_transparente, mCategoriasListView, false));
 
-        View itemNavegacaoNoticias = inflater.inflate(R.layout.drawer_list_item, mCategoriasListView, false);
+        View itemNavegacaoNoticias = inflater.inflate(R.layout.imagem_texto_list_item, mCategoriasListView, false);
         ((ImageView) itemNavegacaoNoticias.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_dashboard_grey600_24dp);
         ((TextView) itemNavegacaoNoticias.findViewById(R.id.item_navegacao)).setText(R.string.titulo_fragmento_noticias);
         itemNavegacaoNoticias.setTag(TIPO_ON_CLICK_NOTICIAS);
@@ -86,7 +86,7 @@ public class NavigationFragment
 
         mCategoriasListView.addFooterView(inflater.inflate(R.layout.separador_lista_linha, mCategoriasListView, false));
 
-        View itemNavegacaoDefinicoes = inflater.inflate(R.layout.drawer_list_item, mCategoriasListView, false);
+        View itemNavegacaoDefinicoes = inflater.inflate(R.layout.imagem_texto_list_item, mCategoriasListView, false);
         ((ImageView) itemNavegacaoDefinicoes.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_settings_grey600_24dp);
         ((TextView) itemNavegacaoDefinicoes.findViewById(R.id.item_navegacao)).setText(R.string.titulo_fragmento_definicoes);
         itemNavegacaoDefinicoes.setTag(TIPO_ON_CLICK_DEFINICOES);
@@ -115,7 +115,7 @@ public class NavigationFragment
         Log.v(TAG, "Activity created");
         super.onActivityCreated(savedInstanceState);
 
-        mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.drawer_list_item, null, CATEGORIAS_FROM, DRAWER_LIST_ITEM_TO, 0);
+        mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.imagem_texto_list_item, null, CATEGORIAS_FROM, DRAWER_LIST_ITEM_TO, 0);
 
         descricaoCategoriasConhecidas = construirDescricaoCategoriasConhecidas(getResources()); // TODO: Colocar esta estrutura num local mais acessivel (actividade)
 
@@ -253,7 +253,7 @@ public class NavigationFragment
         }
     }
 
-    static class DescriptorCategoriaConhecida {
+    public static class DescriptorCategoriaConhecida {
         public DescriptorCategoriaConhecida(String categoria, Drawable iconeCategoria, String tituloCategoria){
             this.categoria = categoria;
             this.iconeCategoria = iconeCategoria;

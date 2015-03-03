@@ -1,4 +1,4 @@
-package pt.rikmartins.clubemg.clubemgandroid;
+package pt.rikmartins.clubemg.clubemgandroid.listanoticias;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -32,6 +32,9 @@ import android.widget.TextView;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 
+import pt.rikmartins.clubemg.clubemgandroid.NavigationFragment;
+import pt.rikmartins.clubemg.clubemgandroid.R;
+import pt.rikmartins.clubemg.clubemgandroid.ToolbarHolder;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaContract;
 import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
 import pt.rikmartins.clubemg.clubemgandroid.sync.SyncAdapter;

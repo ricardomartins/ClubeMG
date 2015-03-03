@@ -47,11 +47,11 @@
             android:exported="true"
             android:process=":sync" >
             <intent-filter>
-                <action android:name="android.content.SyncAdapter" />
+                <action android:name="android.texto.SyncAdapter" />
             </intent-filter>
 
             <meta-data
-                android:name="android.content.SyncAdapter"
+                android:name="android.texto.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
         <service android:name=".accounts.GenericAccountService" >

@@ -1,4 +1,4 @@
-package pt.rikmartins.clubemg.clubemgandroid;
+package pt.rikmartins.clubemg.clubemgandroid.listanoticias;
 
 import android.content.ContentValues;
 import android.content.Context;

@@ -7,7 +7,7 @@ import android.util.Log;
 
 /** Service to handle sync requests.
  *
- * <p>This service is invoked in response to Intents with action android.content.SyncAdapter, and
+ * <p>This service is invoked in response to Intents with action android.texto.SyncAdapter, and
  * returns a Binder connection to SyncAdapter.
  *
  * <p>For performance, only one sync adapter will be initialized within this application's context.
