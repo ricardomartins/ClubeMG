@@ -5,13 +5,12 @@ import requests
 
 
 class SitioNoticias(object):
-    _noticias = set()
-    _categorias = set()
-    _etiquetas = set()
-
     def __init__(self, endereco, processar_sitio_noticias):
         self._endereco = endereco
         self._processar_sitio_noticias = processar_sitio_noticias
+        self._noticias = set()
+        self._categorias = set()
+        self._etiquetas = set()
 
     def get_endereco(self):
         return self._endereco
@@ -36,7 +35,7 @@ class SitioNoticias(object):
             if class_e_elemento is None:
                 return False
             elemento, extrai_noticia = class_e_elemento
-            self._noticias.add(Noticia(self, elemento, extrai_noticia))
+            noticias.append(Noticia(self, elemento, extrai_noticia))
 
         for noticia in noticias:
             self._adicionar_noticia(noticia)
@@ -66,24 +65,24 @@ class SitioNoticias(object):
 
 
 class Noticia(object):
-    _identificacao_noticia = ""
-    _titulo = ""
-    _subtitulo = ""
-    _texto = ""
-    _endereco_noticia = ""
-    _endereco_imagem = ""
-    _etiquetas = set()
-    _categorias = set()
-    _destacada = False
-
     def __init__(self, sitio_noticias, elemento, extrai_noticia):
         self._elemento = elemento
         self._extrai_noticia = extrai_noticia
         self._sitio_noticias = sitio_noticias
+        self._identificacao_noticia = ""
+        self._titulo = ""
+        self._subtitulo = ""
+        self._texto = ""
+        self._endereco_noticia = ""
+        self._endereco_imagem = ""
+        self._etiquetas = set()
+        self._categorias = set()
+        self._destacada = False
+
         self._prepara_noticia(self._elemento)
 
     def _prepara_noticia(self, elemento):
-        self._extrai_noticia(elemento)
+        self._extrai_noticia(self, elemento)
 
     def get_sitio_noticias(self):
         return self._sitio_noticias
@@ -151,11 +150,12 @@ def extrai_noticia_clubemg(noticia: Noticia, elemento: Tag):
 
     for classe in classes:
         classe_decomposta = map((lambda el_cl: el_cl.replace("-", " ")), classe.split("-", 1))
-        if len(classe_decomposta) > 1:
-            cabeca, corpo = classe_decomposta
-        else:
-            cabeca, corpo = classe_decomposta[0], None
-
+        corpo = None
+        for i, pedaco in enumerate(classe_decomposta):
+            if i == 0:
+                cabeca = pedaco
+            else:
+                corpo = pedaco
         if cabeca == "category":
             noticia._categorias.add(corpo)
         elif cabeca == "tag":
@@ -165,13 +165,13 @@ def extrai_noticia_clubemg(noticia: Noticia, elemento: Tag):
         elif cabeca == "post" and corpo is not None:
             noticia._identificacao_noticia = corpo
 
-        postwrap = elemento.div
+    postwrap = elemento.div
 
-        elemento_title = postwrap.find(class_="title")
-        noticia._titulo = elemento_title.get_text(strip=True)
-        noticia._subtitulo = None
-        noticia._texto = postwrap.find(class_="entry").get_text(strip=True).replace(" Ler mais", "")
-        noticia._endereco_noticia = elemento_title.a["href"]
+    elemento_title = postwrap.find(class_="title")
+    noticia._titulo = elemento_title.get_text(strip=True)
+    noticia._subtitulo = None
+    noticia._texto = postwrap.find(class_="entry").get_text(strip=True).replace(" Ler mais", "")
+    noticia._endereco_noticia = elemento_title.a["href"]
 
-        endereco_imagem_html = postwrap.find(class_="thumbwrap").img["src"]
-        noticia._endereco_imagem = re.sub("-\\d+x\\d+[.]", ".", endereco_imagem_html)
+    endereco_imagem_html = postwrap.find(class_="thumbwrap").img["src"]
+    noticia._endereco_imagem = re.sub("-\\d+x\\d+[.]", ".", endereco_imagem_html)

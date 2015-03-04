@@ -2,77 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f69f5f57-f5dc-458e-ab53-23cb75864c88" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-hdpi/ic_cat_canoagem_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-mdpi/ic_cat_canoagem_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xhdpi/ic_cat_canoagem_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxhdpi/ic_cat_canoagem_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxxhdpi/ic_cat_canoagem_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-hdpi/ic_cat_competicao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-mdpi/ic_cat_competicao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xhdpi/ic_cat_competicao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxhdpi/ic_cat_competicao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxxhdpi/ic_cat_competicao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-hdpi/ic_cat_corrida_montanha_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-mdpi/ic_cat_corrida_montanha_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xhdpi/ic_cat_corrida_montanha_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxhdpi/ic_cat_corrida_montanha_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxxhdpi/ic_cat_corrida_montanha_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-hdpi/ic_cat_escalada_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-mdpi/ic_cat_escalada_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xhdpi/ic_cat_escalada_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxhdpi/ic_cat_escalada_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxxhdpi/ic_cat_escalada_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-hdpi/ic_cat_formacao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-mdpi/ic_cat_formacao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xhdpi/ic_cat_formacao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxhdpi/ic_cat_formacao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxxhdpi/ic_cat_formacao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-hdpi/ic_cat_nauticas_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-mdpi/ic_cat_nauticas_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xhdpi/ic_cat_nauticas_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxhdpi/ic_cat_nauticas_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxxhdpi/ic_cat_nauticas_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-hdpi/ic_cat_orientacao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-mdpi/ic_cat_orientacao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xhdpi/ic_cat_orientacao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxhdpi/ic_cat_orientacao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxxhdpi/ic_cat_orientacao_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-hdpi/ic_cat_vela_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-mdpi/ic_cat_vela_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xhdpi/ic_cat_vela_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxhdpi/ic_cat_vela_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxxhdpi/ic_cat_vela_grey600_24dp.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-hdpi/ic_notificacao.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-mdpi/ic_notificacao.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xhdpi/ic_notificacao.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxhdpi/ic_notificacao.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxxhdpi/ic_notificacao.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../icone_notificacao.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../icone_notificacao2.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/ToolbarHolder.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../icone_cat_actividades_nauticas.svg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../icone_cat_canoagem.svg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../icone_cat_competicao.svg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../icone_cat_corrida_montanha.svg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../icone_cat_escalada.svg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../icone_cat_vela.svg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../icone_notificacao.svg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../icone_notificacao2.svg" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-hdpi/ic_notification.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-mdpi/ic_notification.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xhdpi/ic_notification.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxhdpi/ic_notification.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/drawable-xxxhdpi/ic_notification.png" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/DefinicoesFragment.java" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/DefinicoesFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/ListaNoticiasFragment.java" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/ListaNoticiasFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/MainActivity.java" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/NavigationFragment.java" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/NavigationFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/provider/NoticiaProvider.java" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/provider/NoticiaProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/ObtensorImagens.java" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/ObtensorImagens.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/sync/SyncAdapter.java" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/java/pt/rikmartins/clubemg/clubemgandroid/sync/SyncAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/build.gradle" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/values/strings_fragment_definicoes.xml" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/values/strings_fragment_definicoes.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/values/strings_fragment_navigation.xml" afterPath="$PROJECT_DIR$/../ClubeMGAndroid/app/src/main/res/values/strings_fragment_navigation.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/noticias/sitio.py" afterPath="$PROJECT_DIR$/noticias/sitio.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ClubeMGWeb.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -99,72 +30,54 @@
     <favorites_list name="ClubeMGWeb" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5">
-      <split-first>
-        <leaf>
-          <file leaf-file-name="admin.py" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/noticias/admin.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.2755102" vertical-offset="0" max-vertical-offset="392">
-                  <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-                  <folding>
-                    <element signature="e#0#32#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="base.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ClubeMGWeb/settings/base.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="612" max-vertical-offset="1890">
-                  <caret line="46" column="18" selection-start-line="46" selection-start-column="18" selection-end-line="46" selection-end-column="18" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="sitio.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/noticias/sitio.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="2650" max-vertical-offset="3276">
-                  <caret line="6" column="16" selection-start-line="6" selection-start-column="16" selection-end-line="6" selection-end-column="16" />
-                  <folding>
-                    <element signature="e#0#9#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/ClubeMGWeb/urls.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="288">
-                  <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-                  <folding>
-                    <element signature="e#0#51#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf>
-          <file leaf-file-name="models.py" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/noticias/models.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.6490765" vertical-offset="42" max-vertical-offset="648">
-                  <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-                  <folding />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf>
+      <file leaf-file-name="admin.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/noticias/admin.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="108" max-vertical-offset="216">
+              <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#32#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ClubeMGWeb/settings/base.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="612" max-vertical-offset="1890">
+              <caret line="46" column="18" selection-start-line="46" selection-start-column="18" selection-end-line="46" selection-end-column="18" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sitio.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/noticias/sitio.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.39130434" vertical-offset="1188" max-vertical-offset="3276">
+              <caret line="79" column="31" selection-start-line="79" selection-start-column="31" selection-end-line="79" selection-end-column="31" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ClubeMGWeb/urls.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="288">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#51#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -183,9 +96,9 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/noticias/models.py" />
         <option value="$PROJECT_DIR$/noticias/algo.py" />
-        <option value="$PROJECT_DIR$/noticias/sitio.py" />
         <option value="$PROJECT_DIR$/ClubeMGWeb/settings/base.py" />
         <option value="$PROJECT_DIR$/noticias/admin.py" />
+        <option value="$PROJECT_DIR$/noticias/sitio.py" />
       </list>
     </option>
   </component>
@@ -312,7 +225,7 @@
     <property name="FullScreen" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="options.lastSelected" value="preferences.pluginManager" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
   </component>
@@ -579,28 +492,28 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1364" height="741" extended-state="4" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32908705" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32744783" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32380953" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32698414" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24973376" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14199395" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32698414" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924962" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14719272" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.392" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32698414" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32908705" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32698414" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -620,10 +533,36 @@
     </option>
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/noticias/sitio.py</url>
+          <line>68</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="9" />
+    </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/ClubeMGWeb/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="288">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/noticias/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="648">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/noticias/admin.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="108" max-vertical-offset="216">
@@ -704,7 +643,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="648">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -712,7 +650,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="648">
           <caret line="24" column="31" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -748,7 +685,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="648">
           <caret line="24" column="31" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -784,7 +720,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="648">
           <caret line="24" column="31" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -820,7 +755,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="648">
           <caret line="24" column="31" selection-start-line="24" selection-start-column="31" selection-end-line="24" selection-end-column="31" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -856,7 +790,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="648">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -907,7 +840,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="522">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -977,12 +909,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/noticias/sitio.py">
+    <entry file="file://$PROJECT_DIR$/ClubeMGWeb/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2650" max-vertical-offset="3276">
-          <caret line="6" column="16" selection-start-line="6" selection-start-column="16" selection-end-line="6" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="915">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/noticias/admin.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="216">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -995,31 +937,35 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/noticias/admin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2755102" vertical-offset="0" max-vertical-offset="392">
-          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ClubeMGWeb/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="915">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#51#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/noticias/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6490765" vertical-offset="42" max-vertical-offset="648">
-          <caret line="16" column="0" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.5857988" vertical-offset="0" max-vertical-offset="648">
+          <caret line="11" column="10" selection-start-line="11" selection-start-column="10" selection-end-line="11" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharm40/system/python_stubs/-1247971765/builtins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3316583" vertical-offset="51168" max-vertical-offset="102474">
+          <caret line="2850" column="8" selection-start-line="2850" selection-start-column="8" selection-end-line="2850" selection-end-column="8" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python3.4/codeop.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3316583" vertical-offset="2244" max-vertical-offset="3132">
+          <caret line="132" column="0" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/noticias/sitio.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.39130434" vertical-offset="1188" max-vertical-offset="3276">
+          <caret line="79" column="31" selection-start-line="79" selection-start-column="31" selection-end-line="79" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
