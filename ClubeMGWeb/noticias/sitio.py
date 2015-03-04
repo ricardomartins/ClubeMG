@@ -82,13 +82,13 @@ class Noticia(object):
     def _prepara_noticia(self, elemento):
         self._extrai_noticia(self, elemento)
 
-    def get_sitio_noticias(self):
+    def get_sitio_noticias(self) -> SitioNoticias:
         return self._sitio_noticias
 
-    def get_identificacao_noticia(self):
+    def get_identificacao_noticia(self) -> str:
         return self._identificacao_noticia
 
-    def get_titulo(self):
+    def get_titulo(self) -> str:
         return self._titulo
 
     def get_subtitulo(self):

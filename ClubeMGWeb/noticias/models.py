@@ -21,7 +21,6 @@ class Noticia(models.Model):
     texto = models.TextField()
     end_noticia = models.URLField("endereço da notícia")
     end_img = models.URLField("endereço da imagem")
-    end_img_grande = models.URLField("endereço da imagem grande")
     imagem = models.ImageField()
     destacada = models.BooleanField(default=False)
     categorias = models.ManyToManyField(to=Categoria)

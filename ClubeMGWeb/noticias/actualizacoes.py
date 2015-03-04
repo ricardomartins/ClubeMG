@@ -1,153 +1,80 @@
-from noticias.sitio_cmg import obter_noticias_clubemg
-
-sitio_noticias = obter_noticias_clubemg()
-categorias = sitio_noticias.categorias
-etiquetas = sitio_noticias.etiquetas
-noticias = sitio_noticias.noticias
-
-def actualizarNoticiasLocais():
-    pass
+import noticias.models as models
+import noticias.sitio as sitio
 
 
-    # private ArrayList<SitioNoticias.Noticia> actualizarNoticiasLocais(final SitioNoticiasClubeMG sitioNoticiasClubeMG, final SyncResult syncResult) throws RemoteException, OperationApplicationException {
-    #     Cursor cursorNoticias = mContentResolver.query(NoticiaContract.Noticia.CONTENT_URI, null, null, null, NoticiaContract.Noticia.COLUMN_NAME_DESTACADA + " DESC, " + NoticiaContract.Noticia.COLUMN_NAME_ID_NOTICIA + " DESC");
-    #     Log.v(TAG, "noticias anteriores: " + cursorNoticias.getColumnCount());
-    #
-    #     ArrayList<SitioNoticias.Noticia> noticiasAInserir = new ArrayList<>();
-    #     Map<Long, SitioNoticias.Noticia> noticiasAActualizar = new HashMap<>();
-    #     HashSet<Long> noticiasAApagar = new HashSet<>();
-    #
-    #     int indiceIdNoticia = cursorNoticias.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ID_NOTICIA);
-    #     int indiceDestacada = cursorNoticias.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_DESTACADA);
-    #     int indiceId = cursorNoticias.getColumnIndex(NoticiaContract.Noticia._ID);
-    #     int i = 0;
-    #     for (SitioNoticias.Noticia noticia : sitioNoticiasClubeMG.getNoticias()) {
-    #         String idNoticiaExterna = noticia.getIdentificacaoNoticia();
-    #         boolean eNoticiaDestacadaExterna = noticia.isDestacada();
-    #
-    #         boolean adicionarALista = true;
-    #         cursorNoticias.moveToFirst();
-    #         while(!cursorNoticias.isAfterLast()) {
-    #             if (i >= 0) {
-    #                 i++;
-    #                 if (i > 11) {
-    #                     noticiasAApagar.add(cursorNoticias.getLong(indiceId));
-    #                     i = -1;
-    #                 }
-    #             }
-    #             if (cursorNoticias.getString(indiceIdNoticia).equals(idNoticiaExterna)) {
-    #                 adicionarALista = false;
-    #                 if ((cursorNoticias.getInt(indiceDestacada) == 1) ^ eNoticiaDestacadaExterna)
-    #                     noticiasAActualizar.put(cursorNoticias.getLong(indiceId), noticia);
-    #                 if (i < 0) break;
-    #             }
-    #             cursorNoticias.moveToNext();
-    #         }
-    #         i = -1;
-    #         if (adicionarALista) noticiasAInserir.add(noticia);
-    #     }
-    #     Log.v(TAG, "noticias a inserir: " + noticiasAInserir.size());
-    #
-    #     Cursor cursorCategorias = mContentResolver.query(NoticiaContract.Categoria.CONTENT_URI, null, null, null, null);
-    #     Log.v(TAG, "categorias anteriores: " + cursorCategorias.getColumnCount());
-    #
-    #     ArrayList<String> categoriasAInserir = new ArrayList<>();
-    #
-    #     int indiceDesignacaoCategoria = cursorCategorias.getColumnIndex(NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO);
-    #     for (String categoria : sitioNoticiasClubeMG.getCategorias()) {
-    #
-    #         boolean adicionarALista = true;
-    #         cursorCategorias.moveToFirst();
-    #         while(!cursorCategorias.isAfterLast()) {
-    #             if (cursorCategorias.getString(indiceDesignacaoCategoria).equals(categoria)) {
-    #                 adicionarALista = false;
-    #                 break;
-    #             }
-    #             cursorCategorias.moveToNext();
-    #
-    #         }
-    #         if (adicionarALista) categoriasAInserir.add(categoria);
-    #     }
-    #     Log.v(TAG, "categorias a inserir: " + categoriasAInserir.size());
-    #
-    #     Cursor cursorEtiquetas = mContentResolver.query(NoticiaContract.Etiqueta.CONTENT_URI, null, null, null, null);
-    #     Log.v(TAG, "etiquetas anteriores: " + cursorEtiquetas.getColumnCount());
-    #
-    #     ArrayList<String> etiquetasAInserir = new ArrayList<>();
-    #
-    #     int indiceDesignacaoEtiqueta = cursorEtiquetas.getColumnIndex(NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO);
-    #     for (String etiqueta : sitioNoticiasClubeMG.getEtiquetas()) {
-    #
-    #         boolean adicionarALista = true;
-    #         cursorEtiquetas.moveToFirst();
-    #         while(!cursorEtiquetas.isAfterLast()) {
-    #             if (cursorEtiquetas.getString(indiceDesignacaoEtiqueta).equals(etiqueta)) {
-    #                 adicionarALista = false;
-    #                 break;
-    #             }
-    #             cursorEtiquetas.moveToNext();
-    #         }
-    #         if (adicionarALista) etiquetasAInserir.add(etiqueta);
-    #     }
-    #     Log.v(TAG, "etiquetas a inserir: " + etiquetasAInserir.size());
-    #
-    #     ArrayList<ContentProviderOperation> lote = new ArrayList<>();
-    #
-    #     for (SitioNoticias.Noticia noticiaDoSitio : noticiasAInserir) {
-    #         final ContentProviderOperation.Builder insertOperationBuilder = ContentProviderOperation.newInsert(NoticiaContract.Noticia.CONTENT_URI);
-    #         insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_ID_NOTICIA, noticiaDoSitio.getIdentificacaoNoticia());
-    #         insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_TITULO, noticiaDoSitio.getTitulo());
-    #         insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_SUBTITULO, noticiaDoSitio.getSubtitulo());
-    #         insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_TEXTO, noticiaDoSitio.getTexto());
-    #         insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_CATEGORIAS, ((SitioNoticiasClubeMG.NoticiaClubeMG) noticiaDoSitio).getCategoriasAsString());
-    #         insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_ETIQUETAS, ((SitioNoticiasClubeMG.NoticiaClubeMG) noticiaDoSitio).getEtiquetasAsString());
-    #         insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_DESTACADA, noticiaDoSitio.isDestacada());
-    #         insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM, noticiaDoSitio.getEnderecoImagem().toString());
-    #         insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_NOTICIA, noticiaDoSitio.getEnderecoNoticia().toString());
-    #         insertOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE, ((SitioNoticiasClubeMG.NoticiaClubeMG) noticiaDoSitio).getEnderecoImagemGrande().toString());
-    #         Log.v(TAG, "operação inserir notícia: " + insertOperationBuilder.toString());
-    #
-    #         lote.add(insertOperationBuilder.build());
-    #     }
-    #
-    #     for (long idNoticiaAActualizar : noticiasAActualizar.keySet()) {
-    #         SitioNoticias.Noticia noticiaDoSitio = noticiasAActualizar.get(idNoticiaAActualizar);
-    #
-    #         final ContentProviderOperation.Builder updateOperationBuilder = ContentProviderOperation.newUpdate(NoticiaContract.Noticia.CONTENT_URI.buildUpon().appendPath(String.valueOf(idNoticiaAActualizar)).build());
-    #         updateOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_TEXTO, noticiaDoSitio.getTexto());
-    #         updateOperationBuilder.withValue(NoticiaContract.Noticia.COLUMN_NAME_DESTACADA, noticiaDoSitio.isDestacada());
-    #         Log.v(TAG, "operação actualizar notícia: " + updateOperationBuilder.toString());
-    #
-    #         lote.add(updateOperationBuilder.build());
-    #     }
-    #
-    #     for (long idNoticiaAApagar : noticiasAApagar) {
-    #         final ContentProviderOperation.Builder deleteOperationBuilder = ContentProviderOperation.newDelete(NoticiaContract.Noticia.CONTENT_URI.buildUpon().appendPath(String.valueOf(idNoticiaAApagar)).build());
-    #         Log.v(TAG, "operação apagar notícia: " + deleteOperationBuilder.toString());
-    #
-    #         lote.add(deleteOperationBuilder.build());
-    #     }
-    #
-    #     for (String designacaoCategoria : categoriasAInserir)
-    #         lote.add(ContentProviderOperation.newInsert(NoticiaContract.Categoria.CONTENT_URI)
-    #                 .withValue(NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO, designacaoCategoria)
-    #                 .build());
-    #
-    #     for (String designacaoEtiqueta : etiquetasAInserir)
-    #         lote.add(ContentProviderOperation.newInsert(NoticiaContract.Etiqueta.CONTENT_URI)
-    #                 .withValue(NoticiaContract.Etiqueta.COLUMN_NAME_DESIGNACAO, designacaoEtiqueta)
-    #                 .build());
-    #
-    #     syncResult.stats.numEntries = syncResult.stats.numInserts = noticiasAInserir.size() + categoriasAInserir.size() + etiquetasAInserir.size();
-    #     syncResult.stats.numEntries += syncResult.stats.numUpdates = noticiasAActualizar.size();
-    #     syncResult.stats.numEntries += syncResult.stats.numDeletes = noticiasAApagar.size();
-    #     Log.v(TAG, "lote: " + lote.size());
-    #
-    #     mContentResolver.applyBatch(NoticiaContract.CONTENT_AUTHORITY, lote);
-    #
-    #     if (cursorNoticias != null && !cursorNoticias.isClosed()) cursorNoticias.close();
-    #     if (cursorCategorias != null && !cursorCategorias.isClosed()) cursorCategorias.close();
-    #     if (cursorEtiquetas != null && !cursorEtiquetas.isClosed()) cursorEtiquetas.close();
-    #
-    #     return noticiasAInserir;
-    # }
+class ResultadoActualizacao(object):
+    def __init__(self):
+        self.insercoes = 0
+        self.actualizacoes = 0
+        self.apagoes = 0
+
+    @property
+    def alteracoes(self):
+        return self.insercoes + self.actualizacoes + self.apagoes
+
+
+def obter_noticia_actualizada(noticia_sitio: sitio.Noticia) -> models.Noticia:
+    try:
+        noticia_bd = models.Noticia.objects.get(id_noticia=noticia_sitio.identificacao_noticia)
+        if bool(noticia_bd.destacada) != bool(noticia_sitio.destacada):
+            return _inserir_noticia(noticia_sitio)
+    except models.Noticia.DoesNotExist:
+        return _inserir_noticia(noticia_sitio)
+
+
+def _inserir_noticia(noticia_sitio: sitio.Noticia) -> models.Noticia:
+    noticia_bd = models.Noticia()
+    noticia_bd.id_noticia = noticia_sitio.identificacao_noticia
+    noticia_bd.titulo = noticia_sitio.titulo
+    noticia_bd.subtitulo = noticia_sitio.subtitulo
+    noticia_bd.texto = noticia_sitio.texto
+    noticia_bd.destacada = noticia_sitio.destacada
+    noticia_bd.end_img = noticia_sitio.endereco_imagem
+    noticia_bd.end_noticia = noticia_sitio.endereco_noticia
+
+    noticia_bd.save()
+
+    for categoria_sitio in noticia_sitio.categorias:
+        categoria_bd = obter_categoria_por_designacao(categoria_sitio)
+        noticia_bd.categorias.add(categoria_bd)
+
+    for etiqueta_sitio in noticia_sitio.etiquetas:
+        etiqueta_bd = obter_etiqueta_por_designacao(etiqueta_sitio)
+        noticia_bd.etiquetas.add(etiqueta_bd)
+
+    return noticia_bd
+
+
+def obter_categoria_por_designacao(designacao_categoria: str) -> models.Categoria:
+    try:
+        return models.Categoria.objects.get(designacao=designacao_categoria)
+    except models.Categoria.DoesNotExist:
+        return _inserir_categoria(designacao_categoria)
+
+
+def _inserir_categoria(designacao_categoria: str) -> models.Categoria:
+    categoria_bd = models.Categoria(designacao=designacao_categoria)
+
+    categoria_bd.save()
+
+    return categoria_bd
+
+
+def obter_etiqueta_por_designacao(designacao_etiqueta: str) -> models.Etiqueta:
+    try:
+        return models.Etiqueta.objects.get(designacao=designacao_etiqueta)
+    except models.Etiqueta.DoesNotExist:
+        return _inserir_etiqueta(designacao_etiqueta)
+
+
+def _inserir_etiqueta(designacao_etiqueta: str) -> models.Etiqueta:
+    etiqueta_bd = models.Etiqueta(designacao=designacao_etiqueta)
+
+    etiqueta_bd.save()
+
+    return etiqueta_bd
+
+
+def actualizar_noticias_locais(sitio_noticias: sitio.SitioNoticias):
+    for noticia_sitio in sitio_noticias.noticias:
+        obter_noticia_actualizada(noticia_sitio)

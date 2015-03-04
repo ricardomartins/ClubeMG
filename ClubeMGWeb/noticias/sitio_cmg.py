@@ -4,7 +4,7 @@ from bs4.element import Tag
 import noticias.sitio as sitio
 
 
-def _processar_sitio_noticias_clubemg(pagina: BeautifulSoup):
+def _processar_sitio_noticias_clubemg(pagina: BeautifulSoup) -> list:
     contentwrap = pagina.find(id="contentwrap")
     elementos_noticias = contentwrap.find_all(class_="post")
 
