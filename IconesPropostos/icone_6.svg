@@ -33,7 +33,7 @@
       <stop
          id="stop4249"
          offset="0.07883428"
-         style="stop-color:#000000;stop-opacity:0.2" />
+         style="stop-color:#000000;stop-opacity:0.25" />
       <stop
          style="stop-color:#000000;stop-opacity:0"
          offset="1"
@@ -332,16 +332,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2"
-     inkscape:cx="218.89752"
-     inkscape:cy="200.18432"
+     inkscape:cx="58.766457"
+     inkscape:cy="211.15001"
      inkscape:document-units="px"
      inkscape:current-layer="layer7"
      showgrid="false"
-     showguides="true"
+     showguides="false"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1366"
-     inkscape:window-height="721"
-     inkscape:window-x="-2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1033"
+     inkscape:window-x="1438"
      inkscape:window-y="-3"
      inkscape:window-maximized="1"
      guidetolerance="20"
@@ -553,7 +553,7 @@
      inkscape:label="Acabamento"
      style="display:inline">
     <path
-       style="opacity:0.95;fill:url(#linearGradient4247);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:url(#linearGradient4247);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 196 768.36133 A 87.999992 88 0 0 0 108 856.36133 A 87.999992 88 0 0 0 108.14258 860.36133 L 283.80078 860.36133 A 87.999992 88 0 0 0 284 856.36133 A 87.999992 88 0 0 0 196 768.36133 z "
        id="path5015" />
   </g>
