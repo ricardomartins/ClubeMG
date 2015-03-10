@@ -1,5 +1,6 @@
 package pt.rikmartins.clubemg.clubemgandroid.instituicao;
 
+import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class Conteudo {
 
     public static final String CONTEUDO_TEXTO = "conteudo_id_texto";
     public static final String CONTEUDO_IMAGEM = "conteudo_id_imagem";
+    public static final String CONTEUDO_ATACADO = "conteudo_id_atacado";
 
     public static final String[] LISTA_DE = new String[] {
             CONTEUDO_IMAGEM,
@@ -24,15 +26,20 @@ public class Conteudo {
     };
 
     public final static List<Item> ITENS = new ArrayList<>();
-    static {
-        addItem("Página no Facebook", R.drawable.ic_facebook);
-        addItem("Página no Google+", R.drawable.ic_google_plus);
+    static { // TODO: Isto tem que passar para recurso
+//        addItem("Página da internet", null);
+//        addItem("Contacta-nos via email", null);
+//        addItem("Contacta-nos via telefone", null);
+//        addItem("Encontra-nos", null);
+//        addItem("Página no Facebook", R.drawable.ic_facebook);
+//        addItem("Perfil no Google+", R.drawable.ic_google_plus);
     }
 
-    private static void addItem(String texto, @DrawableRes int imagem) {
+    private static void addItem(String texto, @DrawableRes Integer imagem, Bundle atacado) {
         Item item = new Item(2);
         item.put(CONTEUDO_TEXTO, texto);
         item.put(CONTEUDO_IMAGEM, imagem);
+        item.put(CONTEUDO_ATACADO, atacado);
         ITENS.add(item);
     }
 
