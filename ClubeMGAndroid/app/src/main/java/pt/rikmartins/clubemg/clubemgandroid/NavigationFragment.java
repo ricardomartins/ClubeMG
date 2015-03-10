@@ -38,11 +38,6 @@ public class NavigationFragment
         AdapterView.OnItemClickListener {
     private static final String TAG = NavigationFragment.class.getSimpleName();
 
-    public static final String TIPO_ON_CLICK_INSTITUICAO = "instituição";
-    public static final String TIPO_ON_CLICK_NOTICIAS = "notícias";
-    public static final String TIPO_ON_CLICK_CATEGORIA = "categoria";
-    public static final String TIPO_ON_CLICK_DEFINICOES = "definições";
-
     private LinearLayout mNavigationLinearLayout;
     private ListView     mCategoriasListView;
 
@@ -109,7 +104,6 @@ public class NavigationFragment
         View itemNavegacaoNoticias = inflater.inflate(R.layout.imagem_texto_list_item, mCategoriasListView, false);
         ((ImageView) itemNavegacaoNoticias.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_dashboard_grey600_24dp);
         ((TextView) itemNavegacaoNoticias.findViewById(R.id.item_navegacao)).setText(R.string.titulo_fragmento_noticias);
-        itemNavegacaoNoticias.setTag(TIPO_ON_CLICK_NOTICIAS);
         itemNavegacaoNoticias.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,7 +119,6 @@ public class NavigationFragment
         View itemNavegacaoDefinicoes = inflater.inflate(R.layout.imagem_texto_list_item, mCategoriasListView, false);
         ((ImageView) itemNavegacaoDefinicoes.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_settings_grey600_24dp);
         ((TextView) itemNavegacaoDefinicoes.findViewById(R.id.item_navegacao)).setText(R.string.titulo_fragmento_definicoes);
-        itemNavegacaoDefinicoes.setTag(TIPO_ON_CLICK_DEFINICOES);
         itemNavegacaoDefinicoes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

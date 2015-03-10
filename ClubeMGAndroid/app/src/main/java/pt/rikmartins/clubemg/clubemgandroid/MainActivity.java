@@ -121,6 +121,7 @@ public class MainActivity
 
     public static final String NAVIGATON_KEY_EXTERNO_PRINCIPAL = "externo_principal";
     public static final String NAVIGATON_KEY_EXTERNO_SECUNDARIO = "externo_secundario";
+    public static final String NAVIGATON_KEY_EXTERNO_CHAMADA = "externo_chamada";
 
     @Override
     public void onNavigationEvent(Bundle atacado) {
@@ -164,7 +165,15 @@ public class MainActivity
                     }
                 }
             }
+        } else if (atacado.containsKey(NAVIGATON_KEY_EXTERNO_CHAMADA)) {
+            String extChamada = atacado.getString(NAVIGATON_KEY_EXTERNO_CHAMADA);
 
+            Uri uriExtPrincipal = extChamada != null ? Uri.parse(extChamada) : null;
+
+            if (uriExtPrincipal != null) {
+                Intent i = new Intent(Intent.ACTION_DIAL, uriExtPrincipal);
+                startActivity(i);
+            }
         }
 
         if (mTipoDeLayout == TIPO_DE_LAYOUT_DRAWER_LAYOUT)

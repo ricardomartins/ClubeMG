@@ -1,5 +1,6 @@
 package pt.rikmartins.clubemg.clubemgandroid.instituicao;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import pt.rikmartins.clubemg.clubemgandroid.MainActivity;
 import pt.rikmartins.clubemg.clubemgandroid.R;
 
 public class Conteudo {
@@ -27,16 +29,37 @@ public class Conteudo {
 
     public final static List<Item> ITENS = new ArrayList<>();
     static { // TODO: Isto tem que passar para recurso
-//        addItem("Página da internet", null);
-//        addItem("Contacta-nos via email", null);
-//        addItem("Contacta-nos via telefone", null);
-//        addItem("Encontra-nos", null);
-//        addItem("Página no Facebook", R.drawable.ic_facebook);
-//        addItem("Perfil no Google+", R.drawable.ic_google_plus);
+        Bundle atacado = new Bundle(1);
+        atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_PRINCIPAL, "http://www.montanhismo-guarda.pt/portal/");
+        addItem("Página da internet", null, atacado);
+
+        atacado = new Bundle(1);
+        atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_PRINCIPAL, Uri.fromParts(
+                "mailto", "clube@montanhismo-guarda.pt", null).toString());
+        addItem("Contacta-nos via email", null, atacado);
+
+        atacado = new Bundle(1);
+        atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_CHAMADA, Uri.fromParts(
+                "tel", "271222840", null).toString());
+        addItem("Contacta-nos via telefone", null, atacado);
+
+        atacado = new Bundle(1);
+        atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_PRINCIPAL, Uri.fromParts(
+                "geo", "40.541155,-7.266898", null).toString());
+        addItem("Encontra-nos", null, atacado);
+
+        atacado = new Bundle(2);
+        atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_PRINCIPAL, "fb://page/123780544307693");
+        atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_SECUNDARIO, "https://www.facebook.com/pages/Clube-de-Montanhismo-da-Guarda/123780544307693");
+        addItem("Página no Facebook", R.drawable.ic_facebook, atacado);
+
+        atacado = new Bundle(1);
+        atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_PRINCIPAL, "https://plus.google.com/u/1/+ClubedeMontanhismodaGuarda/posts");
+        addItem("Perfil no Google+", R.drawable.ic_google_plus, atacado);
     }
 
     private static void addItem(String texto, @DrawableRes Integer imagem, Bundle atacado) {
-        Item item = new Item(2);
+        Item item = new Item(3);
         item.put(CONTEUDO_TEXTO, texto);
         item.put(CONTEUDO_IMAGEM, imagem);
         item.put(CONTEUDO_ATACADO, atacado);
@@ -44,9 +67,6 @@ public class Conteudo {
     }
 
     public static class Item extends HashMap<String, Object> {
-        public Item() {
-        }
-
         public Item(int capacity) {
             super(capacity);
         }
