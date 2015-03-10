@@ -1,4 +1,4 @@
-package pt.rikmartins.clubemg.clubemgandroid;
+package pt.rikmartins.clubemg.clubemgandroid.definicoes;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -9,6 +9,8 @@ import android.preference.PreferenceFragment;
 import java.util.HashMap;
 import java.util.Map;
 
+import pt.rikmartins.clubemg.clubemgandroid.R;
+import pt.rikmartins.clubemg.clubemgandroid.ToolbarHolder;
 import pt.rikmartins.clubemg.clubemgandroid.sync.SyncUtils;
 
 public class DefinicoesFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {

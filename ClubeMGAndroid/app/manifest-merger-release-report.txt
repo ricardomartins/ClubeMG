@@ -100,13 +100,13 @@ ADDED from AndroidManifest.xml:45:9
 		ADDED from AndroidManifest.xml:47:13
 	android:name
 		ADDED from AndroidManifest.xml:46:13
-intent-filter#android.content.SyncAdapter
+intent-filter#android.texto.SyncAdapter
 ADDED from AndroidManifest.xml:49:13
-action#android.content.SyncAdapter
+action#android.texto.SyncAdapter
 ADDED from AndroidManifest.xml:50:17
 	android:name
 		ADDED from AndroidManifest.xml:50:25
-meta-data#android.content.SyncAdapter
+meta-data#android.texto.SyncAdapter
 ADDED from AndroidManifest.xml:53:13
 	android:resource
 		ADDED from AndroidManifest.xml:55:17
