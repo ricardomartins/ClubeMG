@@ -4,9 +4,15 @@ from django.db import models
 class Categoria(models.Model):
     designacao = models.CharField("designação", max_length=64)
 
+    def __str__(self):
+        return self.designacao
+
 
 class Etiqueta(models.Model):
     designacao = models.CharField("designação", max_length=128)
+
+    def __str__(self):
+        return self.designacao
 
 
 class Noticia(models.Model):
@@ -27,3 +33,6 @@ class Noticia(models.Model):
     etiquetas = models.ManyToManyField(to=Etiqueta)
 
     ultima_actualizacao = models.DateTimeField("última actualização", auto_now=True, editable=False, blank=True)
+
+    def __str__(self):
+        return self.titulo

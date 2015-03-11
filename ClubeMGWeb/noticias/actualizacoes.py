@@ -24,10 +24,10 @@ def obter_noticia_actualizada(noticia_sitio: sitio.Noticia) -> models.Noticia:
 
 def _inserir_noticia(noticia_sitio: sitio.Noticia) -> models.Noticia:
     noticia_bd = models.Noticia()
-    noticia_bd.id_noticia = noticia_sitio.identificacao_noticia
-    noticia_bd.titulo = noticia_sitio.titulo
-    noticia_bd.subtitulo = noticia_sitio.subtitulo
-    noticia_bd.texto = noticia_sitio.texto
+    noticia_bd.id_noticia = int(noticia_sitio.identificacao_noticia)
+    noticia_bd.titulo = noticia_sitio.titulo or ''
+    noticia_bd.subtitulo = noticia_sitio.subtitulo or ''
+    noticia_bd.texto = noticia_sitio.texto or ''
     noticia_bd.destacada = noticia_sitio.destacada
     noticia_bd.end_img = noticia_sitio.endereco_imagem
     noticia_bd.end_noticia = noticia_sitio.endereco_noticia
