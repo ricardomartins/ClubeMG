@@ -66,12 +66,12 @@ public class SitioNoticiasClubeMG extends SitioNoticias {
         }
 
 //            <div class="post-1504 post type-post hentry category-btt tag-guarda tag-serra-da-estrela featured">
-//                <div class="postwrap ui-widget ui-widget-texto thumb">
+//                <div class="postwrap ui-widget ui-widget-content thumb">
 //                    <h3 class="title"><a href="http://www.montanhismo-guarda.pt/portal/?p=1504">Invernal de BTT Cidade da Guarda 2014</a></h3>
 //                    <div class="clear"></div>
 //                    <div class="thumbwrap">
 //                        <div class="itx-featured">
-//                        <div class="ui-widget-header cont"><a href="http://www.montanhismo-guarda.pt/portal/?p=1504"><img src="http://www.montanhismo-guarda.pt/portal/wp-texto/uploads/2014/10/teste_retrato-300x200.jpg" alt="Invernal de BTT Cidade da Guarda 2014" height="200"></a></div>				</div>
+//                        <div class="ui-widget-header cont"><a href="http://www.montanhismo-guarda.pt/portal/?p=1504"><img src="http://www.montanhismo-guarda.pt/portal/wp-content/uploads/2014/10/teste_retrato-300x200.jpg" alt="Invernal de BTT Cidade da Guarda 2014" height="200"></a></div>				</div>
 //                    </div>
 //                    <div class="entry">
 //                        <p>Está aí mais uma edição da Invernal de BTT. Mais informações em www.montanhismo-guarda.pt/invernalbtt e em www.facebook.com/invernalbtt</p>
@@ -81,12 +81,12 @@ public class SitioNoticiasClubeMG extends SitioNoticias {
 //            </div>
 //            --------------------------------------------------------------------
 //            <div class="post-1513 post type-post hentry category-montanha tag-serra-da-estrela tag-travessias-de-montanha posts postwrap-1">
-//                <div class="postwrap ui-widget ui-widget-texto thumb">
+//                <div class="postwrap ui-widget ui-widget-content thumb">
 //                    <h3 class="title"><a href="http://www.montanhismo-guarda.pt/portal/?p=1513">Travessia dos Três Cântaros</a></h3>
 //                    <div class="clear"></div>
 //                    <div class="thumbwrap">
 //                        <div class="itx-thumb">
-//                        <div class="ui-widget-header cont"><a href="http://www.montanhismo-guarda.pt/portal/?p=1513"><img src="http://www.montanhismo-guarda.pt/portal/wp-texto/uploads/2014/10/BaseTravessiaInvernal_2014-75x100.jpg" alt="Travessia dos Três Cântaros" height="100"></a></div>				</div>
+//                        <div class="ui-widget-header cont"><a href="http://www.montanhismo-guarda.pt/portal/?p=1513"><img src="http://www.montanhismo-guarda.pt/portal/wp-content/uploads/2014/10/BaseTravessiaInvernal_2014-75x100.jpg" alt="Travessia dos Três Cântaros" height="100"></a></div>				</div>
 //                    </div>
 //                    <div class="entry">
 //                        <p>Encontram-se abertas as&nbsp;inscrições&nbsp;para a&nbsp; Travessia Invernal em Autonomia 2014 – “Travessia dos&nbsp;Três Cântaros”,&nbsp;a realizar no dia&nbsp;16 de Novembro,&nbsp;na Serra da <a href="http://www.montanhismo-guarda.pt/portal/?p=1513"><b>… Ler mais</b></a></p>

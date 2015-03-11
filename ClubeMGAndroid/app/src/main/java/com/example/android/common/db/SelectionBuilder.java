@@ -16,7 +16,7 @@
 
 /*
  * Modifications:
- * -Imported from AOSP frameworks/base/core/java/com/android/internal/texto
+ * -Imported from AOSP frameworks/base/core/java/com/android/internal/content
  * -Changed package name
  */
 
