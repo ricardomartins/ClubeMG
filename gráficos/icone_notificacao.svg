@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 744.09448819 1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="icone_notificacao.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#7f7f7f"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.6"
+     inkscape:cx="-62.540097"
+     inkscape:cy="-9.7898999"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer3"
+     showgrid="true"
+     showguides="true"
+     inkscape:snap-grids="true"
+     inkscape:snap-page="true"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="true"
+     inkscape:object-nodes="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1033"
+     inkscape:window-x="1438"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4138"
+       dotted="true"
+       spacingx="2"
+       spacingy="2" />
+    <sodipodi:guide
+       position="8.2572838e-16,23.000023"
+       orientation="23,0"
+       id="guide4140" />
+    <sodipodi:guide
+       position="8.2572838e-16,2.2107223e-05"
+       orientation="0,24"
+       id="guide4142" />
+    <sodipodi:guide
+       position="24,2.2107223e-05"
+       orientation="-23,0"
+       id="guide4144" />
+    <sodipodi:guide
+       position="-2,24.000001"
+       orientation="0,-24"
+       id="guide4146" />
+    <sodipodi:guide
+       position="2,21.000023"
+       orientation="19,0"
+       id="guide4150" />
+    <sodipodi:guide
+       position="2,2.0000221"
+       orientation="0,20"
+       id="guide4152" />
+    <sodipodi:guide
+       position="22,2.0000221"
+       orientation="-19,0"
+       id="guide4154" />
+    <sodipodi:guide
+       position="-2,22"
+       orientation="0,-20"
+       id="guide4156" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="original"
+     style="display:none">
+    <image
+       style="display:inline"
+       y="1032.3622"
+       x="4"
+       id="image3939"
+       xlink:href="file:///home/ricardo/Documentos/Clube%20de%20Montanhismo/logo_justo.jpg"
+       height="16"
+       width="16" />
+  </g>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <ellipse
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:2.052;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path4158"
+       cx="12"
+       cy="1040.3622"
+       rx="8.9739838"
+       ry="8.9739723" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="acima">
+    <path
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 11.105469 1038.1484 L 8 1044.3613 L 8 1046.3613 L 16 1046.3613 L 16 1044.3613 L 12 1044.3613 L 12 1038.3613 A 2 2 0 0 1 11.105469 1038.1484 z "
+       id="path4948" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 12 1034.3613 A 2 2 0 0 0 10 1036.3613 A 2 2 0 0 0 11.105469 1038.1484 L 12 1036.3613 L 12.894531 1038.1504 A 2 2 0 0 0 14 1036.3613 A 2 2 0 0 0 12 1034.3613 z "
+       id="path4950" />
+  </g>
+</svg>

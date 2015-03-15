@@ -3,15 +3,12 @@ package pt.rikmartins.clubemg.clubemgandroid;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.ActivityNotFoundException;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -34,12 +31,9 @@ import pt.rikmartins.clubemg.clubemgandroid.provider.NoticiaProvider;
  * Created by ricardo on 08-12-2014.
  */
 public class NavigationFragment
-        extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener, View.OnClickListener{
+        extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        AdapterView.OnItemClickListener {
     private static final String TAG = NavigationFragment.class.getSimpleName();
-
-    public static final String TIPO_ON_CLICK_NOTICIAS = "noticias";
-    public static final String TIPO_ON_CLICK_CATEGORIA = "categoria";
-    public static final String TIPO_ON_CLICK_DEFINICOES = "definicoes";
 
     private LinearLayout mNavigationLinearLayout;
     private ListView     mCategoriasListView;
@@ -48,7 +42,7 @@ public class NavigationFragment
 
     private static final int URL_LOADER_CATEGORIAS = 10;
 
-    private ItemClickListener itemClickListener;
+    private NavigationEventListener navigationEventListener;
 
     private static final String[] CATEGORIAS_FROM = new String[]{
             NoticiaContract.Categoria.COLUMN_NAME_DESIGNACAO,
@@ -70,26 +64,66 @@ public class NavigationFragment
 
     private void criarItensNavegacaoEstaticos(LayoutInflater inflater){
         View cabecalhoNavegacao = inflater.inflate(R.layout.cabecalho_navigation, mCategoriasListView, false);
+        cabecalhoNavegacao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle atacado = new Bundle(1);
+                atacado.putBoolean(MainActivity.NAVIGATON_KEY_INTERNO_INSTITUICAO, true);
+                navigationEventListener.onNavigationEvent(atacado);
+            }
+        });
 
-        // cabecalhoNavegacao.findViewById(R.id.icone_aplicacao).setOnClickListener(this);
-        cabecalhoNavegacao.findViewById(R.id.icone_facebook).setOnClickListener(this);
-        cabecalhoNavegacao.findViewById(R.id.icone_googleplus).setOnClickListener(this);
+        cabecalhoNavegacao.findViewById(R.id.icone_facebook).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String uriPrincipal = "fb://page/123780544307693"; // TODO: Passar as identificações para XML
+                String uriSecundario = "https://www.facebook.com/pages/Clube-de-Montanhismo-da-Guarda/123780544307693"; // TODO: Passar as identificações para XML
 
+                Bundle atacado = new Bundle(2);
+                atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_PRINCIPAL, uriPrincipal);
+                atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_SECUNDARIO, uriSecundario);
+                navigationEventListener.onNavigationEvent(atacado);
+            }
+        });
+        cabecalhoNavegacao.findViewById(R.id.icone_googleplus).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String uriPrincipal = "https://plus.google.com/u/1/+ClubedeMontanhismodaGuarda/posts"; // TODO: Passar as identificações para XML
+
+                Bundle atacado = new Bundle(1);
+                atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_PRINCIPAL, uriPrincipal);
+                navigationEventListener.onNavigationEvent(atacado);
+            }
+        });
         mCategoriasListView.addHeaderView(cabecalhoNavegacao);
         mCategoriasListView.addHeaderView(inflater.inflate(R.layout.separador_lista_transparente, mCategoriasListView, false));
 
-        View itemNavegacaoNoticias = inflater.inflate(R.layout.drawer_list_item, mCategoriasListView, false);
-        ((ImageView) itemNavegacaoNoticias.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_dashboard_grey600_24dp);
+        View itemNavegacaoNoticias = inflater.inflate(R.layout.imagem_texto_list_item, mCategoriasListView, false);
+        ((ImageView) itemNavegacaoNoticias.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_todas_noticias_grey600_24dp);
         ((TextView) itemNavegacaoNoticias.findViewById(R.id.item_navegacao)).setText(R.string.titulo_fragmento_noticias);
-        itemNavegacaoNoticias.setTag(TIPO_ON_CLICK_NOTICIAS);
+        itemNavegacaoNoticias.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle atacado = new Bundle(1);
+                atacado.putString(MainActivity.NAVIGATON_KEY_INTERNO_CATEGORIA, null);
+                navigationEventListener.onNavigationEvent(atacado);
+            }
+        });
         mCategoriasListView.addHeaderView(itemNavegacaoNoticias);
 
         mCategoriasListView.addFooterView(inflater.inflate(R.layout.separador_lista_linha, mCategoriasListView, false));
 
-        View itemNavegacaoDefinicoes = inflater.inflate(R.layout.drawer_list_item, mCategoriasListView, false);
+        View itemNavegacaoDefinicoes = inflater.inflate(R.layout.imagem_texto_list_item, mCategoriasListView, false);
         ((ImageView) itemNavegacaoDefinicoes.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_settings_grey600_24dp);
         ((TextView) itemNavegacaoDefinicoes.findViewById(R.id.item_navegacao)).setText(R.string.titulo_fragmento_definicoes);
-        itemNavegacaoDefinicoes.setTag(TIPO_ON_CLICK_DEFINICOES);
+        itemNavegacaoDefinicoes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle atacado = new Bundle(1);
+                atacado.putBoolean(MainActivity.NAVIGATON_KEY_INTERNO_DEFINICOES, true);
+                navigationEventListener.onNavigationEvent(atacado);
+            }
+        });
         mCategoriasListView.addFooterView(itemNavegacaoDefinicoes);
     }
 
@@ -115,7 +149,7 @@ public class NavigationFragment
         Log.v(TAG, "Activity created");
         super.onActivityCreated(savedInstanceState);
 
-        mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.drawer_list_item, null, CATEGORIAS_FROM, DRAWER_LIST_ITEM_TO, 0);
+        mSimpleCursorAdapter = new SimpleCursorAdapter(getActivity(), R.layout.imagem_texto_list_item, null, CATEGORIAS_FROM, DRAWER_LIST_ITEM_TO, 0);
 
         descricaoCategoriasConhecidas = construirDescricaoCategoriasConhecidas(getResources()); // TODO: Colocar esta estrutura num local mais acessivel (actividade)
 
@@ -161,8 +195,8 @@ public class NavigationFragment
     @Override
     public void onAttach(Activity activity) {
         Log.v(TAG, "Fragment attached to Activity");
-        if (activity instanceof ItemClickListener) itemClickListener = (ItemClickListener) activity;
-        else itemClickListener = null;
+        if (activity instanceof NavigationEventListener) navigationEventListener = (NavigationEventListener) activity;
+        else navigationEventListener = null;
         super.onAttach(activity);
     }
 
@@ -212,48 +246,17 @@ public class NavigationFragment
     }
 
     @Override
-    public void onClick(View v) {
-        Uri uriAplicacao = null;
-        Uri uriAlternativo = null;
-        switch (v.getId()) {
-            case R.id.icone_aplicacao:
-                break;
-            case R.id.icone_facebook:
-                uriAplicacao = Uri.parse("fb://page/123780544307693"); // TODO: Passar as identificações para XML
-                uriAlternativo = Uri.parse("https://www.facebook.com/pages/Clube-de-Montanhismo-da-Guarda/123780544307693"); // TODO: Passar as identificações para XML
-                break;
-            case R.id.icone_googleplus:
-                uriAplicacao = Uri.parse("https://plus.google.com/u/0/114873093924282530167/posts"); // TODO: Passar as identificações para XML
-                uriAlternativo = null;
-                break;
-        }
-        if (uriAplicacao != null) {
-            Intent i = new Intent(Intent.ACTION_VIEW, uriAplicacao);
-            try {
-                getActivity().startActivity(i);
-            } catch (ActivityNotFoundException e) {
-                if (uriAlternativo != null) {
-                    i = new Intent(Intent.ACTION_VIEW, uriAlternativo);
-                    getActivity().startActivity(i);
-                }
-            }
-        }
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.d(TAG, "onItemClick -> Position: " + position + "; Id: " + id);
-        if (position == 0) {
-            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.montanhismo-guarda.pt/portal/"));
-            getActivity().startActivity(i);
-        } else if (id != -1)
-            itemClickListener.onNavigationEvent(NavigationFragment.TIPO_ON_CLICK_CATEGORIA, String.valueOf(id));
-        else if (view.getTag() != null) {
-            itemClickListener.onNavigationEvent((String) view.getTag(), null);
+        if (id != -1) {
+            Bundle atacado = new Bundle(1);
+            atacado.putString(MainActivity.NAVIGATON_KEY_INTERNO_CATEGORIA, String.valueOf(id));
+            navigationEventListener.onNavigationEvent(atacado);
         }
+
     }
 
-    static class DescriptorCategoriaConhecida {
+    public static class DescriptorCategoriaConhecida {
         public DescriptorCategoriaConhecida(String categoria, Drawable iconeCategoria, String tituloCategoria){
             this.categoria = categoria;
             this.iconeCategoria = iconeCategoria;
@@ -265,7 +268,4 @@ public class NavigationFragment
         public String tituloCategoria;
     }
 
-    interface ItemClickListener {
-        public void onNavigationEvent(String modo, String dados);
-    }
 }

@@ -7,8 +7,8 @@ android {
         applicationId "pt.rikmartins.clubemg.clubemgandroid"
         minSdkVersion 15
         targetSdkVersion 21
-        versionCode 2
-        versionName '0.91'
+        versionCode 3
+        versionName '1.0'
     }
     buildTypes {
         release {
