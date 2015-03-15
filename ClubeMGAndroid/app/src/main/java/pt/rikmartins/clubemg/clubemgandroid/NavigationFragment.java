@@ -3,15 +3,12 @@ package pt.rikmartins.clubemg.clubemgandroid;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.content.ActivityNotFoundException;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -102,7 +99,7 @@ public class NavigationFragment
         mCategoriasListView.addHeaderView(inflater.inflate(R.layout.separador_lista_transparente, mCategoriasListView, false));
 
         View itemNavegacaoNoticias = inflater.inflate(R.layout.imagem_texto_list_item, mCategoriasListView, false);
-        ((ImageView) itemNavegacaoNoticias.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_dashboard_grey600_24dp);
+        ((ImageView) itemNavegacaoNoticias.findViewById(R.id.image_view_item_navegacao)).setImageResource(R.drawable.ic_todas_noticias_grey600_24dp);
         ((TextView) itemNavegacaoNoticias.findViewById(R.id.item_navegacao)).setText(R.string.titulo_fragmento_noticias);
         itemNavegacaoNoticias.setOnClickListener(new View.OnClickListener() {
             @Override
