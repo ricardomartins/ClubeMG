@@ -90,6 +90,7 @@ public class MainActivity
         };
 
         drawerLayout.setDrawerListener(mNavigationDrawerToggle);
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
 
         if (!mUtilizadorAprendeuNavegacao && savedInstanceState == null) {
             drawerLayout.openDrawer(mNavigationView);
