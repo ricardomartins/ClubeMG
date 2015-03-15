@@ -12,6 +12,7 @@ import android.widget.SimpleAdapter;
 
 import pt.rikmartins.clubemg.clubemgandroid.NavigationEventListener;
 import pt.rikmartins.clubemg.clubemgandroid.R;
+import pt.rikmartins.clubemg.clubemgandroid.ToolbarHolder;
 
 public class InstituicaoFragment extends ListFragment implements AbsListView.OnItemClickListener {
     private static final String TAG = InstituicaoFragment.class.getSimpleName();
@@ -23,6 +24,7 @@ public class InstituicaoFragment extends ListFragment implements AbsListView.OnI
     private ListAdapter mListAdapter;
 
     private NavigationEventListener navigationEventListener;
+    private ToolbarHolder mToolbarHolder;
 
     public InstituicaoFragment() {
     }
@@ -47,6 +49,21 @@ public class InstituicaoFragment extends ListFragment implements AbsListView.OnI
         setListAdapter(mListAdapter);
 
         getListView().setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        mToolbarHolder = getActivity() instanceof ToolbarHolder ? (ToolbarHolder) getActivity() : null;
+
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        if (mToolbarHolder != null)
+            mToolbarHolder.getToolbar().setTitle(R.string.titulo_fragmento_instituicao);
+
+        super.onResume();
     }
 
     @Override
