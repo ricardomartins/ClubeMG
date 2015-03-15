@@ -31,7 +31,7 @@ public class Conteudo {
     static { // TODO: Isto tem que passar para recurso
         Bundle atacado = new Bundle(1);
         atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_PRINCIPAL, "http://www.montanhismo-guarda.pt/portal/");
-        addItem("Página da internet", null, atacado);
+        addItem("Página na internet", null, atacado);
 
         atacado = new Bundle(1);
         atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_PRINCIPAL, Uri.fromParts(
@@ -44,8 +44,8 @@ public class Conteudo {
         addItem("Contacta-nos via telefone", null, atacado);
 
         atacado = new Bundle(1);
-        atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_PRINCIPAL, Uri.fromParts(
-                "geo", "40.541155,-7.266898", null).toString());
+        atacado.putString(MainActivity.NAVIGATON_KEY_EXTERNO_PRINCIPAL, Uri.parse(
+                "geo:0,0?q=40.541155,-7.266898").toString());
         addItem("Encontra-nos", null, atacado);
 
         atacado = new Bundle(2);
