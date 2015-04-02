@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="@dimen/noticia_destacada_altura">
+    android:layout_width="match_parent" android:layout_height="@dimen/noticia_destacada_altura"
+    android:layout_margin="@dimen/noticias_grid_spacing">
 
     <include layout="@layout/noticias_list_item"/>
 

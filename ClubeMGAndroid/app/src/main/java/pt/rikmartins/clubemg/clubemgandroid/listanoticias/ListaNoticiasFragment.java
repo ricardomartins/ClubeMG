@@ -16,6 +16,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,14 +25,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.CursorAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
+import java.util.Map;
 
 import pt.rikmartins.clubemg.clubemgandroid.NavigationFragment;
 import pt.rikmartins.clubemg.clubemgandroid.R;
@@ -50,7 +50,7 @@ public class ListaNoticiasFragment
     public static final String ARG_NOME_CATEGORIA = "categoria";
 
     private SwipeRefreshLayout mListaNoticiasSwipeRefreshLayout;
-    private ListView mListaNoticiasListView;
+    private RecyclerView mListaNoticiasRecyclerView;
 
     private NoticiasSimpleCursorAdapter mNoticiasCursorAdapter;
 
@@ -62,6 +62,8 @@ public class ListaNoticiasFragment
     private BroadcastReceiver broadcastReceiver;
     private ToolbarHolder mToolbarHolder;
     private HashMap<String, NavigationFragment.DescriptorCategoriaConhecida> descricaoCategoriasConhecidas;
+
+    private RecicladorOnClickListener mRecicladorOnClickListener;
 
     public static ListaNoticiasFragment newInstance() {
         return newInstance(null);
@@ -87,6 +89,8 @@ public class ListaNoticiasFragment
         setHasOptionsMenu(true);
 
         descricaoCategoriasConhecidas = NavigationFragment.construirDescricaoCategoriasConhecidas(getResources());
+
+        mRecicladorOnClickListener = new RecicladorOnClickListener();
     }
 
     @Nullable
@@ -98,7 +102,11 @@ public class ListaNoticiasFragment
                 container, false);
         mListaNoticiasSwipeRefreshLayout.setOnRefreshListener(this);
 
-        mListaNoticiasListView = (ListView) mListaNoticiasSwipeRefreshLayout.findViewById(R.id.lista_noticias);
+        mListaNoticiasRecyclerView = (RecyclerView) mListaNoticiasSwipeRefreshLayout.findViewById(R.id.lista_noticias);
+
+        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.HORIZONTAL);
+
+        mListaNoticiasRecyclerView.setLayoutManager(mLayoutManager);
 
         substituirCategoria((getArguments() != null) ? getArguments().getString(ARG_NOME_CATEGORIA, null) : null);
 
@@ -110,17 +118,7 @@ public class ListaNoticiasFragment
         Log.v(TAG, "Activity created");
         super.onActivityCreated(savedInstanceState);
         mNoticiasCursorAdapter = new NoticiasSimpleCursorAdapter(getActivity(), null);
-        mListaNoticiasListView.setAdapter(mNoticiasCursorAdapter);
-        mListaNoticiasListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor cursorNoticias = mNoticiasCursorAdapter.getCursor();
-                String enderecoNoticia = cursorNoticias.getString(cursorNoticias.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_NOTICIA));
-
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(enderecoNoticia));
-                getActivity().startActivity(i);
-            }
-        });
+        mListaNoticiasRecyclerView.setAdapter(mNoticiasCursorAdapter);
 
         mToolbarHolder = getActivity() instanceof ToolbarHolder ? (ToolbarHolder) getActivity() : null;
     }
@@ -193,8 +191,14 @@ public class ListaNoticiasFragment
         iniciarActualizacao();
     }
 
-    class NoticiasSimpleCursorAdapter extends CursorAdapter {
+    class NoticiasSimpleCursorAdapter extends RecyclerView.Adapter<NoticiasSimpleCursorAdapter.ViewHolder> {
         private final LayoutInflater mInflater;
+
+        private Cursor mCursor;
+
+        protected int mRowIDColumn;
+
+        protected boolean mDataValid;
 
         private int mIndiceId;
         private int mIndiceTitulo;
@@ -202,15 +206,11 @@ public class ListaNoticiasFragment
         private int mIndiceImagem;
         private int mIndiceEnderecoImagemGrande;
         private int mIndiceDestacada;
+        private int mIndiceEnderecoNoticia;
 
-        public NoticiasSimpleCursorAdapter(Context context, Cursor c) {
-            super(context, c, true);
+        public NoticiasSimpleCursorAdapter(Context context, Cursor cursor) {
+            mCursor = cursor;
             mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return mInflater.inflate((cursor.getInt(mIndiceDestacada) != 1) ? R.layout.noticia_normal_list_item : R.layout.noticia_destacada_list_item, parent, false);
         }
 
         private void actualizaIndices(Cursor cursor){
@@ -221,39 +221,76 @@ public class ListaNoticiasFragment
             mIndiceImagem = cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_IMAGEM);
             mIndiceDestacada = cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_DESTACADA);
             mIndiceEnderecoImagemGrande = cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_IMAGEM_GRANDE);
+            mIndiceEnderecoNoticia = cursor.getColumnIndex(NoticiaContract.Noticia.COLUMN_NAME_ENDERECO_NOTICIA);
         }
 
-        @Override
         public void changeCursor(Cursor cursor) {
-            super.changeCursor(cursor);
+            Cursor old = swapCursor(cursor);
+            if (old != null) {
+                old.close();
+            }
             actualizaIndices(cursor);
         }
 
-        @Override
         public Cursor swapCursor(Cursor newCursor) {
-            Cursor oldCursor = super.swapCursor(newCursor);
+            if (newCursor == mCursor) {
+                return null;
+            }
+            Cursor oldCursor = mCursor;
+            if (oldCursor != null) {
+//                if (mChangeObserver != null) oldCursor.unregisterContentObserver(mChangeObserver);
+//                if (mDataSetObserver != null) oldCursor.unregisterDataSetObserver(mDataSetObserver);
+            }
+            mCursor = newCursor;
+            if (newCursor != null) {
+//                if (mChangeObserver != null) newCursor.registerContentObserver(mChangeObserver);
+//                if (mDataSetObserver != null) newCursor.registerDataSetObserver(mDataSetObserver);
+                mRowIDColumn = newCursor.getColumnIndexOrThrow("_id");
+                mDataValid = true;
+                // notify the observers about the new cursor
+                notifyDataSetChanged();
+            } else {
+                mRowIDColumn = -1;
+                mDataValid = false;
+                // notify the observers about the lack of a data set
+//                notifyDataSetInvalidated();
+            }
+
             actualizaIndices(newCursor);
             return oldCursor;
         }
 
         @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            TextView textViewTitulo = (TextView) view.findViewById(R.id.titulo_noticia);
-            TextView textViewTexto = (TextView) view.findViewById(R.id.texto_noticia);
-            ImageView imageViewImagem = (ImageView) view.findViewById(R.id.imagem_noticia);
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            // Create a new view.
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(viewType != 1 ? R.layout.noticia_normal_list_item : R.layout.noticia_destacada_list_item, parent, false);
 
-            textViewTitulo.setText(cursor.getString(mIndiceTitulo));
-            textViewTexto.setText(cursor.getString(mIndiceTexto));
+            return new ViewHolder(v);
+        }
 
-            byte[] bytesImagem = cursor.getBlob(mIndiceImagem);
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            mCursor.moveToPosition(position);
+            holder.getTextViewTitulo().setText(mCursor.getString(mIndiceTitulo));
+            holder.getTextViewTexto().setText(mCursor.getString(mIndiceTexto));
+
+            byte[] bytesImagem = mCursor.getBlob(mIndiceImagem);
             if (bytesImagem == null) {
-                imageViewImagem.setImageResource(R.drawable.fundo_noticia);
-                obterImagem(cursor.getString(mIndiceEnderecoImagemGrande), cursor.getInt(mIndiceId));
+                holder.getImageViewImagem().setImageResource(R.drawable.fundo_noticia);
+                obterImagem(mCursor.getString(mIndiceEnderecoImagemGrande), mCursor.getInt(mIndiceId));
             } else {
                 ByteArrayInputStream streamImagem = new ByteArrayInputStream(bytesImagem);
                 Bitmap aImagem = BitmapFactory.decodeStream(streamImagem);
-                imageViewImagem.setImageBitmap(aImagem);
+                holder.getImageViewImagem().setImageBitmap(aImagem);
             }
+            holder.itemView.setOnClickListener(mRecicladorOnClickListener.getOnClickListener(mCursor.getString(mIndiceEnderecoNoticia)));
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            mCursor.moveToPosition(position);
+            return getItemViewType(mCursor);
         }
 
         private int getItemViewType(Cursor cursor) {
@@ -261,14 +298,90 @@ public class ListaNoticiasFragment
         }
 
         @Override
-        public int getItemViewType(int position) {
-            Cursor cursor = (Cursor) getItem(position);
-            return getItemViewType(cursor);
+        public int getItemCount() {
+            return mCursor == null ? -1 : mCursor.getCount();
         }
 
-        @Override
-        public int getViewTypeCount() {
-            return 2;
+//        protected void onContentChanged() {
+//            if (mAutoRequery && mCursor != null && !mCursor.isClosed()) {
+//                if (false) Log.v("Cursor", "Auto requerying " + mCursor + " due to update");
+//                mDataValid = mCursor.requery();
+//            }
+//        }
+//
+//        private class ChangeObserver extends ContentObserver {
+//            public ChangeObserver() {
+//                super(new Handler());
+//            }
+//
+//            @Override
+//            public boolean deliverSelfNotifications() {
+//                return true;
+//            }
+//
+//            @Override
+//            public void onChange(boolean selfChange) {
+//                onContentChanged();
+//            }
+//        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            private final TextView textViewTitulo;
+            private final TextView textViewTexto;
+            private final ImageView imageViewImagem;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                textViewTitulo = (TextView) itemView.findViewById(R.id.titulo_noticia);
+                textViewTexto = (TextView) itemView.findViewById(R.id.texto_noticia);
+                imageViewImagem = (ImageView) itemView.findViewById(R.id.imagem_noticia);
+            }
+
+            public TextView getTextViewTitulo() {
+                return textViewTitulo;
+            }
+
+            public TextView getTextViewTexto() {
+                return textViewTexto;
+            }
+
+            public ImageView getImageViewImagem() {
+                return imageViewImagem;
+            }
+        }
+    }
+
+    private class RecicladorOnClickListener {
+        private final Map<String, View.OnClickListener> mAlvos;
+
+        RecicladorOnClickListener() {
+            mAlvos = new HashMap<>();
+        }
+
+        public View.OnClickListener getOnClickListener(String alvo){
+            if (mAlvos.containsKey(alvo))
+                return mAlvos.get(alvo);
+            else {
+                OnClickListenerReciclavel onClickListenerReciclavel = new OnClickListenerReciclavel(alvo);
+                mAlvos.put(alvo, onClickListenerReciclavel);
+                return onClickListenerReciclavel;
+            }
+
+        }
+
+        public class OnClickListenerReciclavel implements View.OnClickListener {
+
+            public String mAlvo;
+
+            public OnClickListenerReciclavel(String alvo) {
+                this.mAlvo = alvo;
+            }
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(mAlvo));
+                getActivity().startActivity(i);
+            }
+
         }
     }
 
@@ -292,7 +405,7 @@ public class ListaNoticiasFragment
         mNoticiasCursorAdapter.swapCursor(novoCursor);
 
         if ((idCategoriaCursor == null || !idCategoriaCursor.equals(mIdCategoria)) && ((idCategoriaCursor != null || (mIdCategoria != null))))
-            mListaNoticiasListView.smoothScrollToPosition(0);
+            mListaNoticiasRecyclerView.smoothScrollToPosition(0);
 
         setCategoria(idCategoriaCursor, designacaoCategoriaCursor);
 
