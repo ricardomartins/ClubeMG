@@ -104,7 +104,9 @@ public class ListaNoticiasFragment
 
         mListaNoticiasRecyclerView = (RecyclerView) mListaNoticiasSwipeRefreshLayout.findViewById(R.id.lista_noticias);
 
-        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.HORIZONTAL);
+        int quantidadeColunasNoticias = getResources().getInteger(R.integer.quantidade_colunas_noticias);
+
+        StaggeredGridLayoutManager mLayoutManager = new StaggeredGridLayoutManager(quantidadeColunasNoticias, StaggeredGridLayoutManager.VERTICAL);
 
         mListaNoticiasRecyclerView.setLayoutManager(mLayoutManager);
 

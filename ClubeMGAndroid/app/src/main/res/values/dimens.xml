@@ -6,11 +6,12 @@
     <dimen name="noticias_grid_spacing">2dp</dimen>
 
     <dimen name="noticia_normal_altura">240dp</dimen>
-    <dimen name="noticia_destacada_altura">320dp</dimen>
+    <dimen name="noticia_destacada_altura">360dp</dimen>
 
     <integer name="largura_imagens">480</integer>
     <dimen name="toolbar_padding">0dp</dimen>
     <dimen name="cabecalho_altura">148dp</dimen>
     <dimen name="cabecalho_icones_margem_superior">16dp</dimen>
 
+    <integer name="quantidade_colunas_noticias">1</integer>
 </resources>
