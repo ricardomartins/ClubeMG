@@ -1,20 +1,17 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">0dp</dimen>
-
     <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
          https://developer.android.com/design/patterns/navigation-drawer.html -->
-    <dimen name="navigation_drawer_width">260dp</dimen>
+    <dimen name="navigation_drawer_width">280dp</dimen>
 
-    <dimen name="noticias_grid_spacing">4dp</dimen>
+    <dimen name="noticias_grid_spacing">2dp</dimen>
 
     <dimen name="noticia_normal_altura">240dp</dimen>
-    <dimen name="noticia_destacada_altura">480dp</dimen>
+    <dimen name="noticia_destacada_altura">360dp</dimen>
 
     <integer name="largura_imagens">480</integer>
     <dimen name="toolbar_padding">0dp</dimen>
     <dimen name="cabecalho_altura">148dp</dimen>
     <dimen name="cabecalho_icones_margem_superior">16dp</dimen>
 
+    <integer name="quantidade_colunas_noticias">1</integer>
 </resources>

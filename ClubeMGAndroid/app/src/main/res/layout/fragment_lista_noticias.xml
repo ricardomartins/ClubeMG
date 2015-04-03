@@ -5,11 +5,10 @@
     android:layout_width="wrap_content"
     tools:context=".ListaNoticiasFragment">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/lista_noticias"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent"
-        android:visibility="visible"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
         style="@style/ListaNoticias" />
 
 </android.support.v4.widget.SwipeRefreshLayout>

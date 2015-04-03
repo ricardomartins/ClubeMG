@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -35,7 +34,6 @@ public class NavigationFragment
         AdapterView.OnItemClickListener {
     private static final String TAG = NavigationFragment.class.getSimpleName();
 
-    private LinearLayout mNavigationLinearLayout;
     private ListView     mCategoriasListView;
 
     private SimpleCursorAdapter mSimpleCursorAdapter;
@@ -132,16 +130,16 @@ public class NavigationFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.v(TAG, "Creating view");
-        mNavigationLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_navigation,
+        ListView mNavigationListView = (ListView) inflater.inflate(R.layout.fragment_navigation,
                 container, false);
-        mCategoriasListView = (ListView) mNavigationLinearLayout.findViewById(
+        mCategoriasListView = (ListView) mNavigationListView.findViewById(
                 R.id.left_navigation_drawer_categorias_list);
 
         criarItensNavegacaoEstaticos(inflater);
 
         getLoaderManager().initLoader(URL_LOADER_CATEGORIAS, null, this);
 
-        return mNavigationLinearLayout;
+        return mNavigationListView;
     }
 
     @Override
