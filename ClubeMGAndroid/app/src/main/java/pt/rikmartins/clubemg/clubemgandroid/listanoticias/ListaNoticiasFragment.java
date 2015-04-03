@@ -266,7 +266,7 @@ public class ListaNoticiasFragment
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             // Create a new view.
             View v = LayoutInflater.from(parent.getContext())
-                    .inflate(viewType != 1 ? R.layout.noticia_normal_list_item : R.layout.noticia_destacada_list_item, parent, false);
+                    .inflate(viewType == ITEM_VIEW_TYPE_NORMAL ? R.layout.noticia_normal_list_item : R.layout.noticia_destacada_list_item, parent, false);
 
             return new ViewHolder(v);
         }
@@ -296,7 +296,8 @@ public class ListaNoticiasFragment
         }
 
         private int getItemViewType(Cursor cursor) {
-            return cursor.getInt(mIndiceDestacada);
+            boolean eDestacada = cursor.getInt(mIndiceDestacada) > 0;
+            return (eDestacada && (mIdCategoria == null)) ? ITEM_VIEW_TYPE_DESTACADA : ITEM_VIEW_TYPE_NORMAL;
         }
 
         @Override
@@ -352,6 +353,9 @@ public class ListaNoticiasFragment
             }
         }
     }
+
+    private final static int ITEM_VIEW_TYPE_DESTACADA = 1;
+    private final static int ITEM_VIEW_TYPE_NORMAL = 0;
 
     private class RecicladorOnClickListener {
         private final Map<String, View.OnClickListener> mAlvos;
