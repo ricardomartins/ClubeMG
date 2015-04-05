@@ -47,7 +47,8 @@ public class ListaNoticiasFragment
         extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = ListaNoticiasFragment.class.getSimpleName();
 
-    public static final String ARG_NOME_CATEGORIA = "categoria";
+    public static final String ARG_ID_CATEGORIA = "arg_id_categoria";
+    public static final String ARG_POSICAO = "arg_posicao";
 
     private SwipeRefreshLayout mListaNoticiasSwipeRefreshLayout;
     private RecyclerView mListaNoticiasRecyclerView;
@@ -74,7 +75,7 @@ public class ListaNoticiasFragment
 
         if (categoria != null) {
             Bundle args = new Bundle();
-            args.putString(ARG_NOME_CATEGORIA, categoria);
+            args.putString(ARG_ID_CATEGORIA, categoria);
             myFragment.setArguments(args);
         }
 
@@ -110,7 +111,10 @@ public class ListaNoticiasFragment
 
         mListaNoticiasRecyclerView.setLayoutManager(mLayoutManager);
 
-        substituirCategoria((getArguments() != null) ? getArguments().getString(ARG_NOME_CATEGORIA, null) : null);
+        String inputCategoria = savedInstanceState != null ? savedInstanceState.getString(ARG_ID_CATEGORIA, null): null;
+        if (inputCategoria == null)
+            inputCategoria = getArguments() != null ? getArguments().getString(ARG_ID_CATEGORIA, null) : null;
+        substituirCategoria(inputCategoria);
 
         return mListaNoticiasSwipeRefreshLayout;
     }
@@ -153,6 +157,21 @@ public class ListaNoticiasFragment
         finalizarAnimacaoActualizacao();
         getActivity().unregisterReceiver(broadcastReceiver);
         super.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(ARG_ID_CATEGORIA, mIdCategoria);
+
+        int[] firstCompletelyVisibleItemPositions = ((StaggeredGridLayoutManager) mListaNoticiasRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPositions(null);
+        int firstCompletelyVisibleItemPosition = 0;
+        for (int first : firstCompletelyVisibleItemPositions)
+            if (first != RecyclerView.NO_POSITION) {
+                firstCompletelyVisibleItemPosition = first;
+                break;
+            }
+        outState.putInt(ARG_POSICAO, firstCompletelyVisibleItemPosition);
     }
 
     private void obterImagem(String urlImagem, int id) {
@@ -391,12 +410,6 @@ public class ListaNoticiasFragment
         }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        Log.v(TAG, "Fragment attached to Activity");
-        super.onAttach(activity);
-    }
-
     private void substituirCursor(Cursor novoCursor) {
         String idCategoriaCursor = null;
         String designacaoCategoriaCursor = null;
@@ -430,7 +443,7 @@ public class ListaNoticiasFragment
     public void substituirCategoria(String categoria){
         if ((categoria == null || !categoria.equals(mIdCategoria)) && (categoria != null || mIdCategoria != null)) {
             Bundle bundleLoader = new Bundle();
-            bundleLoader.putString(ARG_NOME_CATEGORIA, categoria);
+            bundleLoader.putString(ARG_ID_CATEGORIA, categoria);
             getLoaderManager().restartLoader(ID_LOADER_NOTICIAS, bundleLoader, this);
         }
     }
@@ -442,7 +455,7 @@ public class ListaNoticiasFragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String categoria = (args != null) ? args.getString(ARG_NOME_CATEGORIA) : null;
+        String categoria = (args != null) ? args.getString(ARG_ID_CATEGORIA) : null;
 
         switch (id) {
             case ID_LOADER_NOTICIAS:
