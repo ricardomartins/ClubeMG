@@ -1,4 +1,6 @@
+from datetime import datetime
 from django.db import models
+from django.utils import timezone
 
 
 class Categoria(models.Model):
@@ -33,6 +35,22 @@ class Noticia(models.Model):
     etiquetas = models.ManyToManyField(to=Etiqueta)
 
     ultima_actualizacao = models.DateTimeField("última actualização", auto_now=True, editable=False, blank=True)
+    codigo_actualizacao = models.PositiveIntegerField("código de actualização", null=True, blank=True)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        super().save(force_insert, force_update, using, update_fields)
+        self.codigo_actualizacao = Noticia.codifica_data(self.ultima_actualizacao)
+        super().save()
 
     def __str__(self):
         return self.titulo
+
+    @staticmethod
+    def codifica_data(data: datetime) -> int:
+        return data.year * 372 + (data.month - 1) * 31 + data.day - 1
+
+    @staticmethod
+    def descodifica_data(data_codificada: int) -> datetime:
+        ano, mes_dia = data_codificada // 372, data_codificada % 372
+        mes, dia = (mes_dia // 31) + 1, mes_dia % 31 + 1
+        return datetime(ano, mes, dia, tzinfo=timezone.now().tzinfo)

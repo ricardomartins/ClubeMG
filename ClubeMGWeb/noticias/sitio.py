@@ -132,7 +132,7 @@ class Noticia(object):
 
 def _obter_pagina(endereco):
     pagina = requests.get(endereco)
-    documento = BeautifulSoup(pagina.text, "lxml")
+    documento = BeautifulSoup(pagina.text, features="lxml")
     return documento
 
 

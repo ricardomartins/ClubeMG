@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'noticias',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -101,3 +102,7 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
 )
+
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 11
+}
